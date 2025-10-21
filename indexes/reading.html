@@ -74,14 +74,14 @@
       window.TEST_ID = testId;
 
       const dataScript = document.createElement("script");
-      dataScript.src = `/data/${testId}/readingData_Test${testId}.js`;
+      dataScript.src = `data/${testId}/readingData_Test${testId}.js`;
 
       dataScript.onload = () => {
         document.getElementById("app").style.display = "block";
         document.getElementById("directionsR").style.display = "block";
 
         const logicScript = document.createElement("script");
-        logicScript.src = "/scripts/reading.js";
+        logicScript.src = "scripts/reading.js";
         document.body.appendChild(logicScript);
       };
 
