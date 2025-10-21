@@ -5,14 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Listening Section</title>
-  <link rel="stylesheet" href="styles/listening.css" />
+  <link rel="stylesheet" href="../styles/listening.css" />
 </head>
 
 <body>
   <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
 
   <div id="listening-directions">
-    <audio id="listeningDirectionsAudio" src="commonAudios/ListeningDirectionsAudio.mp3"></audio>
+    <audio id="listeningDirectionsAudio" src="../commonAudios/ListeningDirectionsAudio.mp3"></audio>
     <div class="topBreak">
       <button id="startListeningBtn">Continue</button>
     </div>
@@ -92,7 +92,7 @@
 
     const testNumber = window.TEST_ID;
     const dataScript = document.createElement("script");
-    dataScript.src = `data/${testNumber}/listeningData_Test${testNumber}.js`;
+    dataScript.src = `../data/${testNumber}/listeningData_Test${testNumber}.js`;
 
     dataScript.onload = () => {
       if (!window.listeningData) {
@@ -101,7 +101,7 @@
       }
 
       const logicScript = document.createElement("script");
-      logicScript.src = "/scripts/listening.js";
+      logicScript.src = "../scripts/listening.js";
 
       logicScript.onload = () => {
         const audio = document.getElementById("listeningDirectionsAudio");
