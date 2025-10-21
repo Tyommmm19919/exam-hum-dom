@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exam Hub — TOEFL & SAT</title>
+  <meta name="description" content="Practice TOEFL & SAT with a sleek, fast interface. See real student results and start your prep in minutes."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="/students/logo.svg" type="image/x-icon" />
+  <style>
+    :root{
+      --bg: #0e1220;          --bg-2: #0c152b;
+      --surface: rgba(255,255,255,0.07);
+      --surface-strong: rgba(12,18,40,0.64);
+      --card: rgba(20,26,52,0.78);
+      --border: rgba(140,170,255,0.22);
+      --text: #f5f8ff;        --muted: #c7d1f2;
+      --accent: #78a6ff;      --accent-2: #66e6d2;
+      --green:#35d49f;        --red:#ff6b7c;        --yellow:#ffd166;
+      --radius-sm: 10px;      --radius-md: 14px;   --radius-lg: 18px;
+      --shadow-1: 0 10px 24px rgba(0,0,0,.32);
+      --shadow-2: 0 22px 60px rgba(0,0,0,.42);
+      --blur: 14px;           --speed-fast:.15s;   --speed:.25s;
+      --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      --nav-h: 64px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f7f8fd; --bg-2:#eef1fb;
+        --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.86);
+        --card: rgba(255,255,255,.92); --border: rgba(23,32,58,.12);
+        --text:#0f1428; --muted:#3e4a74;
+        --shadow-1: 0 8px 20px rgba(23, 32, 58, .10);
+        --shadow-2: 0 24px 60px rgba(23, 32, 58, .16);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--font);color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 0% -10%, #1c2550, transparent 60%),
+        radial-gradient(1200px 900px at 100% 0%, #142762, transparent 45%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      overflow-x:hidden;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.20;z-index:0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.18) 50%, transparent 51%),
+        radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.12) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.10) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.14) 50%, transparent 51%);
+    }
+
+    /* Top bar */
+    .nav{
+      position:sticky;top:0;z-index:999;backdrop-filter:blur(var(--blur));
+      background:var(--surface-strong);border-bottom:1px solid var(--border);
+      height: var(--nav-h);
+    }
+    .nav-inner{
+      width:min(1200px,94%);margin:0 auto;display:flex;align-items:center;gap:14px;
+      height:var(--nav-h); 
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
+    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(180deg,#6ea3ff,#4b82ff);box-shadow:0 10px 22px rgba(76,130,255,.22)}
+    .brand span{font-size:18px}
+    .spacer{flex:1}
+    .links{display:flex;gap:10px; align-items: center;}
+    .links a{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.06);text-decoration:none;color:var(--text);font-weight:800;transition:transform var(--speed-fast), box-shadow var(--speed), background var(--speed); outline: none;}
+    .links a:hover{transform:translateY(-1px); box-shadow:var(--shadow-1); background: rgba(255,255,255,.10)}
+    .cta{background:linear-gradient(180deg,#6ea3ff,#4b82ff);color:#fff;border-color:rgba(255,255,255,.25)}
+    .menu-btn{display:none;border:1px solid var(--border);background:rgba(255,255,255,.10);border-radius:12px;padding:10px 12px;font-weight:900;color:var(--text)}
+    #user-logo{transition: .25s; border:1px solid var(--border);}
+    #user-logo:hover{opacity: .8; transform: translateY(-1px);}
+
+    /* Hero */  
+    .hero{position:relative;z-index:1; padding-block: 18px;}
+    .hero-inner{width:min(1200px,94%); margin:28px auto; display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.08);font-weight:900;color:var(--muted);letter-spacing:.3px}
+    .title{font-size: clamp(34px, 4.2vw, 52px); line-height:1.05;margin:12px 0 10px 0;font-weight:900;letter-spacing:.2px;text-shadow: 0 2px 16px rgba(0,0,0,.35);}
+    .subtitle{font-size:18px;line-height:1.75;color:var(--muted);max-width: 60ch}
+    .hero-cta, .results-div{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
+    .btn{height:55px;width:48%;padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed), filter var(--speed)}
+    .btn.primary{background:linear-gradient(180deg,#35d49f,#18b98a);color:#041b12;box-shadow:0 10px 24px rgba(24,185,138,.22), inset 0 1px 0 rgba(255,255,255,.5)}
+    .btn.secondary{background:linear-gradient(180deg,#a06bff,#8553f7);color:#fff;box-shadow:0 10px 26px rgba(160,107,255,.26), inset 0 1px 0 rgba(255,255,255,.5)}
+    .btn.third{background:linear-gradient(180deg,#b6f77e,#5b7c1b);color:#0a1305;box-shadow:0 10px 26px rgba(91,124,27,.26), inset 0 1px 0 rgba(255,255,255,.5)}
+    .btn:hover{transform:translateY(-1px); filter: brightness(1.03)}
+    .btn:focus-visible{outline: 2px solid var(--accent-2); outline-offset: 3px}
+
+    .mock{border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));box-shadow:var(--shadow-2);aspect-ratio:16/11;position:relative;overflow:hidden}
+    .mock .bar{position:absolute;inset:0 0 auto 0;height:40px;background:var(--surface-strong);border-bottom:1px solid var(--border)}
+    .mock .pane{height: fit-content; position:absolute;inset:50px 10px 10px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18); display:grid; place-items:center; overflow: hidden;}
+    .mock .pane img{max-width:80%; height:auto; filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));}
+
+    /* Sections */
+    section{position:relative;z-index:1; scroll-margin-top: calc(var(--nav-h) + 16px);}
+    .section-inner{width:min(1200px,94%); margin:30px auto}
+    .sec-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}
+    .sec-head h2{margin:0;font-size:28px;letter-spacing:.2px;text-shadow: 0 1px 10px rgba(0,0,0,.25);}
+    .sec-head p{margin:4px 0 0 0;color:var(--muted)}
+
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .card{border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:var(--shadow-1);padding:16px;display:grid;grid-template-rows:auto 1fr auto;gap:10px}
+    .card h3{margin:2px 0 0 0}
+    .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.08);font-size:13px;color:var(--muted);font-weight:800}
+    .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+    .kv div{padding:12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06)}
+    .kv b{display:block;font-size:18px}
+
+    /* Achievements */
+    .ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .ach-card{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:12px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:10px}
+    .ach-top{display:flex;align-items:center;gap:12px}
+    .avatar{width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg,#86b3ff,#6ea3ff);display:grid;place-items:center;color:#0b1b30;font-weight:900;box-shadow:0 8px 18px rgba(110,163,255,.28);overflow:hidden}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .name{font-weight:900}
+    .score-badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge-score{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.08);font-weight:800}
+    .bio{color:var(--muted);font-size:14px}
+
+    /* Mobile slider */
+    .ach-slider{display:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:6px}
+    .ach-slide{min-width:78%;scroll-snap-align:start}
+
+    /* Info banner */
+    .info{
+      border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center;box-shadow:var(--shadow-2)
+    }
+
+    /* FAQ */
+    .faq{display:grid;gap:12px}
+    details{border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.06);padding:12px}
+    summary{cursor:pointer;font-weight:900;outline: none;}
+    details[open]{background:rgba(255,255,255,.10)}
+
+    /* Footer */
+    footer{margin:32px 0 18px 0}
+    .foot{width:min(1200px,94%);margin:0 auto;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .foot small{color:var(--muted)}
+
+    /* Backdrop scrim */
+    #scrim{
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s ease;
+      z-index: 998;
+    }
+    body.nav-open #scrim{ opacity: 1; pointer-events: auto; }
+
+    /* Mobile menu */
+    .menu-btn{ display: none; }
+    #user-logo { position: static; width: 38px; height: 38px; border-radius: 12px; }
+    .nav-inner{ position: relative; }
+
+    @media (max-width: 720px){
+      .menu-btn{ display: inline-block; }
+      .links{
+        display: none;                 
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column; align-items: stretch; gap: 10px;
+        padding: 14px;
+        background: rgba(9,15,28,.98); 
+        border: 1px solid rgba(116,163,255,.35);
+        border-top: none;
+        backdrop-filter: blur(12px) saturate(140%);
+        box-shadow: 0 24px 60px rgba(0,0,0,.55);
+        border-bottom-left-radius: var(--radius-lg);
+        border-bottom-right-radius: var(--radius-lg);
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        z-index: 1000;                 
+      }
+      .links.open{ display: flex; }
+      .links a, .links .cta{
+        width: 100%;
+        justify-content: flex-start;
+        color: #fff;
+        font-size: 16px;
+        padding: 14px 16px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.06);
+        border-radius: 12px;
+      }
+      .links a:hover{ background: rgba(116,163,255,.20); }
+      .links a:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      .hero-inner{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+      .ach-grid{display:none}
+      .ach-slider{display:flex}
+      .info{grid-template-columns:1fr}
+    }
+
+    /* Reveal animation utility */
+    .reveal{ transform: translateY(10px); opacity: 0; }
+    .reveal.in{ transform: translateY(0); opacity: 1; transition: transform .45s ease, opacity .45s ease; }
+
+    /* Focus target highlight */
+    :target{ scroll-margin-top: calc(var(--nav-h) + 18px); }
+  </style>
+</head>
+<body>
+  <!-- scrim for mobile menu -->
+  <div id="scrim" aria-hidden="true"></div>
+
+  <!-- Top Navigation -->
+  <nav class="nav" role="navigation" aria-label="Primary">
+    <div class="nav-inner">
+      <a class="brand" href="#home" aria-label="Go to top">
+        <img src="students/logo.svg" class="logo" alt="Exam Hub logo">
+        <span>Exam Hub</span>
+      </a>
+
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="links">☰</button>
+      <div class="spacer" aria-hidden="true"></div>
+
+      <div class="links" id="links">
+        <a href="#home">Home</a>
+        <a href="#exams">Exams</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+        <div class="lower-slide" style="width: 100%;">
+          <img src="/students/user.jpg" class="logo" id="user-logo" alt="User center" title="User Center" onclick="window.location.href = '/indexes/user-center.html' ">
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero / Home -->
+  <header class="hero" id="home">
+    <div class="hero-inner">
+      <div>
+        <span class="badge">Fast • Minimal • Exam-style UI</span>
+        <h1 class="title">Your modern hub for <span style="color:var(--accent)">TOEFL</span> & <span style="color:var(--accent-2)">SAT</span> practice</h1>
+        <p class="subtitle">Built to match your Reading section’s aesthetic—now expanded into a polished homepage. Track results, showcase wins, and move seamlessly into tests.</p>
+        <div class="hero-cta">
+          <a href="indexes/test-selection.html" class="btn primary">Choose a TOEFL Test</a>
+          <a href="indexes/test-sat-selection.html" class="btn secondary">Choose a SAT Test</a>
+        </div>
+        <div class="results-div">
+          <a href="indexes/results.html" class="btn secondary">Go to the TOEFL results</a>
+          <a href="indexes/results-sat.html" class="btn primary">Go to the SAT results</a>
+        </div>
+      </div>
+      <div>
+        <div class="mock" aria-hidden="true">
+          <div class="bar"></div>
+          <div class="pane">
+            <img src="students/logo.svg" alt="Exam Hub emblem">
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Exams -->
+  <section id="exams" aria-labelledby="exams-title">
+    <div class="section-inner">
+      <div class="sec-head">
+        <div>
+          <h2 id="exams-title">Exam info</h2>
+          <p class="subtitle">Concise highlights for TOEFL & SAT. Links can route to your existing sections.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal" aria-labelledby="toefl-title">
+          <div class="pill">TOEFL iBT®</div>
+          <h3 id="toefl-title">Academic English proficiency</h3>
+          <p class="subtitle">Test the core: Reading, Listening, Speaking, Writing. Interface matches real test flow.</p>
+          <div class="kv">
+            <div><b>Reading</b><span>2 passages • 35 min</span></div>
+            <div><b>Listening</b><span>5 sets • 41–57 min</span></div>
+            <div><b>Speaking</b><span>4 tasks • 16 min</span></div>
+            <div><b>Writing</b><span>2 tasks • 29 min</span></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:6px">
+            <a class="btn primary" href="reading.html">Take a free TOEFL test!</a>
+          </div>
+        </article>
+
+        <article class="card reveal" aria-labelledby="sat-title">
+          <div class="pill">SAT®</div>
+          <h3 id="sat-title">College-readiness assessment</h3>
+          <p class="subtitle">Emphasis on Reading & Writing, and Math. Practice with clean UI and responsive design.</p>
+          <div class="kv">
+            <div><b>Reading & Writing</b><span>Short passages • Grammar & Rhetoric</span></div>
+            <div><b>Math</b><span>Calculator & no-calculator sets</span></div>
+            <div><b>Timing</b><span>~2 hrs 14 min total</span></div>
+            <div><b>Scoring</b><span>1600 scale</span></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:6px">
+            <a class="btn secondary" href="#">Take a free SAT test</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section id="achievements" aria-labelledby="achievements-title">
+    <div class="section-inner">
+      <div class="sec-head">
+        <div>
+          <h2 id="achievements-title">Students’ achievements</h2>
+        </div>
+        <div class="score-badges">
+          <span class="badge-score">TOEFL 110+</span>
+          <span class="badge-score">SAT 1500+</span>
+          <span class="badge-score" style="background:rgba(53,212,159,.20)">Recent wins</span>
+        </div>
+      </div>
+
+      <!-- Desktop Grid -->
+      <div class="ach-grid" id="achGrid"></div>
+      <!-- Mobile Slider -->
+      <div class="ach-slider" id="achSlider" aria-label="Student results carousel"></div>
+    </div>
+  </section>
+
+  <!-- Info banner / About -->
+  <section id="about" aria-labelledby="about-title">
+    <div class="section-inner">
+      <div class="info reveal">
+        <div>
+          <h2 id="about-title" style="margin:0 0 6px 0">Built for focus</h2>
+          <p class="subtitle" style="margin:0">Minimal distractions, sticky timer bars, responsive cards, and exam-style flows. Mirrors your Reading UI design.</p>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+          <a class="btn secondary" href="#faq">View FAQ</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" aria-labelledby="faq-title">
+    <div class="section-inner">
+      <div class="sec-head"><h2 id="faq-title">FAQ</h2></div>
+      <div class="faq">
+        <details class="reveal">
+          <summary>Can I use it on my phone?</summary>
+          <p>Yes. Navigation collapses, achievements become a swipeable carousel, and cards stack for small screens.</p>
+        </details>
+        <details class="reveal">
+          <summary>Can I add more students easily?</summary>
+          <p>Yes. Update the <code>students</code> array below or fetch from your API; the UI renders automatically.</p>
+        </details>
+        <details class="reveal">
+          <summary>Does it match my Reading section theme?</summary>
+          <p>It reuses your color variables, blur, borders, radii, and shadows for a consistent look and feel.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Footer -->
+  <footer id="contact" aria-labelledby="contact-title">
+    <div class="foot reveal">
+      <div>
+        <b id="contact-title">Contact</b>
+        <p class="subtitle" style="margin:6px 0 0 0">Email: examHubYerevan@gmail.com<br/>Phone: +374 96 361 236</p>
+      </div>
+      <div style="text-align:right">
+        <b>Exam Hub</b>
+        <p class="subtitle" style="margin:6px 0 0 0">Yerevan • Since 2025</p>
+        <p class="subtitle" style="margin:6px 0 0 0">Created by artyom19032008@gmail.com</p><small>Contact for projects</small><br>
+        <small>© <span id="year"></span> Exam Hub — All rights reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  // ===== Mobile menu toggle with scrim + scroll lock =====
+  const menuBtn = document.getElementById('menuBtn');
+  const links   = document.getElementById('links');
+  const scrim   = document.getElementById('scrim');
+
+  function closeMenu(){
+    links?.classList.remove('open');
+    document.body.style.overflow = '';
+    menuBtn?.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-open');
+  }
+  function openMenu(){
+    links?.classList.add('open');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+    menuBtn?.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-open');
+  }
+  if (menuBtn && links) {
+    menuBtn.addEventListener('click', ()=>{
+      links.classList.contains('open') ? closeMenu() : openMenu();
+    });
+    scrim?.addEventListener('click', closeMenu);
+    // Close menu when clicking a link (nice on mobile)
+    links.addEventListener('click', (e)=>{
+      const target = e.target.closest('a');
+      if (target) closeMenu();
+    });
+    // Close on resize back to desktop
+    window.addEventListener('resize', ()=>{ if (window.innerWidth > 720) closeMenu(); });
+  }
+
+  // ===== Smooth scrolling with offset-safe behavior =====
+  // We already use CSS scroll-behavior: smooth and section { scroll-margin-top }.
+  // This JS adds smooth scrolling for same-page links that might be outside <section>.
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a[href^="#"]');
+    if(!a) return;
+    const id = a.getAttribute('href');
+    if(id.length > 1){
+      const el = document.querySelector(id);
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({ behavior:'smooth', block:'start' });
+        el.classList.add('pulse-target');
+        setTimeout(()=> el.classList.remove('pulse-target'), 700);
+      }
+    }
+  });
+
+  // ===== Data for achievements =====
+  const students = [
+    {name:'Ani M.', photo:'students/ani.jpg', toefl:112, sat:null, bio:'Admitted to CS @ AUA'},
+    {name:'Gor T.', photo:'students/gor.jpg', toefl:105, sat:1490, bio:'Scholarship winner'},
+    {name:'Lilit K.', photo:'students/lilit.jpg', toefl:110, sat:1510, bio:'Full-ride finalist'},
+    {name:'Aram S.', photo:'students/aram.jpg', toefl:98,  sat:1450, bio:'STEM Olympiad medalist'},
+    {name:'Mariam D.', photo:'students/mariam.jpg', toefl:108, sat:1520, bio:'NYU Abu Dhabi shortlist'},
+    {name:'David A.', photo:'students/david.jpg', toefl:104, sat:null, bio:'Exchange program USA'},
+    {name:'Nare H.', photo:'students/nare.jpg', toefl:115, sat:1530, bio:'Early Decision admit'},
+    {name:'Tigran P.', photo:'students/tigran.jpg', toefl:null, sat:1500, bio:'National Math Team'}
+  ];
+
+  // ===== Helpers =====
+  function avatarEl(src, initials){
+    const wrap = document.createElement('div');
+    wrap.className = 'avatar';
+    if(src){
+      const img = new Image(); img.src = src; img.alt = initials || 'Student photo';
+      img.onerror = ()=>{ wrap.textContent = initials || 'S'; };
+      wrap.appendChild(img);
+    } else {
+      wrap.textContent = initials || 'S';
+    }
+    return wrap;
+  }
+  function initials(name){
+    if(!name) return 'S';
+    const parts = name.replace(/\./g,'').split(/\s+/).filter(Boolean);
+    return (parts[0]?.[0]||'S') + (parts[1]?.[0]||'');
+  }
+  function achCard(s){
+    const card = document.createElement('div');
+    card.className = 'ach-card reveal';
+    const top = document.createElement('div'); top.className = 'ach-top';
+    top.appendChild(avatarEl(s.photo, initials(s.name)));
+    const meta = document.createElement('div');
+    const nm = document.createElement('div'); nm.className = 'name'; nm.textContent = s.name; meta.appendChild(nm);
+    const badges = document.createElement('div'); badges.className = 'score-badges';
+    if(s.toefl){ const b = document.createElement('span'); b.className='badge-score'; b.textContent = `TOEFL ${s.toefl}`; badges.appendChild(b); }
+    if(s.sat){ const b = document.createElement('span'); b.className='badge-score'; b.textContent = `SAT ${s.sat}`; badges.appendChild(b); }
+    meta.appendChild(badges);
+    top.appendChild(meta);
+    const bio = document.createElement('div'); bio.className = 'bio'; bio.textContent = s.bio || '';
+    card.appendChild(top); card.appendChild(bio);
+    return card;
+  }
+
+  // ===== Render achievements =====
+  const grid = document.getElementById('achGrid');
+  const slider = document.getElementById('achSlider');
+  students.forEach(s=>{
+    const c1 = achCard(s);
+    const c2 = achCard(s);
+    grid.appendChild(c1);
+    const slide = document.createElement('div'); slide.className='ach-card ach-slide';
+    slide.appendChild(c2); slider.appendChild(slide);
+  });
+
+  // ===== Reveal on scroll =====
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    })
+  },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+  // ===== Dynamic year =====
+  document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

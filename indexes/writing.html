@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TOEFL Writing Section</title>
+    <link rel="stylesheet" href="/styles/writing.css" />
+</head>
+
+<body>
+    <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+    <div id="writingDirections">
+        <div class="topBreak">
+            <button id="startWritingBtn">Continue</button>
+        </div>
+        <div class="direcText">
+            <h1>Writing Section Directions</h1>
+            <h2>
+                For this task, you will read a passage about an academic topic. A clock at the top of the screen will
+                show how much time you have to read. You may take notes on the passage while you read. The passage will
+                then be removed and you will listen to a lecture about the same topic. While you listen, you may also
+                take notes. You will be able to see the reading passage again when it is time for you to write. You may
+                use your notes to help you answer the question.<br>
+                In an actual test, you will then have 20 minutes to write a response to a question that asks you about
+                the relationship between the lecture you heard and the reading passage. Try to answer the question as
+                completely as possible using information from the reading passage and lecture. The question does not ask
+                you to express your personal opinion. Typically, an effective response will be 150 to 225 words.<br>
+                Your response will be judged on the quality of your writing and on the completeness and accuracy of the
+                content.<br>
+                Now you will see the reading passage for minutes. Remember that it will be available to you again when
+                you write.<br>
+                Immediately after the reading time ends, the lecture will begin, so keep your headset on until the
+                lecture is over.<br><br>
+
+                Click Continue to go on
+            </h2>
+        </div>
+    </div>
+    <div id="writing-section" class="hidden" style="display: none;">
+        <div class="topSpWr">
+            <p id="sectionName">Writing Section</p>
+            <div id="writing-timer"></div>
+        </div>
+
+        <div id="writing-directions"></div>
+
+        <div id="writing-layout">
+            <div id="reading-passage" class="reading-box"></div>
+
+            <div id="typing" class="hidden">
+                <div class="writing-tools">
+                    <div class="buttons">
+                        <button onclick="undoText()">Undo</button>
+                        <button onclick="redoText()">Redo</button>
+                        <button onclick="cutText()">Cut</button>
+                        <button onclick="copyText()">Copy</button>
+                        <button onclick="pasteText()">Paste</button>
+                    </div>
+
+                    <textarea id="writing-area" placeholder="Start writing here..."></textarea>
+                    <div id="word-count">Words: 0</div>
+                    <button id="finish-writing-btn">Finish & Download</button>
+                </div>
+            </div>
+        </div>
+
+        <audio id="writing-audio" class="hidden"></audio>
+        <div id="writing-progress-container" class="hidden">
+            <div id="writing-progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="final-results" class="hidden"></div>
+    <button id="download-btn" class="hidden">Download All Responses</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="/scripts/writing.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const testId = sessionStorage.getItem("TEST_ID");
+            if (!testId) {
+                document.body.innerHTML = "<h2 style='color:red;'>TEST_ID is missing. Please return to the section selection page.</h2>";
+                return;
+            }
+
+            sessionStorage.setItem("TEST_ID", testId);
+
+            const script = document.createElement("script");
+            script.src = `/data/${testId}/writingData_Test${testId}.js`;
+
+            script.onload = () => {
+                if (window.writingTasks && Array.isArray(window.writingTasks)) {
+                    writingTasks = window.writingTasks;
+                    document.getElementById("writing-section").classList.remove("hidden");
+                } else {
+                    alert("Writing data failed to load.");
+                }
+            };
+
+            script.onerror = () => {
+                alert("Error loading writingData_Test" + testId + ".js");
+            };
+
+            document.body.appendChild(script);
+        });
+    </script>
+</body>
+
+</html>

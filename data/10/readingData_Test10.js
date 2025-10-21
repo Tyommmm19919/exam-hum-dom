@@ -1,0 +1,109 @@
+window.readingData = {
+    passages: [
+        {
+            title: "Ancient Egyptian Sculpture",
+            text: [
+                `
+&nbsp;<span class="arr" id="arr1">&#10132;</span><span class="arr" id="arr11">&#10132;</span>In order to understand ancient Egyptian art, it is vital to know as much as possible of the elite Egyptians' view of the world and the functions and contexts of the art produced for them. Without this knowledge we can appreciate only the formal content of Egyptian art, and we will fail to understand why it was produced or the concepts that shaped it and caused it to adopt its distinctive forms. In fact, a lack of understanding concerning the purposes of Egyptian art has often led it to be compared unfavorably with the art of other cultures: Why did the Egyptians not develop sculpture in which the body turned and twisted through space like classical Greek statuary? Why do the artists seem to get left and right confused? And why did they not discover the geometric perspective as European artists did in the Renaissance? The answer to such questions has nothing to do with a lack of skill or imagination on the part of Egyptian artists and everything to do with the purposes for which they were producing their art.<br><br>
+&nbsp;<span class="arr" id="arr2">&#10132;</span>The majority of three-dimensional representations, whether standing, seated, or kneeling, exhibit what is called frontality: they face straight ahead, neither twisting nor turning. When such statues are viewed in isolation, out of their original <span id="contex">context</span> and without knowledge of their function, it is easy to criticize them for their rigid attitudes that remained unchanged for three thousand years. Frontality is, however, directly related to the functions of Egyptian statuary and the contexts in which the statues were set up. Statues were created not for their decorative effect but to play a primary role in the cults of the gods, the king, and the dead. They were designed to be put in places where these beings could manifest themselves in order to be the recipients of ritual actions. Thus it made sense to show the statue looking ahead at what was happening in front of it, so that the living performer of the ritual could interact with the divine or deceased recipient. Very often such statues were enclosed in rectangular shrines or wall niches whose only opening was at the front, making it natural for the statue to display frontality. Other statues were designed to be placed within <span id="setting">an architectural setting</span>, for instance, in front of the monumental entrance gateways to temples known as pylons, or in pillared courts, where <span id="they">they</span> would be placed against or between pillars: their frontality worked perfectly within the architectural context.<br><br>
+&nbsp;<span class="arr" id="arr3">&#10132;</span>Statues were normally made of stone, wood, or metal. Stone statues were worked from single rectangular blocks of material and retained the compactness of the original shape. The stone between the arms and the body and between the legs in standing figures or the legs and the seat in seated ones was not normally cut away. From a practical aspect this protected the figures against breakage and psychologically gives the images a sense of strength and power, usually enhanced by a supporting back pillar. By contrast, wooden statues were carved from several pieces of wood that were pegged together to form the finished work, and metal statues were either made by wrapping sheet metal around a wooden core or cast by the lost wax process. The arms could be held away from the body and carry separate items in their hands; there is no back pillar. The effect is altogether lighter and freer than that achieved in stone, but because both perform the same function, formal wooden and metal statues still display frontality.<br><br>
+&nbsp;<span class="arr" id="arr4">&#10132;</span>Apart from statues representing deities, kings, and named members of the elite that can be called formal, there is another group of three-dimensional representations that <span id="depicts">depicts</span> generic figures, frequently servants, from the nonelite population.[BOX] The function of these is quite different.[BOX] Many are made to be put in the tombs of the elite in order to serve the tomb owners in the afterlife.[BOX] Unlike formal statues that are limited to static poses of standing, sitting, and kneeling, these figures depict a wide range of actions, such as grinding grain, baking bread, producing pots, and making music, and they are shown in appropriate poses, bending and squatting as they carry out their tasks.[BOX] <br><br>
+
+                `
+            ],
+            questions: [
+                { type: "multiple-choice", question: "Paragraph 1 suggests that one reason Egyptian art is viewed less favorably than other art is that Egyptian art lacks", options: ["a realistic sense of human body proportion", "a focus on distinctive forms of varying sizes", "the originality of European art", "the capacity to show the human body in motion"], correct: 3 },
+                { type: "multiple-choice", question: "In paragraph 1, the author mentions all of the following as necessary in appreciating Egyptian art EXCEPT an understanding of", options: ["the reasons why the art was made", "the nature of aristocratic Egyptian beliefs", "the influences of Egyptian art on later art such as classical Greek art", "how the art was used"], correct: 2 },
+                { type: "multiple-choice", question: "According to paragraph 2, why are Egyptian statues portrayed frontality?", options: ["To create a psychological effect of distance and isolation", "To allow them to fulfill their important role in ceremonies of Egyptian life", "To provide a contrast to statues with a decorative function", "To suggest the rigid, unchanging Egyptian philosophical attitudes"], correct: 1 },
+                { type: "multiple-choice", question: "The word “context” in the passage is closest in meaning to", options: ["connection", "influence", "environment", "requirement"], correct: 2 },
+                { type: "multiple-choice", question: "The author mentions “an architectural setting” in the passage in order to", options: ["suggest that architecture was as important as sculpture to Egyptian artists", "offer a further explanation for the frontal pose of Egyptian statues", "explain how the display of statues replaced other forms of architectural decoration", "illustrate the religious function of Egyptian statues"], correct: 1 },
+                { type: "multiple-choice", question: "The word “they” in the passage refers to", options: ["statues", "gateways", "temples", "pillared courts"], correct: 0 },
+                { type: "multiple-choice", question: "According to paragraph 3, which of the following statements about wooden statues is true?", options: ["Wooden statues were usually larger than stone statues.", "Wooden statues were made from a single piece of wood.", "Wooden statues contained pieces of metal or stone attached to the front.", "Wooden statues had a different effect on the viewer than stone statues."], correct: 3 },
+                { type: "multiple-choice", question: "The word “depicts” in the passage is closest in meaning to", options: ["imagines", "classifies", "elevates", "portrays"], correct: 3 },
+                {
+                    type: "insert-sentence",
+                    sentence: `In fact, it is the action and not the figure itself that is important.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 3
+                },
+                {
+                    type: "summary",
+                    prompt: "An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer that express the most important ideas in the passage. Some sentences do not belong in the summary because they express ideas that not presented in the passage or are minor ideas in the passage. This question is worth 2 points. The distinctive look of ancient Egyptian sculpture was determined largely by its function.",
+                    choices: [
+                        { text: "The twisted forms of Egyptian statues indicate their importance in ritual actions.", isCorrect: false },
+                        { text: "The reason Egyptian statues are motionless is linked to their central role in cultural rituals.", isCorrect: true },
+                        { text: "Stone, wood, and metal statues all display the feature of frontality.", isCorrect: true },
+                        { text: "Statues were more often designed to be viewed in isolation rather than placed within buildings.", isCorrect: false },
+                        { text: "The contrasting poses used in statues of elite and nonelite Egyptians reveal their difference in social status.", isCorrect: true },
+                        { text: "Although the appearances of formal and generic statues differ, they share the same function.", isCorrect: false }
+                    ],
+                    correct: [1, 2, 4]
+                }
+            ]
+        },
+        {
+            title: "Orientation and Navigation",
+            text: [
+                `
+&nbsp;<span class="arr" id="arr12">&#10132;</span>To South Americans, robins are birds that fly north every spring. To North Americans, the robins simply vacation in the south each winter. Furthermore, they fly to very specific places in South America and will often come back to the same trees in North American yards the following spring. The question is not why they would leave the cold of winter so much as how they find their way around. The question perplexed people for years, until, in the 1950s, a German scientist named Gustave Kramer provided some answers and, in the process, raised new questions.<br><br>
+&nbsp;<span class="arr" id="arr22">&#10132;</span>Kramer initiated important new kinds of research regarding how animals orient and navigate. Orientation is simply facing in the right direction; navigation involves finding ones way from point A to point B.<br><br>
+&nbsp;<span class="arr" id="arr32">&#10132;</span>Early in his research, Kramer found that caged migratory birds became very restless at about the time they would normally have begun migration in the wild. Furthermore, he noticed that as they fluttered around in the cage, they often launched themselves in the direction of their normal migratory route.<span id="sentence2">He then set up experiments with caged starlings and found that their orientation was, in fact, in the proper migratory direction except when the sky was overcast, at which times there was no clear direction to their restless movements.</span> Kramer surmised, therefore, that they were orienting according to the position of the Sun. To test this idea, he blocked their view of the Sun and used mirrors to change its apparent position. He found that under these circumstances, the birds oriented with respect to the new "Sun." They seemed to be using the Sun as a compass to determine direction. At the time, this idea seemed <span id="prep">preposterous</span>. How could a bird navigate by the Sun when some of us lose our way with road maps? Obviously, more testing was in order.<br><br>
+&nbsp;<span class="arr" id="arr42">&#10132;</span>So, in another set of experiments, Kramer put identical food boxes around the cage, with food in only one of the boxes.[BOX] The boxes were stationary, and the one containing food was always at the same point of the compass.[BOX] However, its position with respect to the surroundings could be changed by revolving either the inner cage containing the birds or the outer walls, which served as the background.[BOX] As long as the birds could see the Sun, no matter how their surroundings were altered, they went directly to the correct food box.[BOX] Whether the box appeared in front of the right wall or the left wall, they showed no signs of confusion. On overcast days, however, the birds were disoriented and had trouble locating their food box.<br><br>
+&nbsp;<span class="arr" id="arr52">&#10132;</span><span class="arr" id="arr521">&#10132;</span>In experimenting with artificial suns, Kramer made another interesting discovery. If the artificial Sun remained stationary, the birds would shift their direction with respect to it at a rate of about 15 degrees per hour, the Sun's rate of movement across the sky. Apparently, the birds were assuming that the "Sun" they saw was moving at that rate. When the real Sun was visible, however, the birds maintained a constant direction as it moved across the sky. In other words, they were able to compensate for the Sun's movement. This meant that some sort of biological clock was operating-and a very precise clock at that.<br><br>
+&nbsp;<span class="arr" id="arr62">&#10132;</span>What about birds that migrate at night? Perhaps they navigate by the night sky. To test the idea, caged night-migrating birds were placed on the floor of a planetarium during their migratory period. A planetarium is essentially a theater with a domelike ceiling onto which a night sky can be projected for any night of the year. When the planetarium sky matched the sky outside, the birds fluttered in the direction of their normal migration. But when the dome was rotated, the birds changed their direction to match the artificial sky. The results clearly indicated that the birds were orienting according to the stars.<br><br>
+&nbsp;<span class="arr" id="arr72">&#10132;</span>There is accumulating evidence indicating that birds navigate by using a wide variety of environmental cues. Other areas under investigation include magnetism, landmarks, coastlines, sonar, and even smells. The studies are complicated by the fact that the data are sometimes contradictory and the mechanisms apparently change from time to time. Furthermore, one sensory ability may back up another.<br>
+                `
+            ],
+            questions: [
+                { type: "multiple-choice", question: "Which of the following can be inferred about bird migration from paragraph 1?", options: ["Birds will take the most direct migratory route to their new habitat.", "The purpose of migration is to join with larger groups of birds.", "Bird migration generally involves moving back and forth between north and south.", "The destination of birds' migration can change from year to year."], correct: 2 },
+                { type: "multiple-choice", question: "Which of the sentences below best expresses the essential information in the highlighted sentence in the passage? Incorrect choices change the meaning in important ways or leave out essential information", options: ["Experiments revealed that caged starlings displayed a lack of directional sense and restlessmovements.", "Experiments revealed that caged starlings were unable to orient themselves in the direction of their normal migratory route.", "Experiments revealed that the restless movement of caged starlings had no clear direction.", "Experiments revealed that caged starlings' orientation was accurate unless the weather was overcast."], correct: 3 },
+                { type: "multiple-choice", question: "The word “preposterous” in the passage is closest in meaning to", options: ["unbelievable", "inadequate", "limited", "creative"], correct: 0 },
+                { type: "multiple-choice", question: "According to paragraph 3, when do caged starlings become restless?", options: ["When the weather is overcast.", "When they are unable to identify their normal migratory route.", "When their normal time for migration arrives.", "When mirrors are used to change the apparent position of the Sun."], correct: 2 },
+                { type: "multiple-choice", question: "Which of the following can be inferred from paragraph 4 about Kramer s reason for filling one food box and leaving the rest empty?", options: ["He believed the birds would eat food from only one box.", "He wanted to see whether the Sun alone controlled the birds' ability to navigate toward the box with food.", "He thought that if all the boxes contained food, this would distract the birds from following their migratory route.", "He needed to test whether the birds preferred having the food at any particular point of the compass."], correct: 1 },
+                { type: "multiple-choice", question: "According to paragraph 5, how did the birds fly when the real Sun was visible?", options: ["They kept the direction of their flight constant.", "They changed the direction of their flight at a rate of 15 degrees per hour.", "They kept flying toward the Sun.", "They flew in the same direction as the birds that were seeing the artificial Sun."], correct: 0 },
+                { type: "multiple-choice", question: "The experiment described in paragraph 5 caused Kramer to conclude that birds possess a biological clock because", options: ["when birds navigate they are able to compensate for the changing position of the Sun in the sky.", "birds innate bearings keep them oriented in a direction that is within 15 degrees of the Suns direction.", "birds' migration is triggered by natural environmental cues, such as the position of the Sun.", "birds shift their direction at a rate of 15 degrees per hour whether the Sun is visible or not."], correct: 0 },
+                { type: "multiple-choice", question: "Which of the following best describes the author's presentation of information in the passage?", options: ["A number of experiments are described to support the idea that birds use the Sun and the night sky to navigate.", "The author uses logic to show that the biological clock in birds is inaccurate.", "A structured argument about the importance of internal versus external cues for navigation is presented.", "The opposing points of view about bird migration are clarified through the study of contrasting experiments."], correct: 0 },
+                {
+                    type: "insert-sentence",
+                    sentence: `He arranged the feed boxes at various positions on a compass.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 0
+                },
+                {
+                    type: "summary",
+                    prompt: "An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer that express the most important ideas in the passage. Some sentences do not belong in the summary because they express ideas that not presented in the passage or are minor ideas in the passage. This question is worth 2 points.",
+                    choices: [
+                        { text: "Because caged birds become disoriented when the sky is overcast, Kramer hypothesized that birds orient themselves according to the Sun's position.", isCorrect: true },
+                        { text: "In one set of experiments, Kramer placed the box containing food at the same point of the compass each time he put food boxes in the birds’environment.", isCorrect: false },
+                        { text: "Kramer demonstrated that an internal biological clock allows starlings to compensate for the Sun's movement.", isCorrect: true },
+                        { text: "After several studies, Kramer surmised that an internal biological clock allows some species of birds to navigate at night.", isCorrect: false },
+                        { text: "The role of environmental cues in birds' navigation is clear, for on overcast days, birds use objects besides the Sun to orient themselves.", isCorrect: false },
+                        { text: "Kramer showed that night-migrating birds use the sky to navigate by the stars.", isCorrect: true }
+                    ],
+                    correct: [0, 2, 5]
+                }
+            ]
+        }
+    ],
+    specialBehavior:[
+    {targetId: "arr1", questionIndex: 0, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr11", questionIndex: 1, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr2", questionIndex: 2, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr3", questionIndex: 6, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr12",  questionIndex:10, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr32",  questionIndex:13, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr42",  questionIndex:14, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr52",  questionIndex:15, styles: { display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr521",  questionIndex:16, styles: { display: "inline", fontWeight: "600", color: "red" }},
+
+
+
+
+    {targetId: "contex", questionIndex: 3, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "setting", questionIndex: 4, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "they", questionIndex: 5, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "depicts", questionIndex: 7, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "sentence2",  questionIndex:11, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "prep",  questionIndex:12, styles: { fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }}
+    ]
+};

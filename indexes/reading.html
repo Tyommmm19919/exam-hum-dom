@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEFL Reading Section</title>
+  <link rel="stylesheet" href="/styles/reading.css" />
+</head>
+
+<body>
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <div id="app" style="display:none;">
+    <div id="directionsR">
+      <div class="topDirect">
+        <button id="endDirect" onclick="startReading()">Start</button>
+      </div>
+
+      <div class="textDirect">
+        <h1>Reading section directions</h1>
+        <h2>
+          In this section, you will be able to demonstrate your ability to understand academic passages in English.
+          You will read and answer questions about two passages. A clock will indicate how much time remains.<br><br>
+          Some passages include an underlined word or phrase. Select the word or phrase to see a definition, an explanation,
+          or an illustration.<br><br>
+          Move to the next question by selecting <strong>Next</strong>. You can skip questions and go back to them later if time remains.
+          Return to previous screens by selecting <strong>Back</strong>.<br><br>
+          Select <strong>Review</strong> at any time to see which questions you have answered and which you have not. From the Review screen,
+          you may go directly to any question you have already encountered.
+        </h2>
+      </div>
+    </div>
+
+    <div id="reading-container">
+      <div class="topLay">
+        <p class="mention-section" id="mention-section">Reading</p>
+
+        <div class="viewClose">
+          <button id="viewText">View text</button>
+          <button id="closeText">Close text</button>
+        </div>
+
+        <div id="navigation">
+          <button id="prev-btn">Back</button>
+          <div id="timer">Time Left: 00:00</div>
+          <button id="next-btn">Next</button>
+        </div>
+      </div>
+
+      <div id="layout">
+        <div id="passage-section">
+          <h2 id="passage-title">Passage Title</h2>
+          <div id="scrollable-passage">
+            <div id="passage-text"></div>
+          </div>
+        </div>
+
+        <div id="question-section">
+          <div id="question-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="final-score" style="display:none;"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const testId = sessionStorage.getItem("TEST_ID");
+      if (!testId) {
+        document.body.innerHTML = "<h2 style='color:red;'>TEST_ID is missing. Please return to the section selection page.</h2>";
+        return;
+      }
+      window.TEST_ID = testId;
+
+      const dataScript = document.createElement("script");
+      dataScript.src = `/data/${testId}/readingData_Test${testId}.js`;
+
+      dataScript.onload = () => {
+        document.getElementById("app").style.display = "block";
+        document.getElementById("directionsR").style.display = "block";
+
+        const logicScript = document.createElement("script");
+        logicScript.src = "/scripts/reading.js";
+        document.body.appendChild(logicScript);
+      };
+
+      dataScript.onerror = () => {
+        alert("Failed to load readingData_Test" + testId + ".js");
+      };
+
+      document.body.appendChild(dataScript);
+    });
+  </script>
+</body>
+</html>

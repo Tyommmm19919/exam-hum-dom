@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Auth • Login & Sign-up (Frontend Only)</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    /* Reset & base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+      Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.4; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      color: var(--fg);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, #c7d2fe60, transparent 60%),
+        radial-gradient(1000px 700px at 110% 10%, #fde68a50, transparent 55%),
+        radial-gradient(800px 600px at 50% 110%, #86efac40, transparent 60%), var(--bg);
+      background-attachment: fixed;
+      overflow: hidden;
+    }
+
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --fg: #0f172a;
+      --fg-2: #334155;
+      --muted: #64748b;
+      --ring: #6366f1;
+      --accent: #8b5cf6;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --shadow: 0 20px 60px -20px rgba(0,0,0,.25);
+      --glass: rgba(255,255,255,.6);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1020;
+        --card: #0f172a;
+        --fg: #f8fafc;
+        --fg-2: #cbd5e1;
+        --muted: #94a3b8;
+        --glass: rgba(15, 23, 42, .65);
+        --shadow: 0 20px 60px -20px rgba(0,0,0,.6);
+      }
+    }
+
+    .page {
+      position: relative;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    .blob { position:absolute; filter: blur(40px); opacity:.45; mix-blend-mode: multiply; pointer-events:none; will-change: transform; }
+    .blob.b1 { width: 480px; height: 480px; background: #a78bfa; top:-120px; left:-120px; border-radius: 42% 58% 65% 35%/45% 30% 70% 55%; animation: float 16s ease-in-out infinite; }
+    .blob.b2 { width: 420px; height: 420px; background: #60a5fa; top: 8%; right:-120px; border-radius: 35% 65% 52% 48%/55% 35% 65% 45%; animation: float 18s ease-in-out -4s infinite; }
+    .blob.b3 { width: 520px; height: 520px; background: #34d399; bottom:-220px; left: 40%; border-radius: 60% 40% 55% 45%/50% 55% 45% 50%; animation: float 22s ease-in-out -8s infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0) translateX(0) rotate(0deg); } 50% { transform: translateY(24px) translateX(-10px) rotate(8deg);} }
+
+    .auth-shell {
+      position: relative; z-index: 1;
+      width: min(680px, 94vw);
+      background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.35));
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: auto;
+      max-height: calc(100dvh - 4rem);
+    }
+    @media (prefers-color-scheme: dark){
+      .auth-shell{
+        background: linear-gradient(180deg, rgba(15,23,42,.8), rgba(15,23,42,.55));
+        border-color: rgba(255,255,255,.08);
+      }
+    }
+
+    .panel { padding: clamp(1.25rem, 3vw, 2rem); }
+
+    .header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: .75rem; }
+    .logo { display:flex; align-items:center; gap:.65rem; font-weight:800; letter-spacing:.2px; text-transform:uppercase; }
+    .logo svg { width: 28px; height: 28px; }
+
+    .tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: rgba(100,116,139,.08); border-radius: 14px; padding:.35rem; margin-bottom: 1.25rem; }
+    .tab { position: relative; z-index: 2; appearance:none; background: transparent; border:0; border-radius: 12px; padding:.75rem .75rem; font-weight:700; color: var(--muted); cursor:pointer; transition: color .2s ease; }
+    .tab.active { color: var(--fg); }
+    .tabs::before { content:""; position:absolute; inset:.35rem calc(50% + .35rem) .35rem .35rem; border-radius: 12px; background: var(--card); box-shadow: inset 0 0 0 1px rgba(0,0,0,.05), 0 8px 24px -12px rgba(0,0,0,.25); transition: inset .35s cubic-bezier(.2,.8,.2,1); }
+    .tabs[data-active="signup"]::before { inset:.35rem .35rem .35rem calc(50% + .35rem); }
+
+    form { display: grid; gap: .9rem; }
+
+    .field { display: grid; gap:.35rem; }
+    .field label { font-size: .9rem; font-weight: 600; color: var(--fg); }
+    .input {
+      display:flex; align-items:center; gap:.6rem; padding:.85rem .9rem; border-radius: 12px; background: var(--card); border: 1px solid #e5e7eb40; outline: none;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+    }
+    @media (prefers-color-scheme: dark){ .input{ border-color: #1f2937; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);} }
+    .input:focus-within { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 45%, transparent); border-color: color-mix(in oklab, var(--ring) 40%, transparent); }
+    .input input { flex:1; min-width: 0; background: transparent; border:0; color: var(--fg); font-size: .95rem; }
+    .input input::placeholder { color: color-mix(in oklab, var(--muted) 70%, transparent); }
+    .icon { width: 18px; height: 18px; opacity: .8; }
+    .action { background: none; border:0; cursor:pointer; line-height:0; padding: .25rem; border-radius: 8px; opacity:.8; }
+    .action:hover { opacity: 1; filter: saturate(1.2); }
+
+    .row { display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap: wrap; }
+    .checkbox { display:flex; align-items:center; gap:.6rem; cursor:pointer; user-select:none; }
+    .checkbox input { appearance: none; width: 18px; height: 18px; border-radius: 6px; border: 2px solid color-mix(in oklab, var(--muted) 55%, transparent); display:grid; place-items:center; }
+    .checkbox input:checked { background: linear-gradient(135deg, var(--ring), var(--accent)); border-color: transparent; }
+    .checkbox input:checked::after { content:""; width: 9px; height: 9px; border-radius: 3px; background: white; }
+
+    .btn { appearance:none; border:0; cursor:pointer; padding: .9rem 1rem; font-weight: 800; border-radius: 14px; color:white; background: linear-gradient(135deg, var(--ring), #8b5cf6); box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--ring) 60%, black); }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px -10px color-mix(in oklab, var(--ring) 75%, black); }
+    .btn:active { transform: translateY(0); }
+
+    .muted { color: var(--muted); font-size: .9rem; }
+    .error { color: var(--danger); font-weight: 600; font-size: .85rem; display:flex; gap:.4rem; align-items:center; }
+    .hint { color: var(--muted); font-size: .8rem; }
+
+    .strength { display:grid; gap:.4rem; }
+    .bar { height: 10px; display:grid; grid-template-columns: repeat(4,1fr); gap:.25rem; }
+    .bar span { display:block; border-radius: 999px; background: color-mix(in oklab, var(--muted) 40%, transparent); }
+    .bar[data-score="1"] span:nth-child(-n+1),
+    .bar[data-score="2"] span:nth-child(-n+2),
+    .bar[data-score="3"] span:nth-child(-n+3),
+    .bar[data-score="4"] span:nth-child(-n+4) { background: linear-gradient(135deg, #f43f5e, #f59e0b, #22c55e); }
+    .strength .label { font-size:.8rem; color: var(--muted); }
+
+    .caps { display:none; font-size:.8rem; color: var(--warn); }
+    .caps.show { display:flex; align-items:center; gap:.4rem; }
+
+    .toast { position: fixed; bottom: 20px; left: 20px; background: var(--card); border:1px solid color-mix(in oklab, var(--muted) 20%, transparent); padding:.85rem 1rem; border-radius: 12px; box-shadow: var(--shadow); display:flex; align-items:center; gap:.6rem; opacity:0; transform: translateY(8px); pointer-events:none; transition: .3s ease; }
+    .toast.show { opacity:1; transform: translateY(0); pointer-events:auto; }
+
+    .fade { animation: fadeIn .35s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+
+    .link { color: var(--ring); text-decoration: none; font-weight: 700; }
+    .link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <main class="auth-shell">
+      <section class="panel">
+        <div class="header">
+          <div class="logo" title="Brand">
+            <span>Sample</span>
+          </div>
+        </div>
+
+        <div class="tabs" id="tabs" data-active="signin" role="tablist" aria-label="Authentication tabs">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-signin" id="tab-signin">Sign in</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-signup" id="tab-signup">Create account</button>
+        </div>
+
+        <section id="panel-signin" class="fade" role="tabpanel" aria-labelledby="tab-signin">
+          <form id="form-signin" novalidate>
+            <div class="field">
+              <label for="si-email">Email</label>
+              <div class="input">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity=".1"/><path d="M4 4l8 8l8-8"/><path d="M20 20H4V4"/></svg>
+                <input id="si-email" name="email" type="email" placeholder="you@example.com" autocomplete="username" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="si-password">Password</label>
+              <div class="input">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <input id="si-password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+                <button class="action" type="button" aria-label="Show password" data-toggle="si-password" title="Show/Hide password">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div class="caps" id="si-caps"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 9H3l9-9z"/><path d="M5 21h14"/></svg> Caps lock is ON</div>
+            </div>
+
+            <div class="row">
+              <label class="checkbox"><input id="remember" type="checkbox"> <span class="muted">Remember me</span></label>
+              <a class="link" href="#" id="open-reset">Forgot password?</a>
+            </div>
+
+            <button class="btn" type="submit">Sign in</button>
+          </form>
+        </section>
+
+        <section id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
+          <form id="form-signup" novalidate>
+            <div class="field">
+              <label for="su-name">Username</label>
+              <div class="input"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="8" r="4"/></svg>
+                <input id="su-name" name="name" type="text" placeholder="Jane11" autocomplete="name" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="su-email">Email</label>
+              <div class="input"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l8 8l8-8"/><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                <input id="su-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="su-password">Password</label>
+              <div class="input">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <input id="su-password" name="password" type="password" placeholder="Create a strong password" autocomplete="new-password" required>
+                <button class="action" type="button" aria-label="Show password" data-toggle="su-password" title="Show/Hide password">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div class="caps" id="su-caps"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 9H3l9-9z"/><path d="M5 21h14"/></svg> Caps lock is ON</div>
+              <div class="strength">
+                <div class="bar" id="pw-bar" data-score="0"><span></span><span></span><span></span><span></span></div>
+                <div class="label" id="pw-label">Use at least 8 characters and mix letters, numbers, and symbols.</div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="su-confirm">Confirm password</label>
+              <div class="input">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l6 6L21 6"/></svg>
+                <input id="su-confirm" name="confirm" type="password" placeholder="Repeat your password" autocomplete="new-password" required>
+              </div>
+            </div>
+
+            <label class="checkbox"><input id="su-terms" type="checkbox" required> <span class="muted">I agree to the <a href="#" class="link">Terms</a> and <a href="#" class="link">Privacy Policy</a>.</span></label>
+            <p class="error" id="su-terms-err" hidden>You must accept the terms.</p>
+
+            <button class="btn" type="submit">Create account</button>
+            <p class="muted">Already have an account? <a class="link" href="#" id="to-signin">Sign in</a></p>
+          </form>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+    <span id="toast-text">Done.</span>
+  </div>
+
+  <dialog id="reset-modal" style="border:none;border-radius:16px;padding:0;max-width:min(90vw,420px);box-shadow: var(--shadow);">
+    <form method="dialog" style="margin:0;background:var(--card);padding:1.1rem 1.25rem;display:grid;gap:.9rem;">
+      <h3 style="margin:.25rem 0;">Reset password</h3>
+      <p class="muted" style="margin-top:-.25rem">Enter your email and we’ll send a reset link (demo).</p>
+      <div class="input"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l8 8l8-8"/><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        <input id="reset-email" type="email" placeholder="you@example.com" required></div>
+      <div class="row">
+        <button class="btn" value="default" id="send-reset" type="button">Send link</button>
+        <button class="action sbtn" value="cancel" type="submit" style="padding:.7rem .9rem;border-radius:12px;border:1px solid color-mix(in oklab, var(--muted) 20%, transparent);">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+    const emailRe = /^(?:[a-zA-Z0-9_.'+\-])+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+
+    function toast(msg){ const t = $('#toast'); $('#toast-text').textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); }
+    function togglePassword(id){ const input = document.getElementById(id); if (!input) return; input.type = input.type === 'password' ? 'text' : 'password'; }
+
+    function strength(pw){
+      let score = 0; if(!pw) return {score, label: ''};
+      const hasLen = pw.length >= 8; const sets = [/[A-Z]/,/[a-z]/,/[0-9]/,/[^\w\s]/].map(r=>r.test(pw)).filter(Boolean).length;
+      if (hasLen) score++; if (sets>=2) score++; if (sets>=3) score++; if (sets===4) score++;
+      const labels = ['Very weak','Weak','OK','Strong','Very strong'];
+      return { score, label: labels[score] };
+    }
+
+    const tabs = $('#tabs');
+    const tabButtons = $$('.tab', tabs);
+    const panels = [$('#panel-signin'), $('#panel-signup')];
+
+    function activateTab(which){
+      const isSignUp = which === 'signup';
+      tabs.dataset.active = which;
+      tabButtons.forEach(btn=>btn.classList.toggle('active', btn.id === (which==='signin'?'tab-signin':'tab-signup')));
+      panels[0].hidden = isSignUp;
+      panels[1].hidden = !isSignUp;
+      (isSignUp ? $('#su-name') : $('#si-email')).focus();
+    }
+
+    $('#tab-signup').addEventListener('click', ()=>activateTab('signup'));
+    $('#tab-signin').addEventListener('click', ()=>activateTab('signin'));
+    $('#to-signin')?.addEventListener('click', (e)=>{ e.preventDefault(); activateTab('signin'); });
+
+    // Remember me (demo)
+    const remembered = localStorage.getItem('rememberedEmail');
+    if (remembered){ $('#si-email').value = remembered; $('#remember').checked = true; }
+
+    function attachCaps(input, indicator){
+      input.addEventListener('keydown', (e)=>{ indicator.classList.remove('show', e.getModifierState && e.getModifierState('CapsLock')); });
+      input.addEventListener('keyup', (e)=>{ indicator.classList.toggle('show', e.getModifierState && e.getModifierState('CapsLock')); });
+      input.addEventListener('focus', (e)=>{ indicator.classList.remove('show', e.getModifierState && e.getModifierState('CapsLock')); });
+      input.addEventListener('blur', ()=>indicator.classList.remove('show'));
+    }
+    attachCaps($('#si-password'), $('#si-caps'));
+    attachCaps($('#su-password'), $('#su-caps'));
+    $$('[data-toggle]').forEach(btn => btn.addEventListener('click', ()=>togglePassword(btn.dataset.toggle)));
+
+    const suPw = $('#su-password');
+    const bar = $('#pw-bar');
+    const label = $('#pw-label');
+    suPw.addEventListener('input', ()=>{
+      const {score, label: text} = strength(suPw.value);
+      bar.dataset.score = String(score);
+      label.textContent = text ? `Strength: ${text}` : 'Use at least 8 characters and mix letters, numbers, and symbols.';
+    });
+
+    const collectErrors = {
+      signin(){
+        const email = $('#si-email').value.trim();
+        const pass = $('#si-password').value;
+        const errors = [];
+        if (!emailRe.test(email)) errors.push('• Enter a valid email');
+        if (!pass) errors.push('• Password is required');
+        return errors;
+      },
+      signup(){
+        const name = $('#su-name').value.trim();
+        const email = $('#su-email').value.trim();
+        const pass = $('#su-password').value;
+        const confirm = $('#su-confirm').value;
+        const terms = $('#su-terms').checked;
+
+        const errs = [];
+        if (!name) errs.push('• Full name is required');
+        if (!emailRe.test(email)) errs.push('• Enter a valid email');
+        const sets = [/[A-Z]/,/[a-z]/,/[0-9]/,/[^\w\s]/].map(r=>r.test(pass)).filter(Boolean).length;
+        if (pass.length < 8 || sets < 2) errs.push('• Password must be ≥ 8 chars and include multiple character types');
+        if (confirm !== pass) errs.push('• Passwords do not match');
+        if (!terms) errs.push('• You must accept the Terms & Privacy');
+        return errs;
+      }
+    };
+
+    function showInlineErrors(ids){ Object.entries(ids).forEach(([id, show])=>{ const el = document.getElementById(id); if (el) el.hidden = !show; }); }
+
+    $('#form-signin').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const errs = collectErrors.signin();
+      showInlineErrors({ 'si-email-err': errs.some(x=>x.includes('valid email')), 'si-password-err': errs.some(x=>x.includes('Password is required')) });
+      if (errs.length){ alert('Please fix the following:\n' + errs.join('\n')); return; }
+
+      if ($('#remember').checked) localStorage.setItem('rememberedEmail', $('#si-email').value.trim());
+      else localStorage.removeItem('rememberedEmail');
+      toast('Signed in.');
+    });
+
+    $('#form-signup').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const errs = collectErrors.signup();
+      showInlineErrors({
+        'su-name-err': errs.some(x=>x.includes('Full name')),
+        'su-email-err': errs.some(x=>x.includes('valid email')),
+        'su-password-err': errs.some(x=>x.includes('Password must')),
+        'su-confirm-err': errs.some(x=>x.includes('do not match')),
+        'su-terms-err': errs.some(x=>x.includes('Terms')),
+      });
+      if (errs.length){ alert('Please fix the following:\n' + errs.join('\n')); return; }
+
+      toast('Account created.');
+      activateTab('signin');
+      $('#si-email').value = $('#su-email').value.trim();
+      $('#si-password').focus();
+    });
+
+    const resetModal = document.getElementById('reset-modal');
+    $('#open-reset').addEventListener('click', (e)=>{ e.preventDefault(); resetModal.showModal(); $('#reset-email').value = $('#si-email').value; });
+    $('#send-reset').addEventListener('click', ()=>{
+      const val = $('#reset-email').value.trim();
+      if (!emailRe.test(val)) { alert('Enter a valid email.'); return; }
+      resetModal.close(); toast('If the email exists, a reset link has been sent.');
+    });
+
+    activateTab('signin');
+  </script>
+</body>
+</html>

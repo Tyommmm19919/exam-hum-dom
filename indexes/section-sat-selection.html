@@ -1,0 +1,205 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Select SAT Sections</title>
+  <style>
+    :root{ --bg: #0f1320; --bg-2: #101626; --surface: rgba(255,255,255,0.06); --surface-strong: rgba(255,255,255,0.10); --border: rgba(255,255,255,0.18); --text: #eef3ff; --muted: #b8c2e6; --accent: #74a3ff; --accent-2: #66e6d2; --green: #35d49f; --amber: #ffd166; --red: #ff6b7c; --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px; --shadow-1: 0 6px 20px rgba(0,0,0,.25); --shadow-2: 0 14px 40px rgba(0,0,0,.35); --blur: 14px; --speed-fast: .15s; --speed: .25s; --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji"; }
+    @media (prefers-color-scheme: light){ :root{ --bg:#f7f8fd; --bg-2:#eef1fb; --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.9); --border: rgba(23,32,58,.10); --text:#0f1428; --muted:#475070; --shadow-1: 0 8px 18px rgba(23, 32, 58, .08); --shadow-2: 0 18px 40px rgba(23, 32, 58, .12); } }
+    * { box-sizing: border-box; }
+    html, body{overflow: hidden; margin: 0; padding: 0; min-height: 100%; font-family: var(--font); color: var(--text); background: radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%), radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%), linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); background-attachment: fixed; }
+    body::before{ content:""; position: fixed; inset: 0; background-image: radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.14) 50%, transparent 51%), radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.09) 50%, transparent 51%), radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.07) 50%, transparent 51%), radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.10) 50%, transparent 51%); pointer-events: none; opacity: .35; z-index: 0; }
+
+    .shell{ width: min(1100px, 94%); margin: 32px auto 90px; position: relative; z-index: 1; }
+    .header{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-2); backdrop-filter: blur(var(--blur)); padding: 16px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .header h2{ margin: 0; font-size: 28px; letter-spacing: .2px; }
+    .legend{ color: var(--muted); font-size: 13px; display: flex; gap: 14px; align-items: center; }
+    .dot{ width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .dot.done{ background: var(--green); }
+    .dot.none{ background: var(--red); }
+
+    form#sectionForm{ margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-2); backdrop-filter: blur(var(--blur)); padding: 16px; }
+    .grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .section-card{ position: relative; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; padding: 14px; border-radius: 16px; background: var(--surface-strong); border: 1px solid var(--border); color: var(--text); cursor: pointer; box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255,255,255,.06); transition: transform var(--speed-fast), box-shadow var(--speed), border-color var(--speed), background var(--speed); user-select: none; }
+    .section-card:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08); border-color: rgba(116,163,255,.55); background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); }
+    .section-card input[type="checkbox"]{ appearance: none; width: 22px; height: 22px; border-radius: 6px; border: 2px solid #9fb1ff; background: rgba(255,255,255,.06); position: relative; outline: none; transition: background var(--speed), border-color var(--speed); }
+    .section-card input[type="checkbox"]:checked{ border-color: var(--green); background: rgba(53,212,159,.18); }
+    .section-card input[type="checkbox"]:checked::after{ content:""; position: absolute; left: 5px; top: 0; width: 6px; height: 12px; border: solid var(--green); border-width: 0 3px 3px 0; transform: rotate(45deg); }
+    .name{ font-weight: 900; letter-spacing: .2px; font-size: 18px; }
+    .muted{ color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .status{ margin-top: 6px; display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .2px; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color: var(--muted); }
+    .section-card.completed{ border-color: rgba(53,212,159,.45); box-shadow: 0 12px 26px rgba(53,212,159,.18), inset 0 1px 0 rgba(255,255,255,.08); }
+    .section-card.completed .status{ background: linear-gradient(180deg, rgba(53,212,159,.22), rgba(53,212,159,.12)); color: #0b2b22; border-color: rgba(53,212,159,.45); }
+    .section-card.not-completed .status{ background: linear-gradient(180deg, rgba(255,107,124,.22), rgba(255,107,124,.10)); color: #2b0a0f; border-color: rgba(255,107,124,.45); }
+    .actions{ display: flex; justify-content: center; margin-top: 18px; }
+    .start-btn{ width: min(420px, 90%); height: 64px; border: 1px solid rgba(255,255,255,.25); border-radius: 16px; font-size: 22px; font-weight: 900; letter-spacing: .4px; cursor: pointer; background: linear-gradient(180deg, #6ea3ff 0%, #4b82ff 100%); color: #fff; box-shadow: 0 16px 36px rgba(76,130,255,.24), inset 0 1px 0 rgba(255,255,255,.5); transition: transform var(--speed-fast), box-shadow var(--speed); }
+    .start-btn:hover{ transform: translateY(-2px); }
+    #sectionSelector{ width: min(1100px, 94%); margin: 24px auto 100px; }
+  </style>
+</head>
+<body>
+  <div id="sectionSelector" class="shell">
+    <div class="header">
+      <h2 id="heading">Choose sections for SAT Test</h2>
+      <div class="legend">
+        <span><span class="dot done"></span>Completed</span>
+        <span><span class="dot none"></span>Not completed</span>
+      </div>
+    </div>
+
+    <form id="sectionForm">
+      <div class="grid">
+        <label id="label-english" class="section-card">
+          <input type="checkbox" name="section" value="english" />
+          <div>
+            <div class="name" id="englishName">English (Reading &amp; Writing)</div>
+            <div class="muted">Digital SAT — 2 modules</div>
+            <span class="status">Status</span>
+          </div>
+        </label>
+
+        <label id="label-math" class="section-card">
+          <input type="checkbox" name="section" value="math" />
+          <div>
+            <div class="name">Math</div>
+            <div class="muted">Digital SAT — 2 modules</div>
+            <span class="status">Status</span>
+          </div>
+        </label>
+      </div>
+      <div class="actions">
+        <button type="submit" class="start-btn">Start SAT</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+  // ---------- Configure where data files live ----------
+  // This will probe, e.g., /sat/data/englishData_Test2.js for test=2
+  const DATA_PATH = "/data-sat/";
+
+  // Build the expected data filename per section
+  const dataFileFor = (section, testId) => `${DATA_PATH}/${testId}/${section}Data_Test${testId}.js`;
+
+  // Pages to open for each section
+  const sectionMap = {
+    english: "english.html",
+    math: "math.html"
+  };
+
+  // ---- Helpers ----
+  async function urlExists(url) {
+    // Try HEAD first; if not allowed by server, fall back to GET
+    try {
+      const head = await fetch(url, { method: "HEAD", cache: "no-store" });
+      if (head.ok) return true;
+      if (head.status === 405) {
+        const get = await fetch(url, { method: "GET", cache: "no-store" });
+        return get.ok;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  // ---------- Boot ----------
+  (async function init() {
+    const testId = new URLSearchParams(window.location.search).get("test");
+    if (!testId) {
+      document.body.innerHTML = "<h2 style='color:red;'>Test ID is missing. Please return to the SAT test selection page.</h2>";
+      throw new Error("Missing SAT_TEST_ID");
+    }
+    sessionStorage.setItem("SAT_TEST_ID", testId);
+    document.getElementById("heading").textContent = `Choose sections for SAT Test ${testId}`;
+
+    // Which sections we *could* show
+    const satSections = ["english", "math"];
+
+    // 1) Probe data-file existence for each section
+    const availability = {};
+    await Promise.all(
+      satSections.map(async (section) => {
+        const exists = await urlExists(dataFileFor(section, testId));
+        availability[section] = exists;
+        // Hide the card if data file is missing
+        const card = document.getElementById(`label-${section}`);
+        if (card && !exists) {
+          card.remove(); // not displayed at all if data missing
+        }
+      })
+    );
+
+    // 2) If nothing remains, inform the user
+    const anyVisible = satSections.some(s => availability[s]);
+    if (!anyVisible) {
+      document.getElementById("sectionForm").innerHTML =
+        `<p style="padding:14px;font-size:16px;">
+           No sections are available for Test ${testId}. The expected files were:
+           <code>${dataFileFor("english", testId)}</code> and
+           <code>${dataFileFor("math", testId)}</code>.
+         </p>`;
+      return;
+    }
+
+    // 3) Paint statuses only for visible cards
+    satSections.forEach(section => {
+      if (!availability[section]) return; // was removed
+      const key = `result_sat_${testId}_${section}`;
+      const label = document.getElementById(`label-${section}`);
+      const statusPill = label.querySelector(".status");
+      const isCompleted = !!localStorage.getItem(key);
+      label.classList.toggle("completed", isCompleted);
+      label.classList.toggle("not-completed", !isCompleted);
+      statusPill.textContent = isCompleted ? "Completed" : "Not completed";
+    });
+
+    // 4) Click-anywhere toggles checkbox (only for visible cards)
+    document.querySelectorAll(".section-card").forEach(card => {
+      card.addEventListener("click", (e) => {
+        const cb = card.querySelector('input[type="checkbox"]');
+        if (!cb) return;
+        if (e.target !== cb) cb.checked = !cb.checked;
+      });
+    });
+
+    // 5) Submit logic honors only visible/checked sections
+    document.getElementById("sectionForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const selected = Array
+        .from(document.querySelectorAll("label.section-card input[name='section']:checked"))
+        .map(cb => cb.value);
+
+      if (selected.length === 0) {
+        alert("Please select at least one available section.");
+        return;
+      }
+
+      sessionStorage.setItem("SAT_SELECTED_SECTIONS", JSON.stringify(selected));
+      sessionStorage.setItem("SAT_CURRENT_SECTION_INDEX", "0");
+
+      // Go to the first picked section
+      const first = selected[0];
+      window.location.href = sectionMap[first];
+    });
+
+    // 6) Helper for section pages to advance
+    window.goToNextSATSection = function () {
+      const selected = JSON.parse(sessionStorage.getItem("SAT_SELECTED_SECTIONS") || "[]");
+      let idx = parseInt(sessionStorage.getItem("SAT_CURRENT_SECTION_INDEX") || "0", 10);
+      idx++;
+      if (idx < selected.length) {
+        sessionStorage.setItem("SAT_CURRENT_SECTION_INDEX", String(idx));
+        const next = selected[idx];
+        window.location.href = sectionMap[next];
+      } else {
+        const testId = sessionStorage.getItem("SAT_TEST_ID");
+        window.location.href = `results-sat.html?test=${testId}`;
+      }
+    };
+  })();
+  // document.addEventListener("contextmenu", (e)=> e.preventDefault());
+</script>
+
+</body>
+</html>

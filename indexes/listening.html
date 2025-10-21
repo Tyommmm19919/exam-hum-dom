@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEFL Listening Section</title>
+  <link rel="stylesheet" href="/styles/listening.css" />
+</head>
+
+<body>
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <div id="listening-directions">
+    <audio id="listeningDirectionsAudio" src="commonAudios/ListeningDirectionsAudio.mp3"></audio>
+    <div class="topBreak">
+      <button id="startListeningBtn">Continue</button>
+    </div>
+    <div class="directionsTextBreak">
+      <h1>Listening Section Directions</h1>
+      <h2>
+        This test measures your ability to understand conversations and lectures in English.<br>
+        The Listening section is divided into 2 separate timed parts.You will hear each conversation or lecture only one
+        time.<br>
+        After each conversation or lecture, you will answer some questions about it. The questions typically ask about
+        the main idea and supporting details. Some questions ask about a speaker’s purpose or attitude. Answer the
+        questions base on what is stated or implied by the speakers.<br>
+        You may take notes while you listen. You may use your notes to help you answer the questions. Your notes will
+        not be scored.<br>
+        In some questions, you will see this icon :This means that you will hear, but not see. part of the question.
+        Some of the questions have special directions. These directions appear in a gray box on the screen.<br>
+        Most questions are worth 1 point. If a question is worth more than 1 point, it will have special directions that
+        indicate how many points you can receive.<br>
+        You must answer each question. After you answer, click on Next.Then click on OK to confirm your answer and go on
+        to the next question. After you click on OK, you cannot return to previous questions.<br>
+        In an actual test or during this practice test, a clock at the top of the screen will show you how much time is
+        remaining. The clock will not count down while you are listening. The clock will count down only while you are
+        answering questions.<br><br>
+        (Click on Continue at any time to dismiss these directions.)
+      </h2>
+    </div>
+  </div>
+
+  <div id="listening-section" style="display: none;">
+    <div class="listeningTop">
+      <div class="bb">
+        <p class="mention-section" id="mention-section">Listening</p>
+        <div id="timerListening">00:00</div>
+      </div>
+      <button id="nextBtn" disabled style="display: none;">Next</button>
+      <button id="confirmBtn" style="display:none">OK</button>
+    </div>
+
+    <div id="audio-player">
+      <audio id="mainAudio" hidden></audio>
+      <div class="audio-progress">
+        <div id="progressBar" class="audio-progress-filled"></div>
+      </div>
+    </div>
+
+    <audio id="introAudio" hidden></audio>
+
+    <div class="question-container">
+      <div class="numbtext">
+        <div id="question-text"></div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <div id="result" style="display:none">
+    <h2>Result: <span id="score"></span>%</h2>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Your Answer</th>
+          <th>Correct Answer</th>
+        </tr>
+      </thead>
+      <tbody id="resultTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    window.TEST_ID = sessionStorage.getItem("TEST_ID");
+
+    if (!window.TEST_ID) {
+      document.body.innerHTML = "<h2 style='color:red;'>TEST_ID not found. Please return to the Reading section.</h2>";
+      throw new Error("TEST_ID is missing in sessionStorage.");
+    }
+
+    const testNumber = window.TEST_ID;
+    const dataScript = document.createElement("script");
+    dataScript.src = `/data/${testNumber}/listeningData_Test${testNumber}.js`;
+
+    dataScript.onload = () => {
+      if (!window.listeningData) {
+        document.body.innerHTML = "<h2 style='color:red;'>Listening data failed to load.</h2>";
+        throw new Error("Listening data not loaded.");
+      }
+
+      const logicScript = document.createElement("script");
+      logicScript.src = "/scripts/listening.js";
+
+      logicScript.onload = () => {
+        const audio = document.getElementById("listeningDirectionsAudio");
+        const btn = document.getElementById("startListeningBtn");
+        const directions = document.getElementById("listening-directions");
+        const testSection = document.getElementById("listening-section");
+
+        const start = () => {
+          directions.style.display = "none";
+          testSection.style.display = "block";
+          if (typeof startAllAll === "function") startAllAll();
+        };
+
+        btn.onclick = () => {
+          audio.pause();
+          start();
+        };
+
+        audio.onended = start;
+
+        audio.play().catch(() => {
+          console.warn("⚠️ Directions autoplay failed.");
+        });
+      };
+
+      document.body.appendChild(logicScript);
+    };
+
+    dataScript.onerror = () => {
+      document.body.innerHTML = `<h2 style='color:red;'>Could not find listeningData_Test${testNumber}.js</h2>`;
+    };
+
+    document.body.appendChild(dataScript);
+  </script>
+</body>
+
+</html>

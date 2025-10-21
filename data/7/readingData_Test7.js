@@ -1,0 +1,115 @@
+window.readingData = {
+    passages: [
+        {
+            title: "The Rise of Teotihuacán",
+            text: [
+                `
+&nbsp;<span class="arr" id="arr1">&#10132;</span>The city of Teotihuacán, which lay about 50 kilometers northeast of modern-day Mexico City, began its growth by 200-100 B.C. At its height, between about A.D. 150 and 700, it probably had a population of more than 125,000 people and covered at least 20 square kilometers.[BOX] It had over 2,000 apartment complexes, a great market, a large number of industrial workshops, an administrative center, a number of massive religious edifices, and a regular grid pattern of streets and buildings.[BOX] Clearly, much planning and central control were involved in the expansion and ordering of this great metropolis.[BOX] Moreover, the city had economic and perhaps religious contacts with most parts of Mesoamerica (modern Central America and Mexico).[BOX] <br><br>
+&nbsp;<span class="arr" id="arr2">&#10132;</span>How did this tremendous development take place, and why did it happen in the Teotihuacán Valley? Among the main factors are Teotihuacán’s geographic location on a natural trade route to the south and east of the Valley of Mexico, the obsidian resources in the Teotihuacán Valley itself, and the valley’s potential for extensive irrigation. The exact role of other factors is much more difficult to pinpoint―for instance, Teotihuacán’s religious significance as a shrine, the historical situation in and around the Valley of Mexico toward the end of the first millennium B.C., the <span id="ingenuity">ingenuity</span> and foresightedness of Teotihuacán’s elite, and, finally, the impact of natural disasters, such as the volcanic eruptions of the late first millennium B.C.<br><br>
+&nbsp;<span class="arr" id="arr3">&#10132;</span>This last factor is at least circumstantially implicated in Teotihuacán’s rise. Prior to 200 B.C., a number of relatively small centers coexisted in and near the Valley of Mexico. Around this time, the largest of these centers, Cuicuilco, was seriously affected by a volcanic eruption, with much of its agricultural land covered by lava. With Cuicuilco eliminated as a potential rival, any one of a number of relatively modest towns might have emerged as a leading economic and political power in Central Mexico. The archaeological evidence clearly indicates, though, that Teotihuacán was the center that did arise as the <span id="predominant">predominant</span> force in the area by the first century A.D.<br><br>
+&nbsp;<span class="arr" id="arr4">&#10132;</span>It seems likely that Teotihuacán’s natural resources, along with the city elite’s ability to recognize their potential, gave the city <span id="competitive">a competitive edge over its neighbors.</span> The valley, like many other places in Mexican and Guatemalan highlands, was rich in obsidian. The hard volcanic stone was a resource that had been in great demand for many years, at least since the rise of the Olmecs (a people who flourished between 1200 and 400 B.C.), and it apparently had a secure market. Moreover, recent research on obsidian tools found at Olmec sites has shown that some of the obsidian obtained by the Olmecs originated near Teotihuacán. Teotihuacán obsidian must have been recognized as a valuable commodity for many centuries before the great city arose.<br><br>
+&nbsp;<span class="arr" id="arr5">&#10132;</span>Long-distance trade in obsidian probably gave the elite residents of Teotihuacán access to a wide variety of exotic good, as well as a relatively prosperous life. Such success may have attracted immigrants to Teotihuacán. In addition, Teotihuacán’s elite may have consciously attempted to attract new inhabitants. It is also probable that as early as 200 B.C. Teotihuacán may have achieved some religious significance and its shrine (or shrines) may have served as an additional population magnet. Finally, the growing population was probably fed by increasing the number and size of irrigated fields.<br><br>
+&nbsp;<span class="arr" id="arr6">&#10132;</span>The picture of Teotihuacán that emerges is a classic picture of positive feedback among obsidian mining and working, trade, population growth, irrigation, and religious tourism. The thriving obsidian operation, for example, would necessitate more miners, additional manufacturers of obsidian tools, and additional traders to carry the goods to new markets. All this led to increased wealth, which in turn would attract more immigrants to Teotihuacán. The growing power of the elite, who controlled the economy, would give them the means to physically coerce people to move to Teotihuacán and serve as additions to the labor force. More irrigation works would have to be built to feed the growing population, and this resulted in more power and wealth for the elite.<br><br>
+                `
+            ],
+            questions: [
+                { type: "multiple-choice", question: "In paragraph 1, each of the following is mentioned as a feature of the city of Teotihuacán between A.D. 150 and 700 EXCEPT", options: ["regularly arranged streets", "several administrative centers spread across the city", "many manufacturing workshops", "apartment complexes"], correct: 1 },
+                { type: "multiple-choice", question: "The word “ingenuity” in the passage is closest in meaning to", options: ["ambition", "sincerity", "faith", "cleverness"], correct: 3 },
+                { type: "multiple-choice", question: "Which of the following is NOT mentioned in paragraph 2 as a main factor in the development of Teotihuacán?", options: ["The presence of obsidian in the Teotihuacán Valley", "The potential for extensive irrigation of Teotihuacán Valley lands", "A long period of volcanic inactivity in the Teotihuacán Valley", "Teotihuacán’s location on a natural trade route"], correct: 2 },
+                { type: "multiple-choice", question: "What can be inferred from paragraph 3 about Cuicuilco prior to 200 B.C.?", options: ["It was a fairly small city until that date.", "It was located outside the Valley of Mexico.", "It emerged rapidly as an economical and political center.", "Its economy relied heavily on agriculture."], correct: 3 },
+                { type: "multiple-choice", question: "The word “predominant” in the passage is closest in meaning to", options: ["most aggressive", "most productive", "principal", "earliest"], correct: 2 },
+                { type: "multiple-choice", question: "Which of the following allowed Teotihuacán to have “a competitive edge over its neighbors”?", options: ["A well-exploited and readily available commodity", "The presence of a highly stable elite class", "Knowledge derived directly from the Olmecs about the art of toolmaking", "Scarce natural resources in nearby areas such as those located in what are now the Guatemalan and Mexican highlands"], correct: 0 },
+                { type: "multiple-choice", question: "According to paragraph 4, what has recent research on obsidian tools found at Olmec sites shown?", options: ["Obsidian’s value was understood only when Teotihuacán became an important city.", "The residents of Teotihuacán were sophisticated toolmakers.", "The residents of Teotihuacán traded obsidian with the Olmecs as early as 400 B.C.", "Some of the obsidian used by the Olmecs came from the area around Teotihuacán."], correct: 3 },
+                { type: "multiple-choice", question: "In paragraph 6, the author discusses “The thriving obsidian operation” in order to", options: ["explain why manufacturing was the main industry of Teotihuacán", "give an example of an industry that took very little time to develop in Teotihuacán", "Illustrate how several factors influenced each other to make Teotihuacán a powerful and wealthy city", "explain how a successful industry can be a source of wealth and a source of conflict at the same time"], correct: 2 },
+                {
+                    type: "insert-sentence",
+                    sentence: `In fact, artifacts and pottery from Teotihuacán have been discovered in sites as far away as the Mayan lowlands, the Guatemalan highlands, northern Mexico, and the Gulf Coast of Mexico.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 3
+                },
+                {
+                    type: "summary",
+                    prompt: "Directions: An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer choices that express the most important ideas in the passage. Some sentences do not belong in the summary because they express that are not presented in the passage or are minor ideas in the passage. This question is worth 2 points. Teotihuacán was a highly developed city in Mesoamerica that reached its peak between about A.D. 150 and 700.",
+                    choices: [
+                        { text: "The number and sophistication of the architectural, administrative, commercial, and religious features of Teotihuacan indicate the existence of centralized planning and control.", isCorrect: true },
+                        { text: "Teotihuacán may have developed its own specific local religion as a result of the cultural advances made possible by the city’s great prosperity.", isCorrect: false },
+                        { text: "As a result of its large number of religious shrines, by the first century A.D., Teotihuacan become the most influential religious center in all of Mesoamerica.", isCorrect: false },
+                        { text: "Several factors may account for Teotihuacán’s extraordinary development, including its location, rich natural resources, irrigation potential, intelligent elite, and the misfortune of rival communities.", isCorrect: true },
+                        { text: "In many important areas, from the obsidian industry to religious tourism, Teotihuacán’s success and prosperity typified the classic positive feedback cycle.", isCorrect: true },
+                        { text: "Although many immigrants settled in Teotihuacán between A.D.150 and 700, the increasing threat of coerced labor discouraged further settlement and limited Teotihuacán’s population growth.", isCorrect: false }
+                    ],
+                    correct: [0, 3, 4]
+                }
+            ]
+        },
+        {
+            title: "Extinction of the Dinosaurs",
+            text: [
+                `
+Paleozoic Era 334 to 248 million years ago<br>
+Mesozoic Era 245 to 65 million years ago<br>
+—Triassic Period<br>
+—Jurassic Period<br>
+—Cretaceous Period<br>
+Cenozoic Era 65 million years ago to the present<br>
+
+&nbsp;<span class="arr" id="arr12">&#10132;</span>Paleontologists have argued for a long time that the demise of the dinosaurs was caused by climatic alterations associated with slow changes in the positions of continents and seas resulting from plate tectonics. Off and on throughout the Cretaceous (the last period of the Mesozoic era, during which dinosaurs flourished), large shallow seas covered extensive areas of the continents. Data from diverse sources, including geochemical evidence preserved in seafloor sediments, indicate that the Late Cretaceous climate was milder than today’s. The days were not too hot, nor the nights too cold. The summers were not too warm, nor the winters too frigid. The shallow seas on the continents probably buffered the temperature of the nearby air, keeping it relatively constant.<br><br>
+&nbsp;<span class="arr" id="arr22">&#10132;</span>At the end of the Cretaceous, the geological record shows that these seaways retreated from the continents back into the major ocean basins. No one knows why. Over a period of about 100,000 years, while the seas pulled back, climates around the world became dramatically more extreme: warmer days, cooler nights; hotter summers, colder winters. Perhaps dinosaurs could not tolerate these extreme temperature changes and became extinct.<br><br>
+&nbsp;<span class="arr" id="arr32">&#10132;</span>If true, though, why did cold-blooded animals such as <span id="snakes">snakes, lizards, turtles, and crocodiles</span> survive the freezing winters and torrid summers? These animals are at the mercy of the climate to maintain a livable body temperature. It’s hard to understand why they would not be affected, whereas dinosaurs were left too crippled to <span id="cope">cope</span>, especially if, as some scientists believe, dinosaurs were warm-blooded. Critics also point out that the shallow seaways had retreated from and advanced on the continents numerous times during the Mesozoic, so why did the dinosaurs survive the climatic changes associated with the earlier fluctuations but not with this one? Although initially appealing, the hypothesis of a simple climatic change related to sea levels is insufficient to explain all the data.<br><br>
+&nbsp;<span class="arr" id="arr42">&#10132;</span>Dissatisfaction with conventional explanations for dinosaur extinctions led to a surprising observation that, in turn, has suggested a new hypothesis.<span id="sentence1">Many plants and animals disappear abruptly from the fossil record as one moves from layers of rock documenting the end of the Cretaceous up into rocks representing the beginning of the Cenozoic (the era after the Mesozoic).</span> Between the last layer of Cretaceous rock and the first layer of Cenozoic rock, there is often a thin layer of clay. Scientists felt that they could get an idea of how long the extinctions took by determining how long it took to deposit this one centimeter of clay and they thought they could determine the time it took to deposit the clay by determining the amount of the element iridium (Ir) it contained.<br><br>
+&nbsp;<span class="arr" id="arr52">&#10132;</span>Ir has not been common at Earth’s since the very beginning of the planet’s history. Because it usually exists in a metallic state, it was preferentially incorporated in Earth’s core as the planet cooled and consolidated. Ir is found in high concentrations in some meteorites, in which the solar system’s original chemical composition is preserved. Even today, microscopic meteorites continually <span id="bombard">bombard</span> Earth, falling on both land and sea. By measuring how many of these meteorites fall to Earth over a given period of time, scientists can estimate how long it might have taken to deposit the observed amount of Ir in the boundary clay.[BOX] These calculations suggest that a period of about one million years would have been required.[BOX] However, other reliable evidence suggests that the deposition of the boundary clay could not have taken one million years.[BOX] So the unusually high concentration of Ir seems to require a special explanation[BOX] .<br><br>
+&nbsp;<span class="arr" id="arr62">&#10132;</span>In view of these facts, scientists hypothesized that a single large asteroid, about 10 to 15 kilometers across, collided with Earth, and the resulting fallout created the boundary clay. Their calculations show that the impact kicked up a dust cloud that cut off sunlight for several months, inhibiting photosynthesis in plants; decreased surface temperatures on continents to below freezing; caused extreme episodes of acid rain; and significantly raised long-term global temperatures through the greenhouse effect. This <span id="disruption">disruption</span> of food chain and climate would have eradicated the dinosaurs and other organisms in less than fifty years.<br><br>
+                `
+            ],
+            questions: [
+                { type: "multiple-choice", question: "Why does the author mention the survival of “snakes, lizards, turtles, and crocodiles” in paragraph 3?", options: ["To argue that dinosaurs may have become extinct because they were not cold-blooded animals", "To question the adequacy of the hypothesis that climatic change related to sea levels caused the extinction of the dinosaurs", "To present examples of animals that could maintain a livable body temperature more easily than dinosaurs", "To support a hypothesis that these animals were not as sensitive to climate changes in the Cretaceous period as they are today"], correct: 1 },
+                { type: "multiple-choice", question: "The word “cope” in the passage is closest in meaning to", options: ["adapt", "move", "continue", "compete"], correct: 0 },
+                { type: "multiple-choice", question: "Which of the sentences below best expresses the essential information in the highlighted sentence in the passage? In correct choices change the meaning in important ways or leave out essential information.", options: ["The fossil record suggests that there was an abrupt extinction of many plants and animals at the end of the Mesozoic era.a", "Few fossils of the Mesozoic era have survived in the rocks that mark the end of the Cretaceous.", "Fossils from the Cretaceous period of the Mesozoic up to the beginning of the Cenozoic era have been removed from the layers of rock that surrounded them.", "Plants and animals from the Mesozoic era were unable to survive in the Cenozoic era."], correct: 0 },
+                { type: "multiple-choice", question: "In paragraph 4, all the following questions are answered EXCEPT:", options: ["Why is there a layer of clay between the rocks of the Cretaceous and Cenozoic?", "Why were scientists interested in determining how long it took to deposit the layer of clay at the end of the Cretaceous?", "What was the effect of the surprising observation scientists made?", "Why did scientists want more information about the dinosaur extinctions at the end of the Cretaceous?"], correct: 0 },
+                { type: "multiple-choice", question: "The word “bombard” in the passage is closest in meaning to", options: ["approach", "strike", "pass", "circle"], correct: 1 },
+                { type: "multiple-choice", question: "Paragraph 5 implies that a special explanation of Ir in the boundary clay is needed because", options: ["the Ir in microscopic meteorites reaching Earth during the Cretaceous period would have been incorporated into Earth’s core", "the Ir in the boundary clay was deposited much more than a million years ago", "the concentration of Ir in the boundary clay is higher than in microscopic meteorites", "the amount of Ir in the boundary clay is too great to have come from microscopic meteorites during the time the boundary clay was deposited"], correct: 3 },
+                { type: "multiple-choice", question: "The word “disruption” in the passage is closest in meaning to", options: ["exhaustion", "disturbance", "modification", "disappearance"], correct: 1 },
+                { type: "multiple-choice", question: "Paragraph 6 mentions all of the following effects of the hypothesized asteroid collision EXCEPT", options: ["a large dust cloud that blocked sunlight", "an immediate drop in the surface temperatures of the continents", "an extreme decrease in rainfall on the continents", "a long-term increase in global temperatures"], correct: 2 },
+                {
+                    type: "insert-sentence",
+                    sentence: `Consequently, the idea that the Ir in the boundary clay came from microscopic meteorites cannot be accepted.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 2
+                },
+                {
+                    type: "summary",
+                    prompt: "Directions: An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer choices that express the most important ideas in the passage. Some sentences do not belong in the summary because they express that are not presented in the passage or are minor ideas in the passage. This question is worth 2 points. For a long time scientists have argued that the extinction of the dinosaurs was related to climate change.",
+                    choices: [
+                        { text: "A simple climate change does not explain some important data related to the extinction of the dinosaurs at the end of the Cretaceous.", isCorrect: true },
+                        { text: "The retreat of the seaways at the end of the Cretaceous has not been fully explained.", isCorrect: false },
+                        { text: "The abruptness of extinctions at the end of the Cretaceous and the high concentration of Ir found in clay deposited at that time have fueled the development of a new hypothesis.", isCorrect: true },
+                        { text: "Extreme changes in daily and seasonal climates preceded the retreat of the seas back into the major ocean basins.", isCorrect: false },
+                        { text: "Some scientists hypothesize that the extinction of the dinosaurs resulted from the effects of an asteroid collision with Earth.", isCorrect: true },
+                        { text: "Boundary clay layers like the one between the Mesozoic and Cenozoic are used by scientists to determine the rate at which an extinct species declined.", isCorrect: false }
+                    ],
+                    correct: [0, 2, 4]
+                }
+            ]
+        }
+    ],
+    specialBehavior:[
+    {targetId: "arr1", questionIndex: 0, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr2", questionIndex: 2, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr3", questionIndex: 3, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr4", questionIndex: 6, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr6", questionIndex: 7, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr42", questionIndex: 13, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr52", questionIndex: 15, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr62", questionIndex: 17, styles:{ display: "inline", fontWeight: "600", color: "red" }},
+
+
+    {targetId: "ingenuity", questionIndex: 1, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "predominant", questionIndex: 4, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "competitive", questionIndex: 5, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "snakes", questionIndex: 10, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "cope", questionIndex: 11, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "sentence1", questionIndex: 12, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "bombard", questionIndex: 14, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "disruption", questionIndex: 16, styles:{ fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }}      
+    ]
+};

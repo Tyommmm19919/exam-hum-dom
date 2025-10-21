@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAT — Final Results</title>
+
+  <style>
+    :root {
+      --bg: #0f1320;
+      --bg-2: #101626;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-strong: rgba(255, 255, 255, 0.10);
+      --card: rgba(255, 255, 255, 0.12);
+      --border: rgba(255, 255, 255, 0.18);
+      --text: #eef3ff;
+      --muted: #b8c2e6;
+      --accent: #74a3ff;
+      --accent-2: #66e6d2;
+      --green: #35d49f;
+      --blue: #4b82ff;
+      --red: #ff6b7c;
+      --yellow: #ffd166;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-1: 0 6px 20px rgba(0, 0, 0, .25);
+      --shadow-2: 0 14px 40px rgba(0, 0, 0, .35);
+      --blur: 14px;
+      --speed: .25s;
+      --speed-fast: .15s;
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fd;
+        --bg-2: #eef1fb;
+        --surface: rgba(255, 255, 255, .65);
+        --surface-strong: rgba(255, 255, 255, .9);
+        --card: rgba(255, 255, 255, .9);
+        --border: rgba(23, 32, 58, .10);
+        --text: #0f1428;
+        --muted: #475070;
+        --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
+        --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%),
+        radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      user-select: none;
+      overflow-x: hidden;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .35;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, .14) 50%, transparent 51%),
+        radial-gradient(2px 2px at 70% 30%, rgba(255, 255, 255, .09) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 80%, rgba(255, 255, 255, .07) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 60%, rgba(255, 255, 255, .10) 50%, transparent 51%);
+    }
+
+    .topp {
+      margin: auto;
+      /* border: 2px solid whitesmoke; */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(9px);
+      width: min(1200px, 94%);
+      height: 10vh;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    .topp button {
+      min-width: 35%;
+      background: linear-gradient(180deg, #35d49f, #18b98a);
+      color: #041b12;
+      box-shadow: 0 10px 20px rgba(24, 185, 138, .18), inset 0 1px 0 rgba(255, 255, 255, .5);
+      height: 46px;
+      min-width: 160px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 14px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      cursor: pointer;
+      transition: transform var(--speed-fast), box-shadow var(--speed)
+    }
+
+    .topp button:hover {
+      transform: translateY(-1px)
+    }
+
+    .page {
+      width: min(1200px, 94%);
+      margin: 32px auto 120px;
+    }
+
+    .topbar {
+      display: flex;
+      position: fixed;
+      z-index: 99999;
+      gap: 10px;
+      align-items: center;
+      margin: 12px;
+      left: 0;
+      top: 0;
+    }
+
+    .btn {
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 12px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #a06bff 0%, #8553f7 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(160, 107, 255, .22), inset 0 1px 0 rgba(255, 255, 255, .5);
+      transition: transform var(--speed-fast), box-shadow var(--speed);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #6ea3ff 0%, var(--blue) 100%);
+      box-shadow: 0 10px 20px rgba(76, 130, 255, .20), inset 0 1px 0 rgba(255, 255, 255, .5);
+    }
+
+    .selector {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      padding: 18px;
+    }
+
+    .selector h2 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      letter-spacing: .2px;
+    }
+
+    .selector .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    #testSelect {
+      appearance: none;
+      width: 100%;
+      height: 44px;
+      font-size: 16px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 36px 0 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+      transition: box-shadow var(--speed), border-color var(--speed);
+    }
+
+    #testSelect:focus {
+      outline: none;
+      border-color: rgba(116, 163, 255, .6);
+      box-shadow: 0 0 0 3px rgba(116, 163, 255, .18);
+    }
+
+    option {
+      color: #0f1428;
+      background: #fff;
+    }
+
+    #results {
+      display: none;
+      margin-top: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      padding: 18px;
+    }
+
+    #results.show {
+      display: block;
+    }
+
+    #finalResultsText {
+      margin: 0 0 6px 0;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    .overall {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 800;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 18px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-1);
+      padding: 14px;
+    }
+
+    .section h2 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+    }
+
+    .section .sub {
+      color: var(--muted);
+      margin: 0 0 8px 0;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .module-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+    }
+
+    .module-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-1);
+      table-layout: fixed;
+      word-break: break-word;
+    }
+
+    th,
+    td {
+      padding: 10px 8px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      text-align: center;
+      background: rgba(255, 255, 255, .03);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    thead th {
+      background: linear-gradient(180deg, rgba(116, 163, 255, .18), rgba(116, 163, 255, .10));
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    tbody tr {
+      transition: transform var(--speed-fast), box-shadow var(--speed);
+    }
+
+    tbody tr:hover {
+      transform: translateY(-1px);
+      box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, .02);
+    }
+
+    .correct td {
+      background: linear-gradient(180deg, rgba(53, 212, 159, .18), rgba(53, 212, 159, .10));
+    }
+
+    .incorrect td {
+      background: linear-gradient(180deg, rgba(255, 107, 124, .18), rgba(255, 107, 124, .10));
+    }
+
+    @media (max-width: 880px) {
+      .modules {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .selector .row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topp">
+    <button onclick="window.location.href = '/index.html'"
+      style="position: fixed; left: 0; z-index: 0;">Home</button>
+    <button onclick="window.location.href = 'test-sat-selection.html'" style="position: fixed; right: 0;">Test
+      Selection</button>
+  </div>
+  <div class="page">
+    <div class="selector">
+      <h2>Select the SAT test</h2>
+      <div class="row">
+        <div class="select-wrap">
+          <select id="testSelect">
+            <option value="" selected disabled>Choose a test…</option>
+            <option value="1">Test 1</option>
+            <option value="2">Test 2</option>
+            <option value="3">Test 3</option>
+            <option value="4">Test 4</option>
+            <option value="5">Test 5</option>
+            <option value="6">Test 6</option>
+            <option value="7">Test 7</option>
+            <option value="8">Test 8</option>
+            <option value="9">Test 9</option>
+            <option value="10">Test 10</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="loadSatResults()">View Results</button>
+      </div>
+    </div>
+
+    <div id="results">
+      <h1 id="finalResultsText"></h1>
+
+      <div class="overall" id="overallSummary" style="display:none;">
+        <div class="pill" id="overallScore">Overall: —</div>
+        <div class="pill" id="englishSummary">English: —</div>
+        <div class="pill" id="mathSummary">Math: —</div>
+        <div class="pill muted" id="modulesBreakdown">Modules: —</div>
+      </div>
+
+      <div id="englishSection" class="section"></div>
+      <div id="mathSection" class="section"></div>
+    </div>
+  </div>
+
+  <script>
+    function pct(s, t) { return t ? Math.round((s / t) * 100) + "%" : "—"; }
+    function letter(n) { return (typeof n === "number" && isFinite(n)) ? String.fromCharCode(65 + n) : String(n ?? "—"); }
+
+    function joinValues(arr) {
+      if (!Array.isArray(arr) || arr.length === 0) return "—";
+      return arr.map(v => (typeof v === "number" ? letter(v) : String(v))).join(", ");
+    }
+
+    function normalizeItems(perItem) {
+      if (Array.isArray(perItem)) return perItem.slice();
+      if (perItem && typeof perItem === 'object') return Object.values(perItem);
+      return [];
+    }
+
+    function extractPerItem(data) {
+      const candidates = [data?.perItem, data?.answers, data?.items, data?.details, data?.results, data?.per_item];
+      for (const c of candidates) {
+        const arr = normalizeItems(c);
+        if (arr.length) return arr;
+      }
+      return [];
+    }
+
+    function formatValue(v) {
+      if (v === null || v === undefined) return "No answer";
+      if (typeof v === "string" && v.trim() === "") return "No answer";
+      if (Array.isArray(v)) return v.length ? v.map(x => (typeof x === "number" ? letter(x) : String(x))).join(", ") : "No answer";
+      if (typeof v === "number") return letter(v);
+
+      if (typeof v === "object") {
+        if ("q" in v || "evidence" in v) {
+          const q = ("q" in v) ? letter(v.q) : "—";
+          const e = ("evidence" in v) ? letter(v.evidence) : "—";
+          return `Q: ${q} | Evidence: ${e}`;
+        }
+        if ("a" in v || "b" in v) {
+          const A = Array.isArray(v.a) ? (v.a.length ? v.a.join(", ") : "No answer") : (v.a !== undefined ? String(v.a) : "—");
+          const B = Array.isArray(v.b) ? (v.b.length ? v.b.join(", ") : "No answer") : (v.b !== undefined ? String(v.b) : "—");
+          return `1: ${A} | 2: ${B}`;
+        }
+        if ("answers" in v || "numeric" in v) {
+          const parts = [];
+          if (typeof v.numeric === "number") parts.push(`≈ ${v.numeric}${typeof v.tolerance === 'number' ? ` (±${v.tolerance})` : ""}`);
+          if (Array.isArray(v.answers) && v.answers.length) parts.push(`also: ${v.answers.join(" or ")}`);
+          return parts.join("; ") || "—";
+        }
+        try { return JSON.stringify(v); } catch { return String(v); }
+      }
+
+      return String(v);
+    }
+
+
+    function normalizeInput(str) {
+      if (!str && str !== 0) return "";
+      return String(str).trim().replace(/\u2212/g, "-").replace(/\s+/g, "");
+    }
+    function parseFraction(str) {
+      const parts = str.split("/");
+      if (parts.length !== 2) return null;
+      const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
+      if (!isFinite(a) || !isFinite(b) || b === 0) return null;
+      return a / b;
+    }
+    function isSPRCorrect(userInput, correctObj) {
+      if (!correctObj) return false;
+      const raw = normalizeInput(userInput);
+      if (raw === "") return false;
+
+      if (Array.isArray(correctObj.answers)) {
+        for (const acc of correctObj.answers) {
+          if (normalizeInput(acc).toLowerCase() === raw.toLowerCase()) return true;
+        }
+      }
+
+      let numericCandidate = null;
+      if (/%$/.test(raw)) {
+        const v = parseFloat(raw.replace("%", ""));
+        if (isFinite(v)) numericCandidate = v;
+      } else if (raw.includes("/")) {
+        const v = parseFraction(raw);
+        if (v !== null) numericCandidate = v;
+      } else {
+        const v = parseFloat(raw);
+        if (isFinite(v)) numericCandidate = v;
+      }
+
+      if (typeof correctObj.numeric === "number" && isFinite(correctObj.numeric) && numericCandidate !== null) {
+        const tol = typeof correctObj.tolerance === "number" ? correctObj.tolerance : 0;
+        return Math.abs(numericCandidate - correctObj.numeric) <= tol;
+      }
+      return false;
+    }
+
+    function toNormalizedRow(row) {
+      const moduleRaw = row?.module ?? row?.mod ?? row?.m ?? row?.section ?? null;
+
+      const user = ("user" in (row || {})) ? row.user
+        : ("selected" in (row || {})) ? row.selected
+          : ("choice" in (row || {})) ? row.choice
+            : ("response" in (row || {})) ? row.response
+              : ("answer" in (row || {})) ? row.answer
+                : null;
+
+      const key = ("key" in (row || {})) ? row.key
+        : ("correct" in (row || {}) && typeof row.correct !== 'boolean') ? row.correct
+          : ("correctIndex" in (row || {})) ? row.correctIndex
+            : ("correctChoice" in (row || {})) ? row.correctChoice
+              : ("answers" in (row || {})) ? row.answers
+                : ("correctAnswers" in (row || {})) ? row.correctAnswers
+                  : null;
+
+      let isCorrect = false;
+      if ("isCorrect" in (row || {})) {
+        isCorrect = !!row.isCorrect;
+      } else {
+        try {
+          if (typeof key === 'object' && key && (key.numeric !== undefined || key.answers !== undefined)) {
+            isCorrect = isSPRCorrect(user, key);
+          } else if (Array.isArray(user) && Array.isArray(key)) {
+            const a = [...new Set(user)].sort();
+            const b = [...new Set(key)].sort();
+            isCorrect = a.length === b.length && a.every((v, i) => v === b[i]);
+          } else if (typeof user === 'number' && typeof key === 'number') {
+            isCorrect = user === key;
+          } else if (typeof user === 'string' && typeof key === 'string') {
+            isCorrect = user.trim().toLowerCase() === key.trim().toLowerCase();
+          }
+        } catch { }
+      }
+      return { module: moduleRaw, user, key, correctBool: isCorrect };
+    }
+
+    function summarizeModules(items = []) {
+      const arr = normalizeItems(items);
+      const n = arr.length;
+      if (!n) return { m1: { items: [], score: 0, total: 0 }, m2: { items: [], score: 0, total: 0 } };
+
+      const zeroIndexed = arr.some(q => Number(q?.module) === 0) ||
+        (arr.every(q => isFinite(Number(q?.module))) && arr.every(q => Number(q?.module) <= 1));
+
+      const normalizeModule = (val, idx) => {
+        const mFromStr = String(val ?? "").match(/\d+/)?.[0];
+        let m = isFinite(Number(val)) ? Number(val) : (mFromStr ? Number(mFromStr) : NaN);
+        if (isNaN(m)) return idx < Math.ceil(n / 2) ? 1 : 2;
+        if (zeroIndexed) m = m + 1;
+        if (m < 1) m = 1; if (m > 2) m = 2;
+        return m;
+      };
+
+      const withMod = arr.map((q, i) => ({ ...q, __mod: normalizeModule(q?.module, i) }));
+      let m1 = withMod.filter(q => q.__mod === 1);
+      let m2 = withMod.filter(q => q.__mod === 2);
+      if (!m1.length && !m2.length) m1 = withMod;
+
+      const countCorrect = qs => qs.filter(q =>
+        q.correctBool === true || q.correct === true || q.isCorrect === true || q.correct === 1 || q.correct === 'true'
+      ).length;
+
+      return {
+        m1: { items: m1, score: countCorrect(m1), total: m1.length },
+        m2: { items: m2, score: countCorrect(m2), total: m2.length }
+      };
+    }
+
+    function buildRows(items) {
+      return items.map((row, i) => `
+        <tr class="${row?.correctBool ? "correct" : "incorrect"}">
+          <td>${i + 1}</td>
+          <td>${formatValue(row?.user)}</td>
+          <td>${formatValue(row?.key)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderModuleCard(title, block) {
+      const rows = buildRows(block.items || []);
+      const hasRows = Array.isArray(block.items) && block.items.length > 0;
+      return `
+        <div class="module-card">
+          <h3>${title} — <span style="font-weight:800;">${block.score ?? 0}/${block.total ?? 0} (${pct(block.score ?? 0, block.total ?? 0)})</span></h3>
+          ${hasRows
+          ? `<table>
+                <thead><tr><th>#</th><th>Your Answer</th><th>Correct</th></tr></thead>
+                <tbody>${rows}</tbody>
+              </table>`
+          : `<p class="sub">No questions in this module.</p>`
+        }
+        </div>
+      `;
+    }
+
+    function renderSection(title, payloadJSON, targetId) {
+      const el = document.getElementById(targetId);
+      if (!el) return null;
+
+      if (!payloadJSON) {
+        el.innerHTML = `<h2>${title}</h2><p class="sub">You haven’t taken this section.</p>`;
+        return { score: 0, total: 0, perItem: [] };
+      }
+
+      let data;
+      try {
+        data = typeof payloadJSON === 'string' ? JSON.parse(payloadJSON) : payloadJSON;
+      } catch {
+        el.innerHTML = `<h2>${title}</h2><p class="sub">Data is corrupted.</p>`;
+        return { score: 0, total: 0, perItem: [] };
+      }
+
+      const rawItems = extractPerItem(data);
+      const perItem = normalizeItems(rawItems).map(toNormalizedRow);
+
+      const { m1, m2 } = summarizeModules(perItem);
+
+      const score = Number(data?.score) || (m1.score + m2.score);
+      const total = Number(data?.total) || (m1.total + m2.total);
+
+      el.innerHTML = `
+        <h2>${title}</h2>
+        <p class="sub"><strong>Score:</strong> ${800 + (score - total) * 10} (${pct(score, total)}) •
+          <strong>Module 1:</strong> ${m1.score}/${m1.total} •
+          <strong>Module 2:</strong> ${m2.score}/${m2.total}</p>
+        <div class="modules">
+          ${renderModuleCard("Module 1", m1)}
+          ${renderModuleCard("Module 2", m2)}
+        </div>
+      `;
+
+      return { score, total, perItem };
+    }
+
+    function renderOverall(english, math) {
+      const wrap = document.getElementById("overallSummary");
+      const os = document.getElementById("overallScore");
+      const es = document.getElementById("englishSummary");
+      const ms = document.getElementById("mathSummary");
+      const mb = document.getElementById("modulesBreakdown");
+
+      const eScore = english?.score || 0, eTotal = english?.total || 0;
+      const mScore = math?.score || 0, mTotal = math?.total || 0;
+      let eOverAll = eScore === 0?0:800 + (eScore - eTotal) * 10
+      let eOverAllM = mScore === 0?0:800 + (mScore - mTotal) * 10
+
+      wrap.style.display = "grid";
+      os.innerHTML = `Overall: ${eOverAll + eOverAllM}/1600 <br> (${pct(eScore + mScore, eTotal + mTotal)}) right answers`;
+      es.innerHTML = `English: ${eOverAll}/800 <br>(${pct(eScore, eTotal)}) right answers`;
+      ms.innerHTML = `Math: ${eOverAllM}/800 <br> (${pct(mScore, mTotal)}) right answers`;
+      const eMods = summarizeModules(normalizeItems(english?.perItem || []));
+      const mMods = summarizeModules(normalizeItems(math?.perItem || []));
+      mb.textContent =
+        `Modules — Eng M1: ${eMods.m1.score}/${eMods.m1.total}, Eng M2: ${eMods.m2.score}/${eMods.m2.total} • ` +
+        `Math M1: ${mMods.m1.score}/${mMods.m1.total}, Math M2: ${mMods.m2.score}/${mMods.m2.total}`;
+    }
+
+    function loadSatResults() {
+      const id = document.getElementById("testSelect").value;
+      if (!id) return;
+
+      document.getElementById("results").classList.add("show");
+      document.getElementById("finalResultsText").textContent = `SAT — Results for Test ${id}`;
+
+      const englishData = localStorage.getItem(`result_sat_${id}_english`);
+      const mathData = localStorage.getItem(`result_sat_${id}_math`);
+
+      const english = renderSection("English", englishData, "englishSection");
+      const math = renderSection("Math", mathData, "mathSection");
+
+      renderOverall(english, math);
+    }
+    window.loadSatResults = loadSatResults;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const qp = new URLSearchParams(location.search);
+      const t = qp.get("test");
+      if (t) {
+        const sel = document.getElementById("testSelect");
+        if ([...sel.options].some(o => o.value === t)) {
+          sel.value = t;
+          loadSatResults();
+        }
+      }
+    });
+    // document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  </script>
+</body>
+
+</html>

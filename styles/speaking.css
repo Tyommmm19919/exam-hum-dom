@@ -1,0 +1,459 @@
+
+:root{
+  --bg: #0f1320;
+  --bg-2: #101626;
+  --surface: rgba(255,255,255,0.06);
+  --surface-strong: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.18);
+
+  --text: #eef3ff;
+  --muted: #b8c2e6;
+
+  --accent: #74a3ff;
+  --accent-2: #66e6d2;
+
+  --green: #35d49f;
+  --blue: #4b82ff;
+  --red: #ff6b7c;
+  --yellow: #ffd166;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  --shadow-1: 0 6px 20px rgba(0,0,0,.25);
+  --shadow-2: 0 14px 40px rgba(0,0,0,.35);
+
+  --blur: 14px;
+
+  --speed-fast: .15s;
+  --speed: .25s;
+
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f7f8fd;
+    --bg-2:#eef1fb;
+    --surface: rgba(255,255,255,.65);
+    --surface-strong: rgba(255,255,255,.9);
+    --border: rgba(23,32,58,.08);
+    --text:#0f1428;
+    --muted:#475070;
+
+    --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
+    --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body{
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%),
+    radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.14) 50%, transparent 51%),
+    radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.09) 50%, transparent 51%),
+    radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.07) 50%, transparent 51%),
+    radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.10) 50%, transparent 51%);
+  pointer-events: none;
+  opacity: .35;
+  z-index: 0;
+}
+
+.hidden{ display:none !important; }
+
+.warning{
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  color: var(--yellow);
+  font-size: 14px;
+  opacity: .85;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow-1);
+  z-index: 9999;
+}
+
+h1, h2{
+  color: var(--text);
+  margin: 0;
+}
+h1{ font-size: 28px; }
+h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
+
+
+/* ───────────────────────────────────────────────────────────────────
+   Interstitial (screen before each question) — FIXED POSITIONING
+   ------------------------------------------------------------------- */
+
+#interstitial{
+  width: min(1120px, 92%);
+  /* Make it feel like a proper panel, not a tiny strip near bottom */
+  min-height: 51vh;                 /* same vertical presence as #app/#speakingDirections */
+  margin: 24px auto 40px;           /* balanced spacing */
+  padding-bottom: 12px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(var(--blur));
+
+  position: relative;
+  overflow: hidden;
+  display: flex;                    /* keep header, audio, text stacked cleanly */
+  flex-direction: column;
+  justify-content: flex-start;
+
+  animation: interstitial-float-in var(--speed) ease-out;
+}
+
+/* subtle glow backdrop */
+#interstitial::before{
+  content:"";
+  position: absolute;
+  inset: -30% -10% auto -10%;
+  height: 60%;
+  background:
+    radial-gradient(500px 200px at 20% 40%, rgba(116,163,255,.20), transparent 60%),
+    radial-gradient(380px 190px at 80% 20%, rgba(102,230,210,.15), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* optional title span inside header */
+#interstitial .title{
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin: 0;
+  color: var(--text);
+}
+
+#interstitialAudio{
+  display: block;
+  width: min(960px, 90%);
+  margin: 10px auto 0 auto;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.interstitialText{
+  position: relative;
+  z-index: 1;
+
+  width: min(960px, 90%);
+  margin: 14px auto 16px auto;
+  padding: 16px 18px;
+
+  /* Provide broad compatibility; fall back if color-mix not supported */
+  background: rgba(255,255,255,.08);
+  background: color-mix(in oklab, var(--surface-strong) 88%, transparent);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* Support headings & body inside the interstitial content */
+.interstitialText h1{
+  font-size: 26px;
+  margin: 4px 0 8px 0;
+  text-align: center;
+}
+.interstitialText h2{
+  font-size: 18px;
+  color: var(--muted);
+  margin: 0 0 10px 0;
+}
+.interstitialText p{
+  margin: 10px 0;
+  color: var(--text);
+}
+
+/* Accent callout (use <div class="interstitial-callout">...</div>) */
+.interstitial-callout{
+  border-left: 4px solid var(--accent);
+  padding: 10px 12px;
+  margin: 12px 0;
+  background: rgba(116,163,255,.10);
+  border-radius: 8px;
+}
+
+/* Continue button */
+#interstitialContinue{
+  background: linear-gradient(180deg, var(--accent) 0%, var(--blue) 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  height: 44px;
+  padding: 0 16px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform var(--speed-fast), box-shadow var(--speed), filter var(--speed-fast);
+  box-shadow: 0 10px 22px rgba(76,130,255,.24), inset 0 1px 0 rgba(255,255,255,.4);
+}
+#interstitialContinue:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+#interstitialContinue:active{ transform: translateY(0); }
+#interstitialContinue:focus-visible{
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(102,230,210,.22);
+}
+
+/* Meta chips row (optional) */
+.interstitial-meta{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.interstitial-meta .chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* Optional progress stripe */
+.interstitial-progress{
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-top: 12px;
+}
+.interstitial-progress > span{
+  display: block;
+  height: 100%;
+  width: var(--value, 0%);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width .35s ease;
+}
+
+/* Animations */
+@keyframes interstitial-float-in{
+  from{ opacity: 0; transform: translateY(6px); }
+  to  { opacity: 1; transform: translateY(0); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  #interstitial{ animation: none; }
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px){
+  #interstitial{ margin: 16px auto 32px; }
+  #interstitialAudio,
+  .interstitialText{ width: 92%; }
+}
+
+
+
+#speakingDirections,
+#app{
+  width: min(1120px, 92%);
+  min-height: 51vh;
+  margin: 24px auto 80px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(var(--blur));
+}
+
+#speakingDirections{ padding-bottom: 16px; }
+#speakingDirections h1{ text-align: center; }
+
+.topSpDir{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--surface-strong);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+.spDirecText{
+  width: min(960px, 90%);
+  margin: 16px auto 0 auto;
+}
+.spDirecText h2{
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+#continueDirec{
+  background: linear-gradient(180deg, #6ea3ff 0%, var(--blue) 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  height: 44px;
+  padding: 0 16px;
+  font-weight: 800;
+  letter-spacing:.2px;
+  cursor: pointer;
+  transition: transform var(--speed-fast), box-shadow var(--speed);
+  box-shadow: 0 10px 22px rgba(76,130,255,.24), inset 0 1px 0 rgba(255,255,255,.4);
+}
+#continueDirec:hover{ transform: translateY(-1px); }
+#continueDirec:active{ transform: translateY(0); }
+
+#app{ padding-bottom: 16px; }
+
+.topSpWr{
+  width: 100%;
+  position: sticky;
+  top: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  background: var(--surface-strong);
+  border-bottom: 1px solid var(--border);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-1);
+}
+#sectionName{
+  width: fit-content;
+  border: solid 2px snow;
+  border-radius: 9px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing:.3px;
+  color: var(--text);
+  opacity:.95;
+}
+
+#question-text,
+#quesT{
+  width: min(960px, 90%);
+  margin: 14px auto 0 auto;
+  min-height: 120px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+#timer{
+  font-size: 22px;
+  float: right;
+  position: fixed;
+  right: 15px;
+  font-weight: 800;
+  color: #dbe6ff;
+  text-shadow: 0 0 18px rgba(116,163,255,.35);
+}
+
+#progress-container{
+  width: min(960px, 90%);
+  margin: 8px auto 10px auto;
+  height: 16px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+}
+#progress-bar{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #86b3ff, #6ea3ff);
+  transition: width .35s ease;
+}
+
+#audio-player{
+  display: block;
+  width: min(960px, 90%);
+  margin: 8px auto;
+  background: transparent;
+}
+
+#recordings{
+  width: min(960px, 90%);
+  margin: 12px auto 0 auto;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-1);
+}
+#recordings audio{
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+}
+
+#download-btn{
+  display: block;
+  width: min(240px, 90%);
+  margin: 14px auto 0 auto;
+  height: 42px;
+  background: linear-gradient(180deg, #35d49f 0%, #18b98a 100%);
+  color: #071b14;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(24,185,138,.18), inset 0 1px 0 rgba(255,255,255,.5);
+  transition: transform var(--speed-fast), box-shadow var(--speed), opacity .2s ease;
+}
+#download-btn:hover{ transform: translateY(-1px); }
+#download-btn:active{ transform: translateY(0); }
+
+.q2, .q3{
+  font-size: 20px;
+  font-weight: 800;
+  border: 2px solid var(--green);
+  border-radius: 10px;
+  text-align: center;
+  padding: 4px 6px;
+  color: var(--text);
+  width: fit-content;
+  margin: 8px 0;
+}
+
+@media (max-width: 900px){
+  #question-text, #quesT, #timer, #progress-container, #audio-player, #recordings{
+    width: 92%;
+  }
+  #download-btn{ width: 92%; }
+}

@@ -1,0 +1,766 @@
+<!-- /sat/math.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital SAT — Math</title>
+  <style>
+:root{
+  --bg: #0f1320;
+  --bg-2: #101626;
+  --surface: rgba(255,255,255,0.06);
+  --surface-strong: rgba(255,255,255,0.10);
+  --card: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.18);
+
+  --text: #eef3ff;
+  --muted: #b8c2e6;
+
+  --accent: #74a3ff;
+  --accent-2: #66e6d2;
+
+  --green: #35d49f;
+  --red: #ff6b7c;
+  --yellow: #ffd166;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  --shadow-1: 0 6px 20px rgba(0,0,0,.25);
+  --shadow-2: 0 14px 40px rgba(0,0,0,.35);
+
+  --blur: 14px;
+
+  --speed-fast: .15s;
+  --speed: .25s;
+
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f7f8fd;
+    --bg-2:#eef1fb;
+    --surface: rgba(255,255,255,.65);
+    --surface-strong: rgba(255,255,255,.9);
+    --card: rgba(255,255,255,.9);
+    --border: rgba(23,32,58,.10);
+    --text:#0f1428;
+    --muted:#475070;
+
+    --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
+    --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%),
+    radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  user-select: none;
+  overflow: hidden;
+}
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.14) 50%, transparent 51%),
+    radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.09) 50%, transparent 51%),
+    radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.07) 50%, transparent 51%),
+    radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.10) 50%, transparent 51%);
+  pointer-events: none; opacity: .35; z-index: 0;
+}
+
+.warning{
+  position: fixed !important;
+  right: 16px !important;
+  bottom: 12px !important;
+  z-index: 2147483647 !important;
+  pointer-events: none;
+  color: var(--yellow);
+  font-size: 14px;
+  opacity: .9;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow-1);
+}
+
+#app { display:none; }
+
+.directions{
+  width: min(1120px, 92%);
+  height: 100vh;
+  margin: 0 auto;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(var(--blur));
+}
+.directions .top{
+  position: sticky; top:0; z-index: 2;
+  display:flex; justify-content: space-between; gap: 16px; align-items: center;
+  padding: 14px 18px;
+  background: var(--surface-strong);
+  border-bottom: 1px solid var(--border);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+.directions .title{ font-size: 20px; font-weight: 900; letter-spacing:.2px; opacity:.95; }
+.directions .body{ width: min(960px, 90%); margin: 18px auto 22px; padding: 0 2px 22px; }
+.directions h1{ margin: 0 0 10px; font-size: 30px; font-weight: 900; letter-spacing:.2px; }
+.directions h2{ margin: 0; font-size: 18px; line-height:1.7; color: var(--muted); font-weight: 400; }
+.btn{
+  height: 46px; min-width: 170px; padding: 0 20px; font-weight: 900; letter-spacing:.2px; border:0; border-radius:14px;
+  background: linear-gradient(180deg, #6ea3ff 0%, #4b82ff 100%); color:#fff; cursor:pointer;
+  box-shadow: 0 10px 22px rgba(76,130,255,.22), inset 0 1px 0 rgba(255,255,255,.4);
+  transition: transform var(--speed-fast), box-shadow var(--speed);
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn:active{ transform: translateY(0); }
+
+#math-container{
+  width: min(1200px, 94%);
+  height: 100vh;
+  margin: 0 auto;
+  display:none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.topBar{
+  flex: 0 0 auto;
+  position: sticky; top: 10px; z-index: 9;
+  display: grid; grid-template-columns: 180px 1fr 360px;
+  align-items: center; gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow-1);
+}
+.mention{
+  font-size: 18px; font-weight: 800; letter-spacing:.3px; opacity:.95;
+}
+.moduleChip{
+  justify-self: start;
+  font-size: 12px; font-weight: 900; letter-spacing:.3px;
+  padding: 6px 10px; border-radius: 999px;
+  background: linear-gradient(180deg, rgba(102,230,210,.22), rgba(102,230,210,.10));
+  color: #0b2b22; border: 1px solid rgba(102,230,210,.45);
+}
+#navigation{
+  display:flex; gap: 10px; justify-content: flex-end; align-items:center;
+}
+#navigation button{
+  background: linear-gradient(180deg, #6ea3ff 0%, #4b82ff 100%);
+  color:#fff; border: 1px solid rgba(255,255,255,.25);
+  border-radius:12px; height: 40px; width: 33%;
+  font-weight: 800; cursor:pointer;
+  transition: transform var(--speed-fast), box-shadow var(--speed);
+  box-shadow: 0 10px 20px rgba(76,130,255,.20), inset 0 1px 0 rgba(255,255,255,.5);
+}
+#navigation button:hover{ transform: translateY(-1px); }
+#navigation button:active{ transform: translateY(0); }
+#timer{
+  grid-column: 1 / -1;
+  text-align:center; font-size: 18px; font-weight: 800; color:#dbe6ff;
+  text-shadow: 0 0 18px rgba(116,163,255,.35); padding: 6px 0 0 0;
+}
+
+#layout{
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 26px; margin-top: 12px;
+}
+#problem-section, #response-section{
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow-2);
+  padding: 16px 18px;
+}
+#problem-title{ margin:0 0 10px 0; font-size: 22px; font-weight: 800; }
+#questionMeta{ margin: 0 0 6px 0; font-size: 13px; color: var(--muted); font-weight: 800; letter-spacing:.2px; }
+#problem-stem{ max-height: calc(100vh - 260px); overflow: auto; padding-right: 6px; }
+#problem-stem p, #problem-stem li{ line-height: 1.7; font-size: 16px; }
+#problem-stem table{ width:100%; border-collapse: collapse; margin: 10px 0; }
+#problem-stem th, #problem-stem td{
+  border: 1px solid rgba(255,255,255,.10);
+  padding: 8px 10px; text-align: center;
+}
+
+#response-section {
+  position: sticky; top: 70px; align-self: start; max-height: calc(100vh - 120px); overflow:auto;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 14px 40px rgba(255,255,255,0.12), 0 8px 20px rgba(0,0,0,.25);
+}
+#response-section::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.15);
+}
+
+.question-block{
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(var(--blur));
+  padding: 16px; margin-top: 14px;
+  box-shadow: 0 0 20px rgba(255,255,255,.08);
+}
+.question-block h3{ margin: 0 0 10px 0; font-size: 18px; letter-spacing:.2px; color:#f5f7ff; }
+
+.options{ list-style:none; padding:0; margin:0; }
+.options li{
+  margin: 10px 0; padding: 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px; background: rgba(255,255,255,.06);
+  color: var(--text); cursor:pointer;
+  transition: background var(--speed), transform var(--speed-fast), box-shadow var(--speed);
+  box-shadow: 0 1px 0 rgba(255,255,255,.06);
+}
+.options li:hover{ background: rgba(255,255,255,.12); transform: translateY(-1px); box-shadow: 0 8px 18px rgba(255,255,255,.14); }
+.options li.selected{
+  background: rgba(255,255,255,.22);
+  border-color: rgba(255,255,255,.65);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.18) inset, 0 8px 22px rgba(255,255,255,.18);
+}
+
+/* White hint divider lines between problem and response */
+#layout{
+  background: linear-gradient(90deg, #fff 0 1px, transparent 1px 100%);
+  background-repeat: no-repeat;
+  background-position: 55% center;
+}
+
+/* ---------- SPR & Misc ---------- */
+.spr-wrap{ display:flex; gap: 8px; align-items: center; }
+.spr-input{
+  height: 46px; width: 240px; max-width: 100%;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: rgba(255,255,255,.08); color: var(--text);
+  font-size: 18px; padding: 0 12px; outline: none;
+  transition: box-shadow var(--speed), transform var(--speed-fast);
+}
+.spr-input:focus{ box-shadow: 0 0 0 3px rgba(116,163,255,.25); transform: translateY(-1px); }
+.spr-hint{ font-size: 12px; color: var(--muted); }
+
+/* ------------------ Paper problem section ------------------ */
+:root{
+  --paper-bg: #ffffff;
+  --paper-text: #0f1428;
+  --paper-muted: #5b6280;
+  --paper-border: rgba(23,32,58,.10);
+  --paper-shadow: 0 10px 28px rgba(23,32,58,.12);
+}
+#problem-section.paper{
+  background: var(--paper-bg)!important;
+  color: var(--paper-text)!important;
+  border: 1px solid var(--paper-border)!important;
+  box-shadow: var(--paper-shadow)!important;
+}
+#problem-section.paper #problem-title{ color: var(--paper-text); }
+#problem-section.paper #questionMeta{ color: var(--paper-muted); }
+#problem-section.paper #problem-stem p,
+#problem-section.paper #problem-stem li{ color: var(--paper-text); }
+#problem-section.paper #problem-stem table{
+  background:#fff; border:1px solid var(--paper-border); border-radius:10px;
+}
+#problem-section.paper #problem-stem img{
+  display:block; max-width:100%; height:auto; background:#fff; border-radius:6px;
+}
+
+/* Harmony tweaks */
+#layout{ gap:22px; }
+#navigation button:focus-visible,
+.btn:focus-visible,
+.spr-input:focus-visible{
+  outline:none; box-shadow:0 0 0 3px rgba(116,163,255,.28);
+}
+#problem-section.paper .spr-input{
+  background:#f6f8ff; color:var(--paper-text); border:1px solid var(--paper-border);
+}
+
+@media (max-width:1100px){
+  #layout{ grid-template-columns:1fr; background:none; }
+  #response-section{ position:relative; top:0; max-height:none; }
+  #problem-stem{ max-height:none; }
+  .topBar{ grid-template-columns:160px 1fr 1fr; }
+}
+@media (max-width:720px){
+  .topBar{ grid-template-columns:1fr; gap:8px; }
+  #navigation{ justify-content:center; }
+  #timer{ font-size:16px; }
+  .question-block{ padding:14px; }
+}
+
+  </style>
+</head>
+<body>
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test may reset.</p>
+
+  <div id="app">
+    <div id="directions" class="directions" style="display:none;">
+      <div class="top">
+        <div class="title">Digital SAT — Math</div>
+        <button id="startBtn" class="btn">Start Module</button>
+      </div>
+      <div class="body">
+        <h1 id="dirHeading">Math directions</h1>
+        <h2 id="dirText">
+          This section measures your skills in algebra, advanced math, problem solving & data analysis, and geometry/trigonometry.
+          You will answer questions in two modules. A timer shows the time remaining for each module.<br><br>
+          Some items are multiple choice. Select the best answer and move on. Other items require you to enter a number (e.g., <em>fractions like 3/4</em> or <em>decimals like 0.75</em>).<br><br>
+          Use <strong>Next</strong> and <strong>Back</strong> to navigate. You can change answers anytime while time remains in the current module.
+        </h2>
+      </div>
+    </div>
+
+    <div id="moduleDone" class="moduleDone">
+      <h2 id="moduleDoneTitle" style="margin:0 0 8px 0;">Module complete</h2>
+      <p id="moduleDoneText" style="margin:0 0 14px 0; color:var(--muted);">
+        You’ve finished this module. When you’re ready, start the next module.
+      </p>
+      <button id="nextModuleBtn" class="btn">Start Next Module</button>
+    </div>
+
+    <div id="math-container">
+      <div class="topBar">
+        <p class="mention">Math</p>
+        <span id="moduleChip" class="moduleChip">Module 1</span>
+        <div id="navigation">
+          <button id="prevBtn">Back</button>
+          <div id="timer">Time Left: 35:00</div>
+          <button id="nextBtn">Next</button>
+        </div>
+        <div id="timerBottom" style="display:none;"></div>
+      </div>
+
+      <div id="layout">
+        <div id="problem-section" class="paper">
+          <h2 id="problem-title">Problem</h2>
+          <div id="questionMeta">Domain • Skill • Question X of Y</div>
+          <div id="problem-stem"></div>
+        </div>
+
+        <div id="response-section">
+          <div id="response-block" class="question-block">
+            <h3 id="response-title">Answer</h3>
+            <div id="response-area"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // 22
+    const app = document.getElementById("app");
+    const directions = document.getElementById("directions");
+    const startBtn = document.getElementById("startBtn");
+    const dirHeading = document.getElementById("dirHeading");
+    const dirText = document.getElementById("dirText");
+
+    const moduleDone = document.getElementById("moduleDone");
+    const nextModuleBtn = document.getElementById("nextModuleBtn");
+    const moduleDoneTitle = document.getElementById("moduleDoneTitle");
+    const moduleDoneText = document.getElementById("moduleDoneText");
+
+    const container = document.getElementById("math-container");
+    const moduleChip = document.getElementById("moduleChip");
+    const timerEl = document.getElementById("timer");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const problemTitle = document.getElementById("problem-title");
+    const problemStem = document.getElementById("problem-stem");
+    const questionMeta = document.getElementById("questionMeta");
+    const responseArea = document.getElementById("response-area");
+    const responseTitle = document.getElementById("response-title");
+
+    function getTestId(){
+      const fromSS = sessionStorage.getItem("SAT_TEST_ID");
+      if (fromSS) return fromSS;
+      const qs = new URLSearchParams(location.search);
+      return qs.get("test") || "1";
+    }
+    const testId = getTestId();
+    sessionStorage.setItem("SAT_TEST_ID", testId);
+
+    function loadData(){
+      return new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = `/data-sat/${testId}/mathData_Test${testId}.js`;
+        s.onload = ()=> resolve();
+        s.onerror = ()=> reject(new Error("Failed to load SAT Math data."));
+        document.body.appendChild(s);
+      });
+    }
+
+    let data = null;
+    let moduleIndex = 0;
+    let currentIndexInModule = 0;
+    let moduleItems = [];
+    let timerInterval = null;
+    let timeLeft = 0;
+
+    const answers = {};
+    function zpad(n){ return String(n).padStart(2, "0"); }
+
+    function formatTime(sec){
+      const m = Math.floor(sec/60), s = sec%60;
+      return `${zpad(m)}:${zpad(s)}`;
+    }
+    function normalizeInput(str){
+      if (!str && str !== 0) return "";
+      let t = String(str).trim();
+      t = t.replace(/\u2212/g, "-");
+      t = t.replace(/\s+/g, "");
+      return t;
+    }
+
+    function parseFraction(str){
+      const parts = str.split("/");
+      if (parts.length !== 2) return null;
+      const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
+      if (!isFinite(a) || !isFinite(b) || b === 0) return null;
+      return a / b;
+    }
+
+    function checkSPR(userInput, correctObj){
+      if (!correctObj) return false;
+      const raw = normalizeInput(userInput);
+      if (raw === "") return false;
+
+      if (Array.isArray(correctObj.answers)){
+        for (const acc of correctObj.answers){
+          if (normalizeInput(acc).toLowerCase() === raw.toLowerCase()){
+            return true;
+          }
+        }
+      }
+      let numericCandidate = null;
+      if (/%$/.test(raw)){
+        const v = parseFloat(raw.replace("%",""));
+        if (isFinite(v)) numericCandidate = v;
+      } else if (raw.includes("/")){
+        const v = parseFraction(raw);
+        if (v !== null) numericCandidate = v;
+      } else {
+        const v = parseFloat(raw);
+        if (isFinite(v)) numericCandidate = v;
+      }
+
+      if (typeof correctObj.numeric === "number" && isFinite(correctObj.numeric) && numericCandidate !== null){
+        const tol = typeof correctObj.tolerance === "number" ? correctObj.tolerance : 0;
+        return Math.abs(numericCandidate - correctObj.numeric) <= tol;
+      }
+
+      return false;
+    }
+
+    function getAllItemsForModule(modNum){
+      return data.items.filter(it => Number(it.module) === Number(modNum));
+    }
+
+    function stopTimer(){
+      if (timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+    }
+
+    function startTimer(seconds){
+      timeLeft = seconds;
+      timerEl.textContent = `Time Left: ${formatTime(timeLeft)}`;
+      stopTimer();
+      timerInterval = setInterval(()=>{
+        timeLeft--;
+        if (timeLeft <= 0){
+          stopTimer();
+          timeLeft = 0;
+          timerEl.textContent = `Time Left: 00:00`;
+          onModuleTimeUp();
+        } else {
+          timerEl.textContent = `Time Left: ${formatTime(timeLeft)}`;
+        }
+      }, 1000);
+    }
+
+    function render(){
+      const modNum = moduleIndex + 1;
+      const items = moduleItems;
+      const item = items[currentIndexInModule];
+
+      moduleChip.textContent = `Module ${modNum}`;
+      problemTitle.textContent = `Problem`;
+      questionMeta.textContent = `${item.domain} • ${item.skill} • Question ${currentIndexInModule + 1} of ${items.length}`;
+      let stemHTML = "";
+      if (item.table){
+        const { columns = [], rows = [] } = item.table;
+        const ths = columns.map(c => `<th>${c}</th>`).join("");
+        const trs = rows.map(r => `<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("");
+        stemHTML += `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+      }
+      problemStem.innerHTML = item.prompt;
+
+      responseArea.innerHTML = "";
+      if (item.type === "mcq"){
+        responseTitle.textContent = "Choose the best answer";
+        const ul = document.createElement("ul");
+        ul.className = "options";
+        item.options.forEach((opt, i)=>{
+          const li = document.createElement("li");
+          li.innerHTML = opt;
+          const saved = answers[item.id];
+          if (saved && saved.type === "mcq" && saved.selected === i){
+            li.classList.add("selected");
+          }
+          li.onclick = ()=>{
+            answers[item.id] = { type: "mcq", selected: i };
+            render();
+          };
+          ul.appendChild(li);
+        });
+        responseArea.appendChild(ul);
+} else if (item.type === "spr") {
+  responseTitle.textContent = "Enter your answer";
+
+  const wrap = document.createElement("div");
+  wrap.className = "spr-wrap";
+
+  const input = document.createElement("input");
+  input.className = "spr-input";
+  input.autocomplete = "off";
+  input.inputMode = "text"; // allow / . - %; numeric/decimal keyboards often block '/'
+  input.placeholder = "e.g., 3/4 or 0.75 or 25%";
+  input.setAttribute("pattern", "[-0-9./%]*");
+  input.setAttribute("aria-label", "Answer input (digits, / . - %)");
+
+  const saved = answers[item.id];
+  if (saved && saved.type === "spr") input.value = saved.input || "";
+
+  const navKeys = new Set(["Backspace","Delete","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Tab","Home","End","Enter"]);
+  const allowedChar = (ch) => /^[0-9./%\-\u2212]$/.test(ch); // digits, dot, slash, percent, minus (both - and −)
+
+  input.addEventListener("keydown", (e) => {
+    if (navKeys.has(e.key)) return;
+    // allow common shortcuts (copy/paste/select-all/undo/redo)
+    if ((e.ctrlKey || e.metaKey) && ["a","c","v","x","z","y"].includes(e.key.toLowerCase())) return;
+
+    if (e.key.length === 1 && !allowedChar(e.key)) {
+      e.preventDefault(); // block letters and other symbols
+    }
+  });
+
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const clip = (e.clipboardData || window.clipboardData).getData("text") || "";
+    const cleaned = clip.replace(/[^\d./%\-\u2212]/g, ""); // keep only allowed chars
+    document.execCommand("insertText", false, cleaned);
+  });
+
+  input.addEventListener("input", () => {
+    // normalize to allowed chars, convert Unicode minus to ASCII -, remove spaces
+    let v = input.value.replace(/\s+/g, "").replace(/\u2212/g, "-").replace(/[^0-9./%\-]/g, "");
+    if (v !== input.value) input.value = v;
+    answers[item.id] = { type: "spr", input: input.value };
+  });
+
+  const hint = document.createElement("div");
+  hint.className = "spr-hint";
+  hint.textContent = "Allowed: digits (0–9), '.', '/', '-', '%' (no letters).";
+
+  wrap.appendChild(input);
+  responseArea.appendChild(wrap);
+  responseArea.appendChild(hint);
+}
+
+
+
+      prevBtn.disabled = (currentIndexInModule === 0);
+      nextBtn.textContent = (currentIndexInModule === items.length - 1)
+        ? (moduleIndex === 0 ? "Finish Module 1" : "Finish Math")
+        : "Next";
+    }
+
+    function startModule(idx){
+      moduleIndex = idx;
+      currentIndexInModule = 0;
+      moduleItems = getAllItemsForModule(moduleIndex + 1);
+
+      directions.style.display = "none";
+      moduleDone.style.display = "none";
+      container.style.display = "flex";
+
+      const secs = (data.meta && data.meta.modules && data.meta.modules[idx] && data.meta.modules[idx].timeSeconds) || (35*60);
+      startTimer(secs);
+      render();
+    }
+
+    function onModuleTimeUp(){
+      if (moduleIndex === 0){
+        container.style.display = "none";
+        directions.style.display = "none";
+        moduleDone.style.display = "block";
+        moduleDoneTitle.textContent = "Module 1 complete";
+        moduleDoneText.textContent = "When you’re ready, start Module 2. The timer will reset.";
+      } else {
+        finalizeMath();
+      }
+    }
+
+    function finishModuleEarly(){
+      stopTimer();
+      onModuleTimeUp();
+    }
+
+    function gradeAll(){
+      let score = 0;
+      const perItem = [];
+      const all = data.items.slice().sort((a,b)=> (a.module - b.module) || (a.id > b.id ? 1 : -1));
+      for (const it of all){
+        const ans = answers[it.id];
+        let correct = false;
+        let userValue = null;
+
+        if (it.type === "mcq"){
+          const sel = ans && ans.type === "mcq" ? ans.selected : null;
+          userValue = sel;
+          correct = (sel === it.correct);
+        } else if (it.type === "spr"){
+          const inp = ans && ans.type === "spr" ? ans.input : "";
+          userValue = inp == null ? "" : String(inp);
+          correct = checkSPR(userValue, it.correct);
+        }
+
+        if (correct) score++;
+        perItem.push({
+          id: it.id,
+          module: it.module,
+          type: it.type,
+          domain: it.domain,
+          skill: it.skill,
+          correct: !!correct,
+          user: userValue,
+          key: it.type === "mcq" ? it.correct : it.correct
+        });
+      }
+      return { score, total: all.length, perItem };
+    }
+
+    function finalizeMath(){
+      stopTimer();
+
+      const { score, total, perItem } = gradeAll();
+      const payload = {
+        testId,
+        section: "math",
+        score,
+        total,
+        perItem,
+        finishedAt: new Date().toISOString()
+      };
+
+      try {
+        localStorage.setItem(`result_sat_${testId}_math`, JSON.stringify(payload));
+      } catch (e){ /* ignore errors */ }
+
+      goNextOrResults();
+    }
+
+    function goNextOrResults(){
+      if (typeof window.goToNextSection === "function"){
+        window.goToNextSection();
+        return;
+      }
+
+      const selectedJSON = sessionStorage.getItem("SAT_SELECTED_SECTIONS") || sessionStorage.getItem("SELECTED_SECTIONS") || "[]";
+      const selected = JSON.parse(selectedJSON);
+      let i = parseInt(sessionStorage.getItem("SAT_CURRENT_SECTION_INDEX") || sessionStorage.getItem("CURRENT_SECTION_INDEX") || "0", 10);
+
+      i++;
+      if (i < selected.length){
+        sessionStorage.setItem("SAT_CURRENT_SECTION_INDEX", String(i));
+        const nextSection = selected[i];
+        const sectionMap = {
+          english: "english.html",
+          math: "math.html"
+        };
+        const href = sectionMap[nextSection] || "/sat/results.html";
+        window.location.href = `${href}?test=${encodeURIComponent(testId)}`;
+      } else {
+        window.location.href = `results-sat.html?test=${encodeURIComponent(testId)}`;
+      }
+    }
+
+    prevBtn.addEventListener("click", ()=>{
+      if (currentIndexInModule > 0){
+        currentIndexInModule--;
+        render();
+      }
+    });
+
+    nextBtn.addEventListener("click", ()=>{
+      const lastIdx = moduleItems.length - 1;
+      if (currentIndexInModule < lastIdx){
+        currentIndexInModule++;
+        render();
+      } else {
+        finishModuleEarly();
+      }
+    });
+
+    startBtn.addEventListener("click", ()=>{
+      startModule(moduleIndex);
+    });
+
+    nextModuleBtn.addEventListener("click", ()=>{
+      startModule(1);
+    });
+
+    (async function init(){
+      const tid = testId || "1";
+      try{
+        await loadData();
+      }catch(e){
+        document.body.innerHTML = `<h2 style="color:red;">${e.message}</h2>`;
+        return;
+      }
+
+      if (!window.satMathData){
+        document.body.innerHTML = `<h2 style="color:red;">Data file loaded but window.satMathData is missing.</h2>`;
+        return;
+      }
+      data = window.satMathData;
+
+      app.style.display = "block";
+      directions.style.display = "block";
+      dirHeading.textContent = "Math directions — Module 1";
+      dirText.innerHTML = `
+        You will work on <strong>Module 1</strong> first. The timer starts when you press <em>Start Module</em>.
+        Answer as many questions as you can. You can move <strong>Back</strong> and <strong>Next</strong> freely within the module.<br><br>
+        <em>Multiple-choice</em>: click an answer to select it.<br>
+        <em>Student-produced responses</em>: type a number (e.g., <strong>3/4</strong> or <strong>0.75</strong>). Fractions and decimals are accepted.
+      `;
+
+      // document.addEventListener("contextmenu", (e)=> e.preventDefault());
+    })();
+  </script>
+</body>
+</html>

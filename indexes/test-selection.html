@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select a TOEFL Test</title>
+  <style>
+    :root {
+      --bg: #0f1320;
+      --bg-2: #101626;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(255, 255, 255, 0.18);
+
+      --text: #eef3ff;
+      --muted: #b8c2e6;
+
+      --accent: #74a3ff;
+      /* default blue */
+      --accent-2: #66e6d2;
+      /* teal */
+      --green: #35d49f;
+      /* completed */
+      --amber: #ffd166;
+      /* partial */
+      --red: #ff6b7c;
+      /* not started */
+
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+
+      --shadow-1: 0 6px 20px rgba(0, 0, 0, .25);
+      --shadow-2: 0 14px 40px rgba(0, 0, 0, .35);
+
+      --blur: 14px;
+      --speed-fast: .15s;
+      --speed: .25s;
+
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fd;
+        --bg-2: #eef1fb;
+        --surface: rgba(255, 255, 255, .65);
+        --surface-strong: rgba(255, 255, 255, .9);
+        --border: rgba(23, 32, 58, .10);
+        --text: #0f1428;
+        --muted: #475070;
+
+        --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
+        --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family: var(--font);
+      background:
+        radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%),
+        radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      background-attachment: fixed;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, .14) 50%, transparent 51%),
+        radial-gradient(2px 2px at 70% 30%, rgba(255, 255, 255, .09) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 80%, rgba(255, 255, 255, .07) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 60%, rgba(255, 255, 255, .10) 50%, transparent 51%);
+      pointer-events: none;
+      opacity: .35;
+      z-index: 0;
+    }
+    .topp{
+      margin: auto;
+      /* border: 2px solid whitesmoke; */
+      backdrop-filter: blur(8px);     
+      -webkit-backdrop-filter: blur(9px); 
+      width: min(1200px, 94%);
+      height: 10vh;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+    .shell {
+      width: min(1200px, 94%);
+      margin: 32px auto 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      width: 220px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      outline: none;
+      transition: box-shadow var(--speed), transform var(--speed-fast);
+    }
+
+    .search input::placeholder {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .search input:focus {
+      box-shadow: 0 0 0 3px rgba(116, 163, 255, .25);
+      transform: translateY(-1px);
+    }
+
+    .filter {
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      padding: 0 12px;
+      color: gray;
+      outline: none;
+      min-width: 150px;
+    }
+
+    #testList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      min-height: 160px;
+    }
+
+    .emptyState {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      padding: 26px 0;
+      font-size: 14px;
+    }
+
+    .testButton {
+      height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02));
+      color: var(--text);
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--speed-fast), box-shadow var(--speed), border-color var(--speed), background var(--speed);
+      box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .06);
+      user-select: none;
+      animation: popIn .35s ease forwards;
+      opacity: 0;
+      transform: translateY(4px) scale(.98);
+    }
+
+    .testButton::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px 300px at -10% -10%, rgba(116, 163, 255, .15), transparent 60%);
+      opacity: .4;
+      pointer-events: none;
+    }
+
+    .testButton:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, .30), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(116, 163, 255, .55);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
+    }
+
+    @keyframes popIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .ribbon {
+      position: absolute;
+      top: 10px;
+      right: -38px;
+      width: 140px;
+      text-align: center;
+      transform: rotate(35deg);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .3px;
+      color: #071b14;
+      padding: 4px 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .20);
+      border: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    .ribbon.done {
+      background: linear-gradient(180deg, #35d49f, #18b98a);
+    }
+
+    .ribbon.part {
+      background: linear-gradient(180deg, #ffd166, #ffbf55);
+    }
+
+    .ribbon.none {
+      background: linear-gradient(180deg, #ff9aa8, #ff6b7c);
+    }
+
+    .testButton.completed {
+      box-shadow: 0 12px 26px rgba(53, 212, 159, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(53, 212, 159, .45);
+    }
+
+    .testButton.partial {
+      box-shadow: 0 12px 26px rgba(255, 209, 102, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(255, 209, 102, .45);
+    }
+
+    .testButton.not-started {
+      box-shadow: 0 12px 26px rgba(255, 107, 124, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(255, 107, 124, .45);
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .topp button{min-width: 35%; background:linear-gradient(180deg,#35d49f,#18b98a);color:#041b12;box-shadow:0 10px 20px rgba(24,185,138,.18), inset 0 1px 0 rgba(255,255,255,.5); height:46px;min-width:160px;padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed)}
+    .topp button:hover{transform:translateY(-1px)}
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .dot.done {
+      background: var(--green);
+    }
+
+    .dot.part {
+      background: var(--amber);
+    }
+
+    .dot.none {
+      background: var(--red);
+    }
+
+    .testButton[title] {
+      position: relative;
+    }
+
+    .testButton[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: -34px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, .75);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .tools {
+        display:contents;
+      }
+
+      .search input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topp">
+    <button onclick="window.location.href = '/index.html'" style="position: fixed; left: 0;">Home</button>
+    <button onclick="window.location.href = 'results.html'" style="position: fixed; right: 0;">Results</button>
+  </div>
+  <div class="shell">
+    <div class="header">
+      <h2>Select a Test</h2>
+      <div class="tools">
+        <select id="typeFilter" class="filter" title="Test type">
+          <option value="toefl">TPO</option>
+          <option value="sh">SH</option>
+        </select>
+
+        <div class="search">
+          <input id="quickFind" type="number" min="1" placeholder="Go to test #" />
+        </div>
+
+        <select id="statusFilter" class="filter" title="Filter by status">
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="partial">In progress</option>
+          <option value="not-started">Not started</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot done"></span>Completed</span>
+      <span><span class="dot part"></span>In progress</span>
+      <span><span class="dot none"></span>Not started</span>
+    </div>
+
+    <div id="testList"></div>
+  </div>
+
+  <script>
+    const TEST_TYPES = {
+      toefl: { label: 'TPO', total: 65 },
+      sh: { label: 'SH', total: 20 }
+    };
+
+    const SECTION_PAGE = 'section-selection.html';
+
+    const testListEl = document.getElementById('testList');
+    const quickFind = document.getElementById('quickFind');
+    const statusFilter = document.getElementById('statusFilter');
+    const typeFilter = document.getElementById('typeFilter');
+
+    const qs = new URLSearchParams(location.search);
+    const initialType = (qs.get('type') || localStorage.getItem('TEST_TYPE') || 'toefl').toLowerCase();
+    if (TEST_TYPES[initialType]) typeFilter.value = initialType; 
+
+    function updateQuickFindPlaceholder() {
+      const t = typeFilter.value;
+      const total = TEST_TYPES[t].total;
+      quickFind.placeholder = `Go to ${TEST_TYPES[t].label} test # (1–${total})`;
+      quickFind.max = String(total);
+    }
+
+    updateQuickFindPlaceholder();
+
+    function getKey(type, id, section) {
+      return `result_${type}_${id}_${section}`;
+    }
+
+    function getLegacyKey(id, section) {
+      return `result_${id}_${section}`;
+    }
+
+    function getStatusForTest(type, id) {
+      const r = localStorage.getItem(getKey(type, id, 'reading')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'reading')) : null);
+      const l = localStorage.getItem(getKey(type, id, 'listening')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'listening')) : null);
+      const s = localStorage.getItem(getKey(type, id, 'speaking')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'speaking')) : null);
+      const w = localStorage.getItem(getKey(type, id, 'writing')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'writing')) : null);
+
+      const hasAny = r || l || s || w;
+      const hasAll = r && l && w;
+      if (hasAll) return 'completed';
+      if (hasAny) return 'partial';
+      return 'not-started';
+    }
+
+    function ribbonFor(status) {
+      if (status === 'completed') return '<span class="ribbon done">COMPLETED</span>';
+      if (status === 'partial') return '<span class="ribbon part">IN&nbsp;PROGRESS</span>';
+      return '<span class="ribbon none">NOT&nbsp;STARTED</span>';
+    }
+
+    function titleFor(status) {
+      if (status === 'completed') return 'All sections recorded for this test';
+      if (status === 'partial') return 'You started this test';
+      return 'No sections done yet';
+    }
+
+    function renderGrid() {
+      const curType = typeFilter.value;
+      const total = TEST_TYPES[curType].total;
+      testListEl.innerHTML = '';
+
+      if (!total || total < 1) {
+        const empty = document.createElement('div');
+        empty.className = 'emptyState';
+        empty.textContent = `${TEST_TYPES[curType].label} tests are not defined yet.`;
+        testListEl.appendChild(empty);
+        return;
+      }
+
+      let rendered = 0;
+      for (let i = 1; i <= total; i++) {
+        const status = getStatusForTest(curType, i);
+        if (statusFilter.value !== 'all' && statusFilter.value !== status) continue;
+
+        const btn = document.createElement('button');
+        btn.className = `testButton ${status}`;
+        btn.title = titleFor(status);
+        btn.style.animationDelay = `${i * 8}ms`;
+        btn.innerHTML = `${ribbonFor(status)}${TEST_TYPES[curType].label} ${i}`;
+
+        btn.onclick = () => {
+          sessionStorage.setItem('TEST_ID', String(i));
+          sessionStorage.setItem('TEST_TYPE', curType);
+          const url = `${SECTION_PAGE}?type=${encodeURIComponent(curType)}&test=${i}`;
+          window.location.href = url;
+        };
+
+        testListEl.appendChild(btn);
+        rendered++;
+      }
+
+      if (!rendered) {
+        const empty = document.createElement('div');
+        empty.className = 'emptyState';
+        empty.textContent = 'No tests match the current filters.';
+        testListEl.appendChild(empty);
+      }
+    }
+
+    quickFind.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const n = parseInt(quickFind.value, 10);
+        const curType = typeFilter.value;
+        const total = TEST_TYPES[curType].total;
+        if (!Number.isNaN(n) && n >= 1 && n <= total) {
+          sessionStorage.setItem('TEST_ID', String(n));
+          sessionStorage.setItem('TEST_TYPE', curType);
+          const url = `${SECTION_PAGE}?type=${encodeURIComponent(curType)}&test=${n}`;
+          window.location.href = url;
+        } else {
+          quickFind.style.transition = '0.5s';
+          quickFind.style.color = 'red';
+          setTimeout(() => { quickFind.style.color = ''; }, 2000);
+        }
+      }
+    });
+
+    statusFilter.addEventListener('change', renderGrid);
+
+    typeFilter.addEventListener('change', () => {
+      // persist selection, update UI, re-render
+      localStorage.setItem('TEST_TYPE', typeFilter.value);
+      updateQuickFindPlaceholder();
+      renderGrid();
+    });
+
+    const headingEl = document.querySelector('.header h2');
+
+    function setTypeInURL(t) {
+      const url = new URL(location.href);
+      url.searchParams.set('type', t);
+      history.replaceState(null, '', url);
+    }
+
+    function updateTitles(t) {
+      const label = TEST_TYPES[t].label;
+      headingEl.textContent = `Select ${label} Tests`;
+      document.title = `Select ${label} Tests`;
+    }
+
+    (function normalizeWeirdParam() {
+      const sp = new URLSearchParams(location.search);
+      if (!sp.has('type') && location.search.startsWith('?=')) {
+        const val = location.search.slice(2); // after '?='
+        if (val === 'toefl' || val === 'sh') {
+          const url = new URL(location.href);
+          url.search = `?type=${val}`;
+          history.replaceState(null, '', url);
+        }
+      }
+    })();
+
+    updateTitles(typeFilter.value);
+    setTypeInURL(typeFilter.value);
+
+    typeFilter.addEventListener('change', () => {
+      localStorage.setItem('TEST_TYPE', typeFilter.value);
+      updateQuickFindPlaceholder();
+      updateTitles(typeFilter.value);
+      setTypeInURL(typeFilter.value); 
+      renderGrid();
+    });
+
+
+    renderGrid();
+      document.addEventListener("contextmenu", (e)=> e.preventDefault());
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+window.writingTasks = [
+    {
+        type: independent,
+        directions: "<h3>Instructions: Write a post responding to the professor's question. In your response you should: express and support your personal opinion make a contribution to the discussion. An effective response will contain at least 100 words.</h3><br><br>",
+        question: "\n<strong style = \"text-align: center;\">Dr. Diaz</strong><br>\n\nAs I mentioned in class, technology plays a vital role in shaping the modern world. However, there is an ongoing debate about the balance between privacy and security in the digital age. Governments often grapple with the challenge of finding the right approach to protecting citizens' privacy while ensuring national security. If you were a policy maker, which issue would you argue is more important—protecting privacy or ensuring national security? Why?\n\n<br><br>\n\n<strong style = \"text-align: center;\">Karen</strong><br>\n\nProtecting privacy should take precedence. It is a fundamental right that safeguards personal freedom and autonomy. Respecting privacy builds trust between citizens and the government. Furthermore, privacy protections can be implemented without compromising national security measures.\n\n\n<br><br>\n\n<strong style = \"text-align: center;\">Brad</strong><br>\n\nI respectfully disagree with Karen. Ensuring national security should be the priority. In a constantly evolving threat landscape, it is crucial to safeguard the well-being of the nation and its citizens. National security measures may involve limited intrusions on privacy, but they are necessary for maintaining a safe and secure society.\n\n\n<br>\n        ",
+        timeLimit: 10 * 60
+    }
+];

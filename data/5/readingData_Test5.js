@@ -1,0 +1,114 @@
+window.readingData = {
+    passages: [
+        {
+            title: "William Smith",
+            text: [
+                `
+&nbsp;<span class="arr" id="arr1">&#10132;</span>In 1769 in a little town in Oxfordshire, England, a child with the very ordinary name of William Smith was born into the poor family of a village blacksmith. He received rudimentary village schooling, but mostly he roamed his uncle's farm collecting the fossils that were so abundant in the rocks of the Cotswold hills. When he grew older, William Smith taught himself surveying from books he bought with his small savings, and at the age of eighteen he was apprenticed to a surveyor of the local parish. He then proceeded to teach himself geology, and when he was twenty-four, he went to work for the company that was excavating the Somerset Coal Canal in the south of England.<br><br>
+
+&nbsp;<span class="arr" id="arr2">&#10132;</span>This was before the steam locomotive, and canal building was at its height. The companies building the canals to transport coal needed surveyors to help them find the coal deposits worth mining as well as to determine the best courses for the canals. This job gave Smith an opportunity to study the fresh rock outcrops created by the newly dug canal. He later worked on similar jobs across the length and breadth of England, all the while studying the newly revealed strata and collecting all the fossils he could find. Smith used mail coaches to travel as much as 10,000 miles per year. In 1815 he published the first modern geological map, “A Map of the Strata of England and Wales with a Part of Scotland,” a map so meticulously researched that it can still be used today.<br><br>
+
+&nbsp;<span class="arr" id="arr3">&#10132;</span>In 1831 when Smith was finally recognized by the Geological Society of London as the “father of English geology,” it was not only for his maps but also for something even more important. Ever since people had begun to catalog the strata in particular outcrops, there had been the hope that these could somehow be used to calculate geological time.<span id="sentence1">But as more and more accumulations of strata were cataloged in more and more places, it became clear that the sequences of rocks sometimes differed from region to region and that no rock type was ever going to become a reliable time marker throughout the world.</span> Even without the problem of regional differences, rocks present a difficulty as unique time markers. Quartz is quartz—a silicon ion surrounded by four oxygen ions—there’s no difference at all between two-million-year-old Pleistocene quartz and Cambrian quartz created over 500 million years ago.<br><br>
+
+&nbsp;<span class="arr" id="arr4">&#10132;</span>As he collected fossils from strata throughout England, Smith began to see that the fossils told a different story from the rocks. Particularly in the younger strata, the rocks were often so similar that he had trouble distinguishing the strata, but he never had trouble telling the fossils apart. While rock between two consistent strata might in one place be shale and in another sandstone, the fossils in that shale or sandstone were always the same. Some fossils <span id="enruded">endured</span> through so many millions of years that they appear in many strata, but others occur only in a few strata, and a few species had their births and extinctions within one particular stratum. Fossils are thus identifying markers for particular periods in Earth's history.<br><br>
+
+&nbsp;<span class="arr" id="arr5">&#10132;</span>Not only could Smith identify rock strata by the fossils they contained, he could also see a pattern emerging: certain fossils always appear in more ancient sediments, while others begin to be seen as the strata become more recent.[BOX] By following the fossils, Smith was able to put all the strata of England's earth into relative temporal sequence.[BOX] About the same time, Georges Cuvier made the same discovery while studying the rocks around Paris.[BOX] Soon it was realized that this principle of faunal (animal) succession was valid not only in England or France but <span id="virtually">virtually</span> everywhere.[BOX] It was actually a principle of floral succession as well, because plants showed the same transformation through time as did fauna. Limestone may be found in the Cambrian or—300 million years later—in the Jurassic strata, but a <span id="trilobite">trilobite</span>—the ubiquitous marine arthropod that had its birth in the Cambrian—will never be found in Jurassic strata, nor a dinosaur in the Cambrian.<br><br>
+                `
+            ],
+            questions: [
+                { type: "multiple-choice", question: "According to paragraph 1, which of the following statements about William Smith is NOT true?", options: ["Smith learned surveying by reading and by apprenticing for a local surveyor.", "Smith’s family lived in a small English town and possessed little wealth.", "Smith learned about fossils from books he borrowed from his uncle.", "Smith eventually left his village to work on the excavation of an English canal."], correct: 2 },
+                { type: "multiple-choice", question: "Which of the following can be inferred from paragraph 2 about canal building?", options: ["Canals were built primarily in the south of England rather than in other regions.", "Canal building decreased after the steam locomotive was invented.", "Canal building made it difficult to study rock strata which often became damaged in the process.", "Canal builders hired surveyors like Smith to examine exposed rock strata."], correct: 1 },
+                { type: "multiple-choice", question: "Which of the sentences below best expresses the essential information in the highlighted sentence in the passage? Incorrect choices change the meaning in important ways or leave out essential information.", options: ["The discovery of regional differences in the sequences of rocks led geologists to believe that rock types could someday become reliable time markers.", "Careful analysis of strata revealed that rocks cannot establish geological time because the pattern of rock layers varies from place to place.", "Smith's catalogs of rock strata indicated that the sequences of rocks are different from place to place and from region to region.", "Because people did not catalog regional differences in sequences of rocks, it was believed that rocks could never be reliable time markers."], correct: 1 },
+                { type: "multiple-choice", question: "According to paragraph 4, it was difficult for Smith to distinguish rock strata because", options: ["the rocks from different strata closely resembled each other", "he was often unable to find fossils in the younger rock strata", "their similarity to each other made it difficult for him to distinguish one rock type from another", "the type of rock between two consistent strata was always the same"], correct: 0 },
+                { type: "multiple-choice", question: "The word “endured” in the passage is closest in meaning to", options: ["vanished", "developed", "varied", "survived"], correct: 3 },
+                { type: "multiple-choice", question: "The word “virtually” in the passage is closest in meaning to", options: ["possibly", "absolutely", "surprisingly", "nearly"], correct: 3 },
+                { type: "multiple-answer", question: "Select the TWO answer choices that are true statements based upon the discussion of the principle of faunal succession in paragraph 5. To receive credit, you must select TWO answers.", options: ["It was a principle that applied to fauna but not to flora.", "It was discovered independently by two different geologists.", "It describes how fossils are distributed in rock strata.", "It explains why plants and animals undergo transformations through time."], correct: [1, 2] },
+                { type: "multiple-choice", question: "In mentioning 'trilobite', the author is making which of the following points?", options: ["Fossils cannot be found in more than one rock stratum.", "Faunal succession can help put rock layers in relative temporal sequence.", "Faunal succession cannot be applied to different strata composed of the same kind of rock.", "The presence of trilobite fossils makes it difficult to date a rock."], correct: 1 },
+                {
+                    type: "insert-sentence",
+                    sentence: `The findings of these geologists inspired others to examine the rock and fossil records in different parts of the world.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 2
+                },
+                {
+                    type: "summary",
+                    prompt: "Directions: An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer choices that express the most important ideas in the passage. Some sentences do not belong in the summary because they express ideas that are not presented in the passage or are minor ideas in the passage. This question is worth 2 points. William Smith’s contributions to geology have increased our knowledge of the Earth’s history.",
+                    choices: [
+                        { text: "Smith found success easily in his profession because he came from a family of geologists and surveyors.", isCorrect: false },
+                        { text: "Smith’s work on canals allowed him to collect fossils and study rock layers all over England.", isCorrect: true },
+                        { text: "Smith found that fossils are much more reliable indicators of geological time than rock strata are.", isCorrect: true },
+                        { text: "Smith was named “the father of English geology” for his maps rather than for his other contributions to the field.", isCorrect: false },
+                        { text: "Smith and Cuvier discovered that fossil patterns are easier to observe in ancient rock strata than in younger rock strata.", isCorrect: false },
+                        { text: "The discovery of the principle of faunal succession allowed geologists to establish the relative age of Earth’s rock layers.", isCorrect: true }
+                    ],
+                    correct: [1, 2, 5]
+                }
+            ]
+        },
+        {
+            title: "Powering the Industrial Revolution",
+            text: [
+                `
+&nbsp;<span class="arr" id="arr12">&#10132;</span>In Britain one of the most dramatic changes of the Industrial Revolution was the harnessing of power. Until the reign of George Ⅲ(1760-1820), available sources of power for work and travel had not increased since the Middle Ages. There were three sources of power: animal or human muscles; the wind, operating on sail or windmill; and running water.<span id="sentence2">Only the last of these was suited at all to the continuous operating of machines, and although waterpower abounded in Lancashire and Scotland and ran grain mills as well as textile mills, it had one great disadvantage: streams flowed where nature intended them to, and water-driven factories had to be located on their banks whether or not the location was desirable for other reasons.</span> Furthermore, even the most reliable waterpower varied with the seasons and disappeared in a drought. The new age of machinery, in short, could not have been born without a new source of both movable and constant power.<br><br>
+
+&nbsp;<span class="arr" id="arr22">&#10132;</span>The source had long been known but not <span id="exploited">exploited</span>. Early in the eighteenth century, a pump had come into use in which expanding steam raised a piston in a cylinder, and atmospheric pressure brought it down again when the steam condensed inside the cylinder to form a vacuum. This <span id="atmospheric">“atmospheric engine,”</span> invented by Thomas Savery and vastly improved by his partner, Thomas Newcomen, embodied revolutionary principles, but it was so slow and wasteful of fuel that it could not be employed outside the coal mines for which it had been designed. In the 1760s, James Watt perfected a separate condenser for the steam, so that the cylinder did not have to be cooled at every stroke; then he devised a way to make the piston turn a wheel and thus convert reciprocating (back and forth) motion into rotary motion. He thereby transformed an inefficient pump of limited use into a steam engine of a thousand uses. The final step came when steam was introduced into the cylinder to drive the piston backward as well as forward, thereby increasing the speed of the engine and cutting its fuel consumption.<br><br>
+
+&nbsp;<span class="arr" id="arr32">&#10132;</span>[BOX]Watt's steam engine soon showed what it could do.[BOX] It liberated industry from dependence on running water.[BOX] The engine eliminated water in the mines by driving efficient pumps, which made possible deeper and deeper mining.[BOX] The ready availability of coal inspired William Murdoch during the 1790s to develop the first new form of nighttime illumination to be discovered in a millennium and a half. Coal gas rivaled smoky oil lamps and flickering candles, and early in the new century, well-to-do Londoners grew accustomed to gaslit houses and even streets. Iron manufacturers, which had starved for fuel while depending on charcoal, also benefited from ever-increasing supplies of coal: blast furnaces with steam-powered bellows turned out more iron and steel for the new machinery. Steam became the motive force of the Industrial Revolution as coal and iron ore were the raw materials.<br><br>
+
+&nbsp;<span class="arr" id="arr42">&#10132;</span><span class="arr" id="arr421">&#10132;</span>By 1800 more than a thousand steam engines were in use in the British Isles, and Britain <span id="retained">retained</span> a virtual monopoly on steam engine production until the 1830s. Steam power did not merely spin cotton and roll iron; early in the new century, it also multiplied ten times over the amount of paper that a single worker could produce in a day. At the same time, operators of the first printing presses run by steam rather than by hand found it possible to produce a thousand pages in an hour rather than thirty. Steam also promised to eliminate a transportation problem not fully solved by either canal boats or turnpikes. Boats could carry heavy weights, but canals could not cross hilly terrain; turnpikes could cross the hills, but the roadbeds could not stand up under great weights. These problems needed still another solution, and the ingredients for it lay close at hand. In some industrial regions, heavily laden wagons, with flanged wheels, were being hauled by horses along metal rails; and the stationary steam engine was puffing in the factory and mine. Another generation passed before inventors succeeded in combining these ingredients, by putting the engine on wheels and the wheels on the rails, so as to provide a machine to take the place of the horse. Thus the railroad age sprang from what had already happened in the eighteenth century.<br><br>
+`
+            ],
+            questions: [
+                { type: "multiple-choice", question: "Which of the sentences below best expresses the essential information in the highlighted sentence in the passage? Incorrect choices change the meaning in important ways or leave out essential information．", options: ["Running water was the best power source for factories since it could keep machines operating continuously, but since it was abundant only in Lancashire and Scotland, most mills and factories that were located elsewhere could not be water driven.", "The disadvantage of using waterpower is that streams do not necessarily flow in places that are the most suitable for factories, which explains why so many water-powered grain and textile mills were located in undesirable places.", "Since machines could be operated continuously only where running water was abundant, grain and textile mills, as well as other factories, tended to be located only in Lancashire and Scotland.", "Running water was the only source of power that was suitable for the continuous operation of machines, but to make use of it, factories had to be located where the water was, regardless of whether such locations made sense otherwise."], correct: 3 },
+                { type: "multiple-choice", question: "The word “exploited” in the passage is closest in meaning to", options: ["utilized", "recognized", "examined", "fully understood"], correct: 0 },
+                { type: "multiple-choice", question: "According to paragraph 2, the “atmospheric engine” was slow because", options: ["it had been designed to be used in coal mines", "the cylinder had to cool between each stroke", "it made use of expanding steam to raise the piston in its cylinder", "it could be operated only when a large supply of fuel was available"], correct: 1 },
+                { type: "multiple-choice", question: "According to paragraph 2, Watt's steam engine differed from earlier steam engines in each of the following ways EXCEPT:", options: ["It used steam to move a piston in a cylinder.", "It worked with greater speed.", "It was more efficient in its use of fuel.", "It could be used in many different ways."], correct: 0 },
+                { type: "multiple-choice", question: "In paragraph 3, the author mentions William Murdoch’s invention of a new form of nighttime illumination in order to", options: ["indicate one of the important developments made possible by the introduction of Watt's steam engine", "make the point that Watt's steam engine was not the only invention of importance to the Industrial Revolution", "illustrate how important coal was as a raw material for the Industrial Revolution", "provide an example of another eighteenth-century invention that used steam as a power source"], correct: 0 },
+                { type: "multiple-choice", question: "The word “retained” in the passage is closest in meaning to", options: ["gained", "established", "profited from", "maintained"], correct: 3 },
+                { type: "multiple-choice", question: "According to paragraph 4, which of the following statements about steam engines is true?", options: ["They were used for the production of paper but not for printing.", "By 1800, significant numbers of them were produced outside of Britain.", "They were used in factories before they were used to power trains.", "They were used in the construction of canals and turnpikes."], correct: 2 },
+                { type: "multiple-choice", question: "According to paragraph 4, providing a machine to take the place of the horse involved combining which two previously separate ingredients?", options: ["Turnpikes and canals", "Stationary steam engines and wagons with flanged wheels", "Metal rails in roadbeds and wagons capable of carrying heavy loads", "Canal boats and heavily laden wagons"], correct: 1 },
+                {
+                    type: "insert-sentence",
+                    sentence: `The factories did not have to go to the streams when power could come to the factories.`,
+                    insertionSpots: [0, 1, 2, 3],
+                    correct: 2
+                },
+                {
+                    type: "summary",
+                    prompt: "Directions: An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the THREE answer choices that express the most important ideas in the passage. Some sentences do not belong in the summary because they express ideas that are not presented in the passage or are minor ideas in the passage. This question is worth 2 points. The Industrial Revolution would not have been possible without a new source of power that was efficient, movable, and continuously available.",
+                    choices: [
+                        { text: "In the early eighteenth century, Savery and Newcomen discovered that expanding steam could be used to raise a piston in a cylinder.", isCorrect: true },
+                        { text: "Watt’s steam engine played a leading role in greatly increasing industrial production of all kinds.", isCorrect: true },
+                        { text: "Until the 1830s, Britain was the world’s major producer of steam engines.", isCorrect: true },
+                        { text: "In the mid-1700s James Watt transformed an inefficient steam pump into a fast, flexible, fuel-efficient engine.", isCorrect: false },
+                        { text: "In the 1790s William Murdoch developed a new way of lighting houses and streets using coal gas.", isCorrect: false },
+                        { text: "The availability of steam engines was a major factor in the development of railroads, which solved a major transportation problem.", isCorrect: false }
+                    ],
+                    correct: [1, 3, 5]
+                }
+            ]
+        }
+    ],
+    specialBehavior:[
+    {targetId: "arr1", questionIndex: 0, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr2", questionIndex: 1, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr4", questionIndex: 3, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr5", questionIndex: 6, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr22",  questionIndex:13, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr32",  questionIndex:14, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr42",  questionIndex:16, styles: {display: "inline", fontWeight: "600", color: "red" }},
+    {targetId: "arr421",  questionIndex:17, styles: {display: "inline", fontWeight: "600", color: "red" }},
+
+
+
+    {targetId: "sentence1", questionIndex: 2, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "enruded", questionIndex: 4, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "virtually", questionIndex: 5, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "trilobite", questionIndex: 7, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "sentence2",  questionIndex:10, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "exploited",  questionIndex:11, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "atmospheric",  questionIndex:12, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }},
+    {targetId: "retained",  questionIndex:15, styles: {fontWeight: "600", backgroundColor: "rgb(144, 144, 144)" }}
+    ]
+};
+
