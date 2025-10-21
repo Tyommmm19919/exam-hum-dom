@@ -45,10 +45,14 @@ const interstitialText = document.getElementById('interstitialText');
 const interstitialAudio = document.getElementById('interstitialAudio');
 const interstitialContinue = document.getElementById('interstitialContinue');
 function getRepoBasePath() {
+  // Detect the GitHub Pages base path once, safely
   const parts = window.location.pathname.split('/').filter(Boolean);
-  const repo = parts[0] || '';
+  const repo = parts.length > 0 ? parts[0] : '';
+  // Prevent double prefixes when already running inside that repo
+  if (window.location.pathname.includes(`/${repo}/${repo}/`)) return `/${repo}/`;
   return repo ? `/${repo}/` : '/';
 }
+
 
 function fixLeadingSlashesInData(data) {
   const base = getRepoBasePath();
