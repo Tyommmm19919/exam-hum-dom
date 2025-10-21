@@ -44,6 +44,14 @@ const interstitial = document.getElementById('interstitial');
 const interstitialText = document.getElementById('interstitialText');
 const interstitialAudio = document.getElementById('interstitialAudio');
 const interstitialContinue = document.getElementById('interstitialContinue');
+// === Allow all audio autoplay after first click ===
+document.addEventListener("click", () => {
+  document.querySelectorAll("audio").forEach(a => {
+    a.muted = false;
+    a.play().catch(() => {});
+  });
+}, { once: true });
+
 function getRepoBasePath() {
   const parts = window.location.pathname.split('/').filter(Boolean);
   const repo = parts.length > 0 ? parts[0] : '';
@@ -460,11 +468,16 @@ async function runQuestionAfterInterstitial(myToken) {
   if (myToken !== flowToken) return;
 
   try {
-    if (q.type === 'integrated') {
-      questionText.style.display = "block";
-      questionText.innerHTML = q.prompt;
+if (q.type === 'integrated') {
+  // ✅ Show passage immediately before any audio autoplay tries to run
+  questionText.style.display = "block";
+  questionText.innerHTML = q.prompt || "<p>Loading passage...</p>";
 
-      await startCountdown(q.readTime, 'Preparation');
+  // Allow passage to appear immediately (browser won't block this)
+  await new Promise(r => setTimeout(r, 50));
+
+  await startCountdown(q.readTime, 'Reading');
+
       if (myToken !== flowToken) return;
 
       questionText.innerHTML = '';
