@@ -45,12 +45,10 @@ const interstitialText = document.getElementById('interstitialText');
 const interstitialAudio = document.getElementById('interstitialAudio');
 const interstitialContinue = document.getElementById('interstitialContinue');
 // === Allow all audio autoplay after first click ===
-document.addEventListener("click", () => {
-  document.querySelectorAll("audio").forEach(a => {
-    a.muted = false;
-    a.play().catch(() => {});
-  });
-}, { once: true });
+// Track that the user interacted at least once (no forced playback)
+let __USER_INTERACTED__ = false;
+document.addEventListener("click", () => { __USER_INTERACTED__ = true; }, { once: true });
+
 
 function getRepoBasePath() {
   const parts = window.location.pathname.split('/').filter(Boolean);
@@ -400,8 +398,20 @@ function showInterstitial(index, onContinue) {
 
   interstitialContinue.addEventListener('click', handler, { once: true });
 
+  // ✅ Play only that interstitial’s own audio, not all audios
   if (screen.audio) {
-    interstitialAudio.play().catch(() => {});
+    // Try to play automatically — if browser blocks it, enable on first user click
+    const tryPlay = () => {
+      interstitialAudio.play().catch(() => {
+        // if playback fails, wait for a single user click to start
+        const resume = () => {
+          document.removeEventListener('click', resume);
+          interstitialAudio.play().catch(() => {});
+        };
+        document.addEventListener('click', resume, { once: true });
+      });
+    };
+    tryPlay();
   }
 }
 
