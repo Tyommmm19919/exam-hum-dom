@@ -1,7 +1,7 @@
     window.listeningData = [
       {
         //1
-        audio: "/data/1/audio/AudioLong1.mp3",
+        audio: "../data/1/audio/AudioLong1.mp3",
         questions: [
           {
             intro: "/data/1/audio/1.1.mp3",
