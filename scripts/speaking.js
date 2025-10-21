@@ -387,14 +387,26 @@ function showInterstitial(index, onContinue) {
   timerDisplay.classList.add('hidden');
   clearProgressUI();
 
-  const handler = () => {
-    interstitialContinue.style.display = "none";
-    try { interstitialAudio.pause(); } catch {}
-    questionWrap.style.display = "block";
-    interstitial.style.display = 'none';
-    interstitialContinue.removeEventListener('click', handler);
-    if (typeof onContinue === 'function') onContinue();
-  };
+const handler = () => {
+  interstitialContinue.style.display = "none";
+
+  // ✅ Properly stop and reset interstitial audio
+  try {
+    interstitialAudio.pause();
+    interstitialAudio.currentTime = 0;
+    interstitialAudio.removeAttribute("src"); // ensures it won’t continue buffering or replaying
+    interstitialAudio.load(); // resets the element cleanly
+  } catch (err) {
+    console.warn("Failed to stop interstitialAudio:", err);
+  }
+
+  questionWrap.style.display = "block";
+  interstitial.style.display = "none";
+  interstitialContinue.removeEventListener("click", handler);
+
+  if (typeof onContinue === "function") onContinue();
+};
+
 
   interstitialContinue.addEventListener('click', handler, { once: true });
 
