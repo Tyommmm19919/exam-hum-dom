@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Listening Section</title>
-  <link rel="stylesheet" href="/styles/listening.css" />
+  <link rel="stylesheet" href="styles/listening.css" />
 </head>
 
 <body>
@@ -92,7 +92,7 @@
 
     const testNumber = window.TEST_ID;
     const dataScript = document.createElement("script");
-    dataScript.src = `/data/${testNumber}/listeningData_Test${testNumber}.js`;
+    dataScript.src = `data/${testNumber}/listeningData_Test${testNumber}.js`;
 
     dataScript.onload = () => {
       if (!window.listeningData) {
