@@ -228,7 +228,7 @@
         sessionStorage.setItem('SAT_CURRENT_SECTION_INDEX', '0');
       }
       const dataScript = document.createElement('script');
-      dataScript.src = `data-sat/${testId}/englishData_Test${testId}.js`;
+      dataScript.src = `../data-sat/${testId}/englishData_Test${testId}.js`;
       dataScript.onload = () => {
         if (!window.satRWData || !Array.isArray(window.satRWData.items)) {
           alert("Invalid english data file (satRWData.items missing).");
