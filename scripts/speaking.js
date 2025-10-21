@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(() => {
       questions = window.questions; 
       const screensScript = document.createElement("script");
-      screensScript.src = `/data/speakingScreens.js`;
+      screensScript.src = `../data/speakingScreens.js`;
       screensScript.onload = () => startDirections();
       screensScript.onerror = () => { console.warn('[speaking] speakingScreens file not found — using auto-generated screens.'); startDirections(); };
       document.body.appendChild(screensScript);
