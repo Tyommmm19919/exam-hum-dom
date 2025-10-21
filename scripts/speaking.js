@@ -45,13 +45,11 @@ const interstitialText = document.getElementById('interstitialText');
 const interstitialAudio = document.getElementById('interstitialAudio');
 const interstitialContinue = document.getElementById('interstitialContinue');
 function getRepoBasePath() {
-  // Detect the GitHub Pages base path once, safely
   const parts = window.location.pathname.split('/').filter(Boolean);
   const repo = parts.length > 0 ? parts[0] : '';
-  // Prevent double prefixes when already running inside that repo
-  if (window.location.pathname.includes(`/${repo}/${repo}/`)) return `/${repo}/`;
   return repo ? `/${repo}/` : '/';
 }
+
 
 
 function fixLeadingSlashesInData(data) {
@@ -82,12 +80,17 @@ function addMp3IfMissing(path) {
   // Absolute URLs are fine
   if (/^https?:\/\//i.test(p)) return p;
 
-  // Fix leading-slash paths ("/data/...") to work under a project site ("/<repo>/data/...")
-  if (p.startsWith('/')) return getRepoBasePath() + p.slice(1);
+  // If it already starts with the repo base, don't add it again
+  const base = getRepoBasePath();
+  if (p.startsWith(base)) return p;
+
+  // If it starts with a plain leading slash, prefix with repo base once
+  if (p.startsWith('/')) return base + p.slice(1);
 
   // Relative paths are OK as-is
   return p;
 }
+
 
 
 async function getMicAccess() {
