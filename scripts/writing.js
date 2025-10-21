@@ -64,11 +64,21 @@ function fixLeadingSlashesInData(data) {
 function addMp3IfMissing(path) {
   if (typeof path !== 'string' || !path) return path;
 
+  // Ensure .mp3 extension if missing
   let p = (!path.includes('?') && !path.endsWith('.mp3')) ? `${path}.mp3` : path;
+
+  // Full URLs are fine
   if (/^https?:\/\//i.test(p)) return p;
-  if (p.startsWith('/')) return getRepoBasePath() + p.slice(1);
+
+  const base = getRepoBasePath();
+
+  // Avoid double prefix
+  if (p.startsWith(base)) return p;
+  if (p.startsWith('/')) return base + p.slice(1);
+
   return p;
 }
+
 
 const testId = _WR_TESTID;
 
@@ -252,7 +262,7 @@ function startAudioThenWriting(task){
   });
 }
 
-function playWritingAudio(src, onEnded){
+function playWritingAudio(src, onEnded) {
   moveProgressToTop();
 
   if (!src) {
@@ -260,16 +270,29 @@ function playWritingAudio(src, onEnded){
     return;
   }
 
-  writingAudio.src = src.endsWith(".mp3") ? src : `${src}.mp3`;
+  // ✅ Ensure .mp3 extension and correct repo-relative path
+  const fixedSrc = addMp3IfMissing(src);
+  writingAudio.src = fixedSrc;
+
   setVisible(writingAudio, true);
   setVisible(progressWrap, true);
   progressBar.style.width = "0%";
 
-  writingAudio.play().catch(() => {
-    setVisible(writingAudio, false);
-    setVisible(progressWrap, false);
-    onEnded && onEnded();
-  });
+  // ✅ Attempt to play; if browser blocks it, wait for first click
+  const tryPlay = () => {
+    writingAudio.play().catch(() => {
+      const resume = () => {
+        document.removeEventListener("click", resume);
+        writingAudio.play().catch(() => {
+          setVisible(writingAudio, false);
+          setVisible(progressWrap, false);
+          onEnded && onEnded();
+        });
+      };
+      document.addEventListener("click", resume, { once: true });
+    });
+  };
+  tryPlay();
 
   const interval = setInterval(() => {
     if (writingAudio.duration) {
@@ -284,6 +307,7 @@ function playWritingAudio(src, onEnded){
     }
   }, 200);
 }
+
 
 function startWritingTimer(totalSeconds){
   const task = writingTasks[writingIndex];
