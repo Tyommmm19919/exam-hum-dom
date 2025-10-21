@@ -210,8 +210,8 @@ window.goToNextSection = function () {
 
 function getSpeakingDataPath(tt, tnum) {
   return tt === 'sh'
-    ? `/dataSH/${tnum}/speakingData_Test${tnum}.js`
-    : `/data/${tnum}/speakingData_Test${tnum}.js`;
+    ? `../dataSH/${tnum}/speakingData_Test${tnum}.js`
+    : `../data/${tnum}/speakingData_Test${tnum}.js`;
 }
 
 function loadSpeakingData(tt, tnum) {

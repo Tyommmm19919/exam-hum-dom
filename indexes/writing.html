@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TOEFL Writing Section</title>
-    <link rel="stylesheet" href="/styles/writing.css" />
+    <link rel="stylesheet" href="../styles/writing.css" />
 </head>
 
 <body>
@@ -75,7 +75,7 @@
     <button id="download-btn" class="hidden">Download All Responses</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="/scripts/writing.js"></script>
+    <script src="../scripts/writing.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -88,7 +88,7 @@
             sessionStorage.setItem("TEST_ID", testId);
 
             const script = document.createElement("script");
-            script.src = `/data/${testId}/writingData_Test${testId}.js`;
+            script.src = `../data/${testId}/writingData_Test${testId}.js`;
 
             script.onload = () => {
                 if (window.writingTasks && Array.isArray(window.writingTasks)) {

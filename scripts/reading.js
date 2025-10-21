@@ -25,56 +25,46 @@ const closeText        = document.getElementById('closeText');
 const directionsR      = document.getElementById('directionsR');
 
 function buildCandidateUrls(tt, tnum) {
-  const baseFolder = tt === 'sh' ? 'dataSH' : 'data';
-  const file = `${baseFolder}/${tnum}/readingData_Test${tnum}.js`;
+  // Simplified and reliable: direct paths
+  const baseFolder = tt === 'sh' ? '../dataSH' : '../data';
+  const filePath = `${baseFolder}/${tnum}/readingData_Test${tnum}.js`;
 
-  const candidates = [
-    new URL(`./${file}`,       document.baseURI).toString(),
-    new URL(`${file}`,       document.baseURI).toString(),
-    new URL(`../${file}`,      document.baseURI).toString(),
-    new URL(`../../${file}`,   document.baseURI).toString(),
-    new URL(`../../../${file}`,document.baseURI).toString(),
-    `/${file}`
-  ];
-
+  // Add cache-busting timestamp
   const now = Date.now().toString();
-  return [...new Set(candidates)].map(u => {
-    try {
-      const url = new URL(u, document.baseURI);
-      url.searchParams.set('_', now);
-      return url.toString();
-    } catch {
-      return u; 
-    }
-  });
+  const url = new URL(filePath, document.baseURI);
+  url.searchParams.set('_', now);
+
+  console.log(`[reading] Loading from: ${url.toString()}`);
+  return [url.toString()];
 }
 
-function loadReadingData(tt, tnum) {
-  return new Promise(async (resolve, reject) => {
-    try { delete window.readingData; } catch {}
+async function loadReadingData(tt, tnum) {
+  try {
+    // Clear any previous data
+    delete window.readingData;
 
-    const urls = buildCandidateUrls(tt, tnum);
-    console.log('[reading] candidate URLs:', urls);
+    const [url] = buildCandidateUrls(tt, tnum);
+    await loadScript(url);
 
-    let lastErr = null;
-
-    for (const url of urls) {
-      try {
-        await loadScript(url);
-        if (typeof window.readingData !== 'undefined') {
-          console.log('[reading] loaded from:', url);
-          return resolve(window.readingData);
-        } else {
-          lastErr = new Error(`Loaded ${url} but "window.readingData" was not defined. Ensure the file sets: window.readingData = {...}`);
-        }
-      } catch (e) {
-        lastErr = e;
-      }
+    if (typeof window.readingData === 'undefined') {
+      throw new Error(`Loaded ${url}, but window.readingData was not defined. Ensure your file includes "window.readingData = {...}"`);
     }
 
-    reject(lastErr || new Error('Failed to load reading data from all candidates.'));
-  });
+    console.log(`[reading] Successfully loaded reading data from ${url}`);
+    return window.readingData;
+  } catch (err) {
+    console.error('[reading] Failed to load reading data:', err);
+    alert(
+      'Failed to load reading test data.\n' +
+      'Make sure your file exists at:\n\n' +
+      '../data/<testId>/readingData_Test<testId>.js\n' +
+      'or\n' +
+      '../dataSH/<testId>/readingData_Test<testId>.js'
+    );
+    throw err;
+  }
 }
+
 
 function loadScript(srcUrl) {
   return new Promise((resolve, reject) => {

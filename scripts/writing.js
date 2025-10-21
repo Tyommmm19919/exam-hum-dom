@@ -87,8 +87,8 @@ window.goToNextSection = function () {
 
 function getWritingDataPath(tt, tnum) {
   return tt === "sh"
-    ? `/dataSH/${tnum}/writingData_Test${tnum}.js`
-    : `/data/${tnum}/writingData_Test${tnum}.js`;
+    ? `../dataSH/${tnum}/writingData_Test${tnum}.js`
+    : `../data/${tnum}/writingData_Test${tnum}.js`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -5,14 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Speaking Section</title>
-  <link rel="stylesheet" href="/styles/speaking.css" />
+  <link rel="stylesheet" href="../styles/speaking.css" />
 </head>
 
 <body>
   <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
 
   <div id="speakingDirections" style="display:none;">
-    <audio src="/commonAudios/SpeakingDirectionsAudio.mp3" id="spDirectionAu"></audio>
+    <audio src="../commonAudios/SpeakingDirectionsAudio.mp3" id="spDirectionAu"></audio>
     <div class="topSpDir">
       <button id="continueDirec">Continue</button>
     </div>
@@ -74,12 +74,12 @@
     <div id="recordings" class="hidden"></div>
     <button id="download-btn" class="hidden">Download All Responses</button>
   </div>
-  <audio src="/commonAudios/bib-prepare.mp3" id="bibPrepare"></audio>
-  <audio src="/commonAudios/bib-speak.mp3" id="bibSpeak"></audio>
+  <audio src="../commonAudios/bib-prepare.mp3" id="bibPrepare"></audio>
+  <audio src="../commonAudios/bib-speak.mp3" id="bibSpeak"></audio>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="/scripts/recStore.js"></script>
-  <script src="/scripts/speaking.js"></script>
+  <script src="../scripts/recStore.js"></script>
+  <script src="../scripts/speaking.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -93,7 +93,7 @@
       localStorage.setItem(`recordings_${testId}`, JSON.stringify([]));
 
       const script = document.createElement("script");
-      script.src = `/data/${testId}/speakingData_Test${testId}.js`;
+      script.src = `../data/${testId}/speakingData_Test${testId}.js`;
 
       script.onload = () => {
         if (window.questions && Array.isArray(window.questions)) {

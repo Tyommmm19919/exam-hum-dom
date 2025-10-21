@@ -74,8 +74,8 @@ let questionV = 0;
 
 function getListeningDataPath(tt, tnum) {
   return tt === "sh"
-    ? `/dataSH/${tnum}/listeningData_Test${tnum}.js`
-    : `/data/${tnum}/listeningData_Test${tnum}.js`;
+    ? `../dataSH/${tnum}/listeningData_Test${tnum}.js`
+    : `../data/${tnum}/listeningData_Test${tnum}.js`;
 }
 mentionSection.innerHTML = `${typeName} — Test ${testId} — Listening`;
 
