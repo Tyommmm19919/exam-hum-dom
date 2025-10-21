@@ -44,12 +44,47 @@ const interstitial = document.getElementById('interstitial');
 const interstitialText = document.getElementById('interstitialText');
 const interstitialAudio = document.getElementById('interstitialAudio');
 const interstitialContinue = document.getElementById('interstitialContinue');
+function getRepoBasePath() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const repo = parts[0] || '';
+  return repo ? `/${repo}/` : '/';
+}
+
+function fixLeadingSlashesInData(data) {
+  const base = getRepoBasePath();
+
+  const visit = (node) => {
+    if (Array.isArray(node)) return node.map(visit);
+    if (node && typeof node === 'object') {
+      const out = {};
+      for (const [k, v] of Object.entries(node)) out[k] = visit(v);
+      return out;
+    }
+    if (typeof node === 'string' && node.startsWith('/')) {
+      return base + node.slice(1);
+    }
+    return node;
+  };
+
+  return visit(data);
+}
 
 function addMp3IfMissing(path) {
-  return typeof path === 'string' && path && !path.includes('?') && !path.endsWith('.mp3')
-    ? `${path}.mp3`
-    : path;
+  if (typeof path !== 'string' || !path) return path;
+
+  // Ensure .mp3 extension if it’s missing (and no query string)
+  let p = (!path.includes('?') && !path.endsWith('.mp3')) ? `${path}.mp3` : path;
+
+  // Absolute URLs are fine
+  if (/^https?:\/\//i.test(p)) return p;
+
+  // Fix leading-slash paths ("/data/...") to work under a project site ("/<repo>/data/...")
+  if (p.startsWith('/')) return getRepoBasePath() + p.slice(1);
+
+  // Relative paths are OK as-is
+  return p;
 }
+
 
 async function getMicAccess() {
   try {
@@ -255,13 +290,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadSpeakingData(__SPEAK_TYPE__, testId)
     .then(() => {
-      questions = window.questions; 
-      const screensScript = document.createElement("script");
-      screensScript.src = `../data/speakingScreens.js`;
-      screensScript.onload = () => startDirections();
-      screensScript.onerror = () => { console.warn('[speaking] speakingScreens file not found — using auto-generated screens.'); startDirections(); };
-      document.body.appendChild(screensScript);
-    })
+  // ✅ Fix every "/data/..." path so GitHub Pages can find your audio files
+  questions = fixLeadingSlashesInData(window.questions || window.speakingData || []);
+
+  // Load optional 'speakingScreens.js' file (it’s OK if it’s missing)
+  const screensScript = document.createElement("script");
+  screensScript.src = `../data/speakingScreens.js`;
+  screensScript.onload = () => startDirections();
+  screensScript.onerror = () => {
+    console.warn('[speaking] speakingScreens file not found — using auto-generated screens.');
+    startDirections();
+  };
+  document.body.appendChild(screensScript);
+})
+
     .catch(err => {
       console.error(err);
       alert('Speaking test data failed to load. Check file paths and that the data file defines window.questions = [...] or window.speakingData = [...].');
@@ -269,6 +311,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function startDirections() {
+  try {
+  if (spDirectionAu && spDirectionAu.getAttribute('src')) {
+    spDirectionAu.src = addMp3IfMissing(spDirectionAu.getAttribute('src'));
+  }
+  if (bibPrepare && bibPrepare.getAttribute('src')) {
+    bibPrepare.src = addMp3IfMissing(bibPrepare.getAttribute('src'));
+  }
+  if (bibSpeak && bibSpeak.getAttribute('src')) {
+    bibSpeak.src = addMp3IfMissing(bibSpeak.getAttribute('src'));
+  }
+} catch {}
   speakingDirections.style.display = "block";
   spDirectionAu?.play?.().catch(() => {});
 

@@ -71,6 +71,30 @@ let timeFull = testType === "toefl"? 15*60 : 20*60;
 let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
 let questionV = 0;
+function getRepoBasePath() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const repo = parts[0] || '';
+  return repo ? `/${repo}/` : '/';
+}
+
+function fixLeadingSlashesInData(data) {
+  const base = getRepoBasePath();
+
+  const visit = (node) => {
+    if (Array.isArray(node)) return node.map(visit);
+    if (node && typeof node === 'object') {
+      const out = {};
+      for (const [k, v] of Object.entries(node)) out[k] = visit(v);
+      return out;
+    }
+    if (typeof node === 'string' && node.startsWith('/')) {
+      return base + node.slice(1);
+    }
+    return node;
+  };
+
+  return visit(data);
+}
 
 function getListeningDataPath(tt, tnum) {
   return tt === "sh"
@@ -122,12 +146,17 @@ function goTime() {
 window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
   loadListeningData(testType, effTestId)
-    .then(() => setTimeout(loadPassage, 1000))
+    .then(() => {
+      // 🔥 Fix all "/data/..." paths inside your loaded data
+      window.listeningData = fixLeadingSlashesInData(window.listeningData);
+      setTimeout(loadPassage, 1000);
+    })
     .catch(err => {
       console.error(err);
       alert("Could not load listening test data. Check file paths and that the data file sets window.listeningData.");
     });
 };
+
 
 audioEl.onended = loadQuestion;
 

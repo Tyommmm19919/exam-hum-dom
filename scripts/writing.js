@@ -36,6 +36,39 @@ const progressBar     = document.getElementById("writing-progress-bar");
 const finishBtn       = document.getElementById("finish-writing-btn");
 const finalResults    = document.getElementById("final-results");
 const downloadBtn     = document.getElementById("download-btn");
+function getRepoBasePath() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const repo = parts[0] || '';
+  return repo ? `/${repo}/` : '/';
+}
+
+function fixLeadingSlashesInData(data) {
+  const base = getRepoBasePath();
+
+  const visit = (node) => {
+    if (Array.isArray(node)) return node.map(visit);
+    if (node && typeof node === 'object') {
+      const out = {};
+      for (const [k, v] of Object.entries(node)) out[k] = visit(v);
+      return out;
+    }
+    if (typeof node === 'string' && node.startsWith('/')) {
+      return base + node.slice(1);
+    }
+    return node;
+  };
+
+  return visit(data);
+}
+
+function addMp3IfMissing(path) {
+  if (typeof path !== 'string' || !path) return path;
+
+  let p = (!path.includes('?') && !path.endsWith('.mp3')) ? `${path}.mp3` : path;
+  if (/^https?:\/\//i.test(p)) return p;
+  if (p.startsWith('/')) return getRepoBasePath() + p.slice(1);
+  return p;
+}
 
 const testId = _WR_TESTID;
 
@@ -99,16 +132,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const script = document.createElement("script");
   script.src = `${getWritingDataPath(_WR_TYPE, testId)}?_=${Date.now()}`; // cache-buster like other sections
-  script.onload = () => {
-    if (Array.isArray(window.writingTasks)) {
-      writingTasks = window.writingTasks.slice();
-      writingDirectionsScreen.style.display = "block";
-      writingSection.style.display = "none";
-      hookEvents();
-    } else {
-      alert("Writing data failed to load (window.writingTasks is not an array).");
-    }
-  };
+script.onload = () => {
+  if (Array.isArray(window.writingTasks)) {
+    // ✅ Fix all leading slashes so /data/... becomes /exam-hub/data/...
+    writingTasks = fixLeadingSlashesInData(window.writingTasks.slice());
+
+    writingDirectionsScreen.style.display = "block";
+    writingSection.style.display = "none";
+    hookEvents();
+  } else {
+    alert("Writing data failed to load (window.writingTasks is not an array).");
+  }
+};
+
   script.onerror = () => {
     alert(`Error loading writing data for type=${_WR_TYPE}, test=${testId}.`);
   };
