@@ -310,7 +310,7 @@ body::before{
 
       </div>
       <div>
-<button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌓</button>
+<button id="themeToggle" class="theme-btn" aria-label="Toggle theme"></button>
 
       </div>
     </div>
@@ -558,9 +558,14 @@ body::before{
   </script>
   <script>
 const themeBtn = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+themeBtn.innerHTML = html.getAttribute('data-theme') === 'light' ? "🌕" : "🌑"
+
 themeBtn?.addEventListener('click', () => {
   const html = document.documentElement;
   const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  themeBtn.innerHTML = html.getAttribute('data-theme') === 'light' ? "🌑" : "🌕"
   html.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   themeBtn.setAttribute('aria-label', next === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
