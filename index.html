@@ -26,39 +26,60 @@
       --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
       --nav-h: 64px;
     }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f7f8fd; --bg-2:#eef1fb;
-        --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.86);
-        --card: rgba(255,255,255,.92); --border: rgba(23,32,58,.12);
-        --text:#0f1428; --muted:#3e4a74;
-        --shadow-1: 0 8px 20px rgba(23, 32, 58, .10);
-        --shadow-2: 0 24px 60px rgba(23, 32, 58, .16);
-      }
-    }
+/* keep your existing :root (dark) variables */
+
+html[data-theme="light"]{
+  --bg:#f7f8fd; --bg-2:#eef1fb;
+  --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.86);
+  --card: rgba(255,255,255,.92); --border: rgba(23,32,58,.12);
+  --text:#0f1428; --muted:#3e4a74;
+  --shadow-1: 0 8px 20px rgba(23, 32, 58, .10);
+  --shadow-2: 0 24px 60px rgba(23, 32, 58, .16);
+}
+
+/* optional: theme-aware accent hues so gradients look good in both themes */
+:root{
+  --g1:#1c2550;   /* dark blue glow 1 */
+  --g2:#142762;   /* dark blue glow 2 */
+}
+html[data-theme="light"]{
+  --g1:#dfe7ff;   /* soft light glow 1 */
+  --g2:#cfe0ff;   /* soft light glow 2 */
+}
+
 
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     html{scroll-behavior:smooth;}
-    body{
-      font-family:var(--font);color:var(--text);
-      background:
-        radial-gradient(1200px 900px at 0% -10%, #1c2550, transparent 60%),
-        radial-gradient(1200px 900px at 100% 0%, #142762, transparent 45%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-      overflow-x:hidden;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    body::before{
-      content:"";position:fixed;inset:0;pointer-events:none;opacity:.20;z-index:0;
-      background-image:
-        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.18) 50%, transparent 51%),
-        radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.12) 50%, transparent 51%),
-        radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.10) 50%, transparent 51%),
-        radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.14) 50%, transparent 51%);
-    }
+  body{
+  font-family:var(--font); color:var(--text);
+  /* single seamless backdrop composed of 2 big radial glows + a base vertical wash */
+  background:
+    radial-gradient(180vw 140vh at -20vw -20vh, var(--g1) 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(180vw 140vh at 120vw 0vh,  var(--g2) 0%, rgba(0,0,0,0) 55%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed, fixed, fixed; /* stable on scroll */
+  background-size: auto, auto, 100% 100%;
+  overflow-x:hidden; line-height:1.65;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+
+/* subtle star/noise layer to break banding (very light) */
+/* Subtle, neutral noise (no blending, no tint) */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none; z-index:0;
+  opacity:.06;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCc+PGZpbHRlciBpZD0nbic+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOCcgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48ZmVDb21wb25lbnRUcmFuc2ZlciA+PGZlRnVuY0EgdHlwZT0ndGFibGUnIHRhYmxlVmFsdWVzPScwIDAgMC4yIDAnLz48L2ZlQ29tcG9uZW50VHJhbnNmZXI+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nd2hpdGUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");
+  background-repeat: repeat;
+  background-size: 240px 240px;
+}
+
+
+
+
 
     /* Top bar */
     .nav{
@@ -209,7 +230,38 @@
 
     /* Focus target highlight */
     :target{ scroll-margin-top: calc(var(--nav-h) + 18px); }
+    .theme-btn{
+  /* display: inline-flex; */
+  align-items: center;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.10);
+  border-radius: 12px;
+  /* padding: 10px 12px; */
+  color: var(--text);
+  font-weight: 900;
+  width: 100%;
+  font-size: 200px;
+  height: max-content;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.theme-btn:hover{ transform: translateY(-10px); }
+
   </style>
+  <script>
+(() => {
+  const saved = localStorage.getItem('theme'); // 'light' | 'dark' | null
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  } else {
+    // default to the system preference on first visit
+    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  }
+})();
+</script>
+<meta name="color-scheme" content="dark light">
+
 </head>
 <body>
   <!-- scrim for mobile menu -->
@@ -235,6 +287,7 @@
         <div class="lower-slide" style="width: 100%;">
           <img src="students/user.jpg" class="logo" id="user-logo" alt="User center" title="User Center" onclick="window.location.href = '/indexes/user-center.html' ">
         </div>
+
       </div>
     </div>
   </nav>
@@ -254,8 +307,11 @@
           <a href="indexes/results.html" class="btn secondary">Go to the TOEFL results</a>
           <a href="indexes/results-sat.html" class="btn primary">Go to the SAT results</a>
         </div>
+
       </div>
       <div>
+<button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌓</button>
+
       </div>
     </div>
   </header>
@@ -499,5 +555,16 @@
   // ===== Dynamic year =====
   document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+  <script>
+const themeBtn = document.getElementById('themeToggle');
+themeBtn?.addEventListener('click', () => {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  themeBtn.setAttribute('aria-label', next === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+});
+</script>
+
 </body>
 </html>
