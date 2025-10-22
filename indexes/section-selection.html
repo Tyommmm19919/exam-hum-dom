@@ -35,20 +35,6 @@
 
       --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
     }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f7f8fd;
-        --bg-2:#eef1fb;
-        --surface: rgba(255,255,255,.65);
-        --surface-strong: rgba(255,255,255,.9);
-        --border: rgba(23,32,58,.10);
-        --text:#0f1428;
-        --muted:#475070;
-
-        --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
-        --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
-      }
-    }
 
     * { box-sizing: border-box; }
     html, body{
@@ -196,6 +182,7 @@
 
     #sectionSelector{ width: min(1100px, 94%); margin: 24px auto 100px; }
   </style>
+  <meta name="color-scheme" content="dark">
 </head>
 <body>
   <div id="sectionSelector" class="shell">
