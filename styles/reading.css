@@ -34,20 +34,19 @@
 
 
 * { box-sizing: border-box; }
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: var(--font);
-  color: var(--text);
+html, body{
+  /* …your existing props… */
   background:
-    radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%),
-    radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%),
+    /* two huge glows placed off-canvas so edges never show */
+    radial-gradient(180vw 140vh at -20vw -20vh, #1a2240 0%, transparent 60%),
+    radial-gradient(180vw 140vh at 120vw 0vh,  #18244a 0%, transparent 55%),
+    /* base wash */
     linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  user-select: none;
-  overflow: hidden;
-  overflow-x: hidden;
+  background-repeat: no-repeat;
+  background-attachment: fixed, fixed, fixed; /* stable on scroll */
+  background-size: auto, auto, 100% 100%;
 }
+
 
 body::before{
   content:"";
@@ -656,6 +655,7 @@ button[onclick*="test-selection.html"]:active{ transform: translateY(0); }
   #warning{display: none;}
 }
 @media (max-width: 720px){
+  .warning{display: none;}
   .viewClose{margin-left: 0;}
   .topLay{ grid-template-columns: 1fr; gap: 8px; }
   .viewClose{ justify-content: center; }

@@ -397,6 +397,7 @@ h3{
 }
 
 @media (max-width: 600px){
+  .warning{display: none;}
   .listeningTop{
     grid-template-columns: 1fr;
     gap: 8px;

@@ -371,3 +371,6 @@ h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
   #writing-section{min-height: fit-content;}
   .reading-box, #reading-passage{ max-height: 45vh; }
 }
+@media (max-width: 700px){
+  .warning{display: none;}
+}

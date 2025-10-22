@@ -443,3 +443,6 @@ h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
   }
   #download-btn{ width: 92%; }
 }
+@media (max-width: 700px){
+  .warning{display: none;}
+}
