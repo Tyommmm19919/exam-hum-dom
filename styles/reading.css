@@ -34,8 +34,12 @@
 
 
 * { box-sizing: border-box; }
-html, body{
-  /* …your existing props… */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--text);
   background:
     /* two huge glows placed off-canvas so edges never show */
     radial-gradient(180vw 140vh at -20vw -20vh, #1a2240 0%, transparent 60%),
@@ -45,8 +49,10 @@ html, body{
   background-repeat: no-repeat;
   background-attachment: fixed, fixed, fixed; /* stable on scroll */
   background-size: auto, auto, 100% 100%;
+  user-select: none;
+  overflow: hidden;
+  overflow-x: hidden;
 }
-
 
 body::before{
   content:"";
