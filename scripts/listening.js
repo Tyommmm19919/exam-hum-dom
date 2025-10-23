@@ -48,31 +48,7 @@ window.goToNextSection = function () {
     window.location.href = `results.html?type=${encodeURIComponent(testType)}&test=${encodeURIComponent(effTestId)}`;
   }
 };
-  function unlockAudioOnce() {
-    const els = [
-      document.getElementById("listeningDirectionsAudio"),
-      document.getElementById("mainAudio"),
-      document.getElementById("introAudio")
-    ].filter(Boolean);
 
-    els.forEach(el => {
-      try {
-        el.muted = true;
-        el.play().then(() => {
-          el.pause();
-          el.currentTime = 0;
-          el.muted = false;
-        }).catch(() => {});
-      } catch {}
-    });
-
-    document.removeEventListener("click", unlockAudioOnce);
-    document.removeEventListener("touchend", unlockAudioOnce);
-  }
-
-  // Do this as early as possible:
-  document.addEventListener("click", unlockAudioOnce, { once: true, passive: true });
-  document.addEventListener("touchend", unlockAudioOnce, { once: true, passive: true });
 // document.addEventListener('contextmenu', function (e) {
 //   e.preventDefault();
 //   alert("Right-click is disabled on this page.");
@@ -169,12 +145,12 @@ function goTime() {
 
 window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
-loadListeningData(testType, effTestId)
-  .then(() => {
-    window.listeningData = fixLeadingSlashesInData(window.listeningData);
-    loadPassage();                  // ✅ immediate
-  })
-
+  loadListeningData(testType, effTestId)
+    .then(() => {
+      // 🔥 Fix all "/data/..." paths inside your loaded data
+      window.listeningData = fixLeadingSlashesInData(window.listeningData);
+      setTimeout(loadPassage, 1000);
+    })
     .catch(err => {
       console.error(err);
       alert("Could not load listening test data. Check file paths and that the data file sets window.listeningData.");
