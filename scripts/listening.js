@@ -54,19 +54,19 @@ window.goToNextSection = function () {
 //   alert("Right-click is disabled on this page.");
 // });
 
-// let visibilityTimeout = null;
-// function visibilityHandler() {
-//   if (document.visibilityState === "hidden") {
-//     visibilityTimeout = setTimeout(() => {
-//       alert("You left the test window. The test will now reset.");
-//       location.reload();
-//     }, 1000);
-//   } else if (document.visibilityState === "visible") {
-//     clearTimeout(visibilityTimeout);
-//     visibilityTimeout = null;
-//   }
-// }
-// document.addEventListener("visibilitychange", visibilityHandler);
+let visibilityTimeout = null;
+function visibilityHandler() {
+  if (document.visibilityState === "hidden") {
+    visibilityTimeout = setTimeout(() => {
+      alert("You left the test window. The test will now reset.");
+      location.reload();
+    }, 1000);
+  } else if (document.visibilityState === "visible") {
+    clearTimeout(visibilityTimeout);
+    visibilityTimeout = null;
+  }
+}
+document.addEventListener("visibilitychange", visibilityHandler);
 let timeFull = testType === "toefl"? 15*60 : 20*60;
 let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
