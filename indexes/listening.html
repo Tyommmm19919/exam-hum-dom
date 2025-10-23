@@ -117,10 +117,26 @@
           if (typeof startAllAll === "function") startAllAll();
         };
 
-        btn.onclick = () => {
-          audio.pause();
-          start();
-        };
+btn.onclick = async () => {
+  // unlock audio on first tap
+  try { audio.pause(); } catch {}
+
+  try {
+    const effTestId = window.TEST_ID || testId;
+    await loadListeningData(testType, effTestId);
+    window.listeningData = fixLeadingSlashesInData(window.listeningData);
+
+    directions.style.display = "none";
+    testSection.style.display = "block";
+
+    // start immediately (no setTimeout)
+    loadPassage();
+  } catch (e) {
+    console.error(e);
+    alert("Could not load listening test data.");
+  }
+};
+
 
         audio.onended = start;
 
