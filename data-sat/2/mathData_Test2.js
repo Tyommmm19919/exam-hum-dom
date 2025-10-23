@@ -120,7 +120,7 @@ is the value of a?</p>`,
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/1.6.png"><br>In the xy-plane above, line l is perpendicular to
+                `<p><img src="../data-sat/2/1.6.png"><br>In the xy-plane above, line l is perpendicular to
 line m. What is the value of k?
 </p>`,
         options: ["-1", "-2", "-3", "-4.5"],
@@ -156,7 +156,7 @@ mean) of a, b, and c in terms of a?
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/1.8.png"><br>The figure above shows a regular hexagon. If the
+                `<p><img src="../data-sat/2/1.8.png"><br>The figure above shows a regular hexagon. If the
 length of AB is 4, what is the area of the hexagon?
 </p>`,
 
@@ -181,7 +181,7 @@ length of AB is 4, what is the area of the hexagon?
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/1.9.png"><br>In the xy-plane above, two graphs intersect at two
+                `<p><img src="../data-sat/2/1.9.png"><br>In the xy-plane above, two graphs intersect at two
 points. What is the value of b?
 
 </p>`,
@@ -410,7 +410,7 @@ above. What is the center of the circle?
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/1.16.png"><br>If the slope of line m in the xy-plane above is <math>
+                `<p><img src="../data-sat/2/1.16.png"><br>If the slope of line m in the xy-plane above is <math>
   <mfrac>
     <mn>1</mn>
     <mn>3</mn>
@@ -454,7 +454,7 @@ value of a+b+c ?</br>
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/1.19.png"><br>In the figure above, O is the center of the circle with
+                `<p><img src="../data-sat/2/1.19.png"><br>In the figure above, O is the center of the circle with
 radius r, and the measure of θ is <math>
   <mfrac>
     <mn>π</mn>
@@ -543,7 +543,7 @@ p centimeters?
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/2.4.png"><br>In the figure above, lines and m are parallel.
+                `<p><img src="../data-sat/2/2.4.png"><br>In the figure above, lines and m are parallel.
 If the measure of ∠1 is 20° more than the measure
 of ∠2, what is the measure of ∠1?</p>`,
             options: [`35°`, `45°
@@ -652,7 +652,7 @@ information.<br><table>
 </table><br>The chart above shows equivalent ages for dogs and
 humans.Human age is directly proportional to dog
 age.<br>Which of the following graphs best represents the
-relationship between dog and human ages?<br><img src="/data-sat/2/2.6.png"></p>`,
+relationship between dog and human ages?<br><img src="../data-sat/2/2.6.png"></p>`,
             options: [`A`, `B`, `C`, `D`],
             correct: 1
         },
@@ -731,7 +731,7 @@ f(7)=18, what is the value of f(5)?
             skill: "Systems (dependence)",
             prompt:
                 `<p>Questions 11 and 12 refer to the following
-information.<br><img src="/data-sat/2/2.11.png"><br>A rancher has 100 feet of fencing to enclose
+information.<br><img src="../data-sat/2/2.11.png"><br>A rancher has 100 feet of fencing to enclose
 rectangular region as shown above. The length and
 width are represented by x and y respectively.<br>Which ofthe following expressions represents the
 area of the rectangular region as a function of x?
@@ -751,7 +751,7 @@ area of the rectangular region as a function of x?
             prompt:
                 `<p>Questions 11 and 12 refer to the following
 information.<br>
-<img src="/data-sat/2/2.11.png"><br>A rancher has 100 feet of fencing to enclose
+<img src="../data-sat/2/2.11.png"><br>A rancher has 100 feet of fencing to enclose
 rectangular region as shown above. The length and
 width are represented by x and y respectively.<br>If the value of y is 25, what is the area of the
 rectangular region in square feet?</p>`,
@@ -820,7 +820,7 @@ rectangle in square inches?</p>`,
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/2.15.png"><br>In the figure above, AD =<math>
+                `<p><img src="../data-sat/2/2.15.png"><br>In the figure above, AD =<math>
   <msqrt>
     <mi>3</mi>
   </msqrt>
@@ -852,7 +852,7 @@ the length of AB?
 information.<br>The number of bacteria in a controlled laboratory
 environment is defined by the function
 f(x)=1000xb<sup>x</sup>, where x is the time in hours.
-The graph of f is shown in the xy-plane below.<br><img src="/data-sat/2/2.16.png"><br>What is the value of b?
+The graph of f is shown in the xy-plane below.<br><img src="../data-sat/2/2.16.png"><br>What is the value of b?
 </p>`,
             options: [`1`, `2`, `3`, `4`],
             correct: 1
@@ -868,7 +868,7 @@ The graph of f is shown in the xy-plane below.<br><img src="/data-sat/2/2.16.png
 information.<br>The number of bacteria in a controlled laboratory
 environment is defined by the function
 f(x)=1000xb<sup>x</sup>, where x is the time in hours.
-The graph of f is shown in the xy-plane below.<br><img src="/data-sat/2/2.16.png"><br>What is the number of bacteria in 5 hours?</p>`,
+The graph of f is shown in the xy-plane below.<br><img src="../data-sat/2/2.16.png"><br>What is the number of bacteria in 5 hours?</p>`,
             options: [`27,000`, `32,000`, `40,000`, `64,000`],
             correct: 1
         },
@@ -892,7 +892,7 @@ many miles can he ride in 5 hour and 30 minutes?
             domain: "MATH",
             skill: "Systems (dependence)",
             prompt:
-                `<p><img src="/data-sat/2/2.19.png"><br>The graphs of a linear function f and a quadratic
+                `<p><img src="../data-sat/2/2.19.png"><br>The graphs of a linear function f and a quadratic
 function g are shown in the xy-plane above. If
 f(g(k))=-3, what is the value of |k|?</p>`,
             correct: { answers: ["1"], numeric: 1, tolerance: 0 }
