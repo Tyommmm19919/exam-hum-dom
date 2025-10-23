@@ -325,7 +325,7 @@ tan x=<math>
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p>      <img src="../data-sat/2/q17.png"> <br> Dawson needs to measure the height of a building
+                `<p>      <img src="../data-sat/1/q17.png"> <br> Dawson needs to measure the height of a building
 near his house. He chooses a point P on the
 ground where he can visually align the roof of his
 car with the edge of the building roof. The height
@@ -451,7 +451,7 @@ terms of c?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.3.png"></p><br>In the figure above, lines l and m are parallel.
+                `<p><img src="../data-sat/1/2.3.png"></p><br>In the figure above, lines l and m are parallel.
 If the measure of 1 is twice the measure of 2,
 what is the measure of 1?
 `,
@@ -488,7 +488,7 @@ what is the measure of 1?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.6.png"><br>The equation of the graph of line in the xy - plane
+                `<p><img src="../data-sat/1/2.6.png"><br>The equation of the graph of line in the xy - plane
 above is y = mx +6, where m is a constant. If the
 line passes through a point (3, 2), what is the value
 of m?</p>`,
@@ -522,7 +522,7 @@ of m?</p>`,
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.8.png"><br>The graph above shows the test scores of 20 students.
+                `<p><img src="../data-sat/1/2.8.png"><br>The graph above shows the test scores of 20 students.
 Based on the histogram above, what is the average
 (arithmetic mean) score on the test? </p>`,
             options: [`70`, `73`, `75`, `78`],
@@ -657,7 +657,7 @@ after 200 years?</p>`,
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.17.png"><br>In the xy-plane above, the area of OPQ is 3.
+                `<p><img src="../data-sat/1/2.17.png"><br>In the xy-plane above, the area of OPQ is 3.
 What is the value of k?</p>`,
             options: [`2`, `4`, `6`, `8`],
             correct: 0
@@ -683,7 +683,7 @@ equation of the circle?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.19.png"><br>The graph ofthe function f is shown in the
+                `<p><img src="../data-sat/1/2.19.png"><br>The graph ofthe function f is shown in the
 xy-plane above. Which of the following is the
 average rate of change between x =-3 and x = 6?
 </p>`,
@@ -708,7 +708,7 @@ information.`],
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.35.png"><br>Two cylinders shown above have the same volume.
+                `<p><img src="../data-sat/1/2.35.png"><br>Two cylinders shown above have the same volume.
 If the radius of cylinder II is twice the radius of
 cylinder I and the height of cylinder I is 10, what is
 the height h of cylinder X?
@@ -722,7 +722,7 @@ the height h of cylinder X?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.36.png"><br>For what value of x is the function above
+                `<p><img src="../data-sat/1/2.36.png"><br>For what value of x is the function above
 undefined?</p>`,
             correct: { answers: ["2"], numeric: 2, tolerance: 0 }
         },
@@ -747,7 +747,7 @@ of a?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.27.png"><br>The graph of y=<math>
+                `<p><img src="../data-sat/1/2.27.png"><br>The graph of y=<math>
   <mfrac>
     <mn>1</mn>
     <mn>3</mn>
@@ -765,7 +765,7 @@ coordinates of vertex P?
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.33.png"><br>The graph of a linear function f is shown in the
+                `<p><img src="../data-sat/1/2.33.png"><br>The graph of a linear function f is shown in the
 xy-plane above. If f(k) =1, what is the value of
 f(-2k)?</p>`,
       correct: { answers: ["7"], numeric: 7, tolerance: 0 }
@@ -778,7 +778,7 @@ f(-2k)?</p>`,
             domain: "MATH",
             skill: "MATH",
             prompt:
-                `<p><img src="../data-sat/2/2.29.png"><br>The figure above shows a rectangular solid with width
+                `<p><img src="../data-sat/1/2.29.png"><br>The figure above shows a rectangular solid with width
 x, length y, and height z. If xy = 20, yz = 10, and
 xz =18, what is the volume of the solid?
 </p>`,
