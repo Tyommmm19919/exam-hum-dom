@@ -662,14 +662,7 @@ button[onclick*="test-selection.html"]:active{ transform: translateY(0); }
     overflow-x: hidden !important;
     overflow-y: auto !important;
   }
-    #reading-container{
-    height: auto !important;
-    min-height: 100svh;  /* small viewport unit */
-    overflow: visible !important; /* allow child elements to breathe */
-  }
-  #layout{
-    overflow: visible !important;
-  }
+  
 }
 @media (max-width: 720px){
   .warning{display: none;}
