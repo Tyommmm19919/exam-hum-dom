@@ -310,12 +310,13 @@
       white-space: nowrap;
       pointer-events: none;
     }
+    #go{height:40px;width:20%;text-align:center; padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed), filter var(--speed); background:linear-gradient(180deg, rgb(164, 7, 164), rgb(215, 69, 215));color:#041b12;box-shadow:0 10px 24px rgba(24,185,138,.22), inset 0 1px 0 rgba(255,255,255,.5)}
 
     @media (max-width: 700px) {
       .header {
         grid-template-columns: 1fr;
       }
-
+      #go{width: 100%; margin-top: 10px;}
       .tools {
         display:contents;
       }
@@ -344,6 +345,7 @@
 
         <div class="search">
           <input id="quickFind" type="number" min="1" placeholder="Go to test #" />
+          <button id="go">Go</button>
         </div>
 
         <select id="statusFilter" class="filter" title="Filter by status">
@@ -468,6 +470,10 @@
 
     quickFind.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
+        findTest()
+      }
+    });
+    function findTest() {
         const n = parseInt(quickFind.value, 10);
         const curType = typeFilter.value;
         const total = TEST_TYPES[curType].total;
@@ -481,8 +487,9 @@
           quickFind.style.color = 'red';
           setTimeout(() => { quickFind.style.color = ''; }, 2000);
         }
-      }
-    });
+    }
+    const go = document.getElementById("go")
+  go.addEventListener("click", findTest);
 
     statusFilter.addEventListener('change', renderGrid);
 
