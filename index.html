@@ -1,576 +1,985 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Exam Hub — TOEFL & SAT</title>
-  <meta name="description" content="Practice TOEFL & SAT with a sleek, fast interface. See real student results and start your prep in minutes."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-  <link rel="shortcut icon" href="../students/supermanLogoIco.ico" type="image/x-icon" />
-  <style>
-    :root{
-      --bg: #0e1220;          --bg-2: #0c152b;
-      --surface: rgba(255,255,255,0.07);
-      --surface-strong: rgba(12,18,40,0.64);
-      --card: rgba(20,26,52,0.78);
-      --border: rgba(140,170,255,0.22);
-      --text: #f5f8ff;        --muted: #c7d1f2;
-      --accent: #78a6ff;      --accent-2: #66e6d2;
-      --green:#35d49f;        --red:#ff6b7c;        --yellow:#ffd166;
-      --radius-sm: 10px;      --radius-md: 14px;   --radius-lg: 18px;
-      --shadow-1: 0 10px 24px rgba(0,0,0,.32);
-      --shadow-2: 0 22px 60px rgba(0,0,0,.42);
-      --blur: 14px;           --speed-fast:.15s;   --speed:.25s;
-      --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-      --nav-h: 64px;
-    }
-/* keep your existing :root (dark) variables */
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vrshikyans — International Tests</title>
+    <meta name="description"
+        content="A cinematic, minimal space to prepare for TOEFL, SAT, IELTS, and more. Beautiful focus. One simple path to start." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="students/supermanLogoIco.ico" />
 
-html[data-theme="light"]{
-  --bg:#f7f8fd; --bg-2:#eef1fb;
-  --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.86);
-  --card: rgba(255,255,255,.92); --border: rgba(23,32,58,.12);
-  --text:#0f1428; --muted:#3e4a74;
-  --shadow-1: 0 8px 20px rgba(23, 32, 58, .10);
-  --shadow-2: 0 24px 60px rgba(23, 32, 58, .16);
-}
+    <style>
+        :root {
+            --bg: #0e1220;
+            --bg-2: #0c152b;
+            --surface: rgba(255, 255, 255, .07);
+            --surface-strong: rgba(12, 18, 40, .72);
+            --card: rgba(20, 26, 52, .85);
+            --border: rgba(140, 170, 255, .18);
+            --text: #f5f8ff;
+            --muted: #c7d1f2;
+            --accent: #78a6ff;
+            --accent-2: #66e6d2;
+            --green: #35d49f;
+            --violet: #a06bff;
+            --shadow-1: 0 10px 24px rgba(0, 0, 0, .28);
+            --shadow-2: 0 22px 60px rgba(0, 0, 0, .40);
+            --radius: 18px;
+            --blur: 14px;
+            --speed: .25s;
+            --fast: .15s;
+            --g1: #1c2550;
+            --g2: #142762;
+            --nav-h: 64px;
+        }
 
-/* optional: theme-aware accent hues so gradients look good in both themes */
-:root{
-  --g1:#1c2550;   /* dark blue glow 1 */
-  --g2:#142762;   /* dark blue glow 2 */
-}
-html[data-theme="light"]{
-  --g1:#dfe7ff;   /* soft light glow 1 */
-  --g2:#cfe0ff;   /* soft light glow 2 */
-}
+        html[data-theme="light"] {
+            --bg: #f7f8fd;
+            --bg-2: #eef2ff;
+            --surface: rgba(255, 255, 255, .65);
+            --surface-strong: rgba(255, 255, 255, .92);
+            --card: rgba(255, 255, 255, .95);
+            --border: rgba(23, 32, 58, .12);
+            --text: #0f1428;
+            --muted: #3e4a74;
+            --shadow-1: 0 8px 20px rgba(23, 32, 58, .10);
+            --shadow-2: 0 24px 60px rgba(23, 32, 58, .16);
+            --g1: #dfe7ff;
+            --g2: #cfe0ff;
+        }
 
+        * {
+            box-sizing: border-box
+        }
 
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    html{scroll-behavior:smooth;}
-  body{
-  font-family:var(--font); color:var(--text);
-  /* single seamless backdrop composed of 2 big radial glows + a base vertical wash */
-  background:
-    radial-gradient(180vw 140vh at -20vw -20vh, var(--g1) 0%, rgba(0,0,0,0) 60%),
-    radial-gradient(180vw 140vh at 120vw 0vh,  var(--g2) 0%, rgba(0,0,0,0) 55%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed, fixed, fixed; /* stable on scroll */
-  background-size: auto, auto, 100% 100%;
-  overflow-x:hidden; line-height:1.65;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
+        html,
+        body {
+            height: 100%;
+            margin: 0
+        }
 
-/* subtle star/noise layer to break banding (very light) */
-/* Subtle, neutral noise (no blending, no tint) */
-body::before{
-  content:"";
-  position:fixed; inset:0;
-  pointer-events:none; z-index:0;
-  opacity:.06;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCc+PGZpbHRlciBpZD0nbic+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOCcgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48ZmVDb21wb25lbnRUcmFuc2ZlciA+PGZlRnVuY0EgdHlwZT0ndGFibGUnIHRhYmxlVmFsdWVzPScwIDAgMC4yIDAnLz48L2ZlQ29tcG9uZW50VHJhbnNmZXI+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nd2hpdGUnIGZpbHRlcj0ndXJsKCNuKScvPjwvc3ZnPg==");
-  background-repeat: repeat;
-  background-size: 240px 240px;
-}
+        html {
+            scroll-behavior: smooth
+        }
 
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+            color: var(--text);
+            line-height: 1.65;
+            overflow-x: hidden;
+            background:
+                radial-gradient(160vw 120vh at -20vw -20vh, var(--g1) 0%, rgba(0, 0, 0, 0) 60%),
+                radial-gradient(160vw 120vh at 120vw -10vh, var(--g2) 0%, rgba(0, 0, 0, 0) 55%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+            background-attachment: fixed, fixed, fixed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
+        /* Film grain */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .05;
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjQnIGhlaWdodD0nNjQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PGZpbHRlciBpZD0nbi1uJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44JyBudW1PY3RhdmVzPScyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nd2hpdGUnIGZpbHRlcj0ndXJsKCMnKyc+PC9yZWN0Pjwvc3ZnPg==");
+            background-size: 240px 240px;
+        }
 
+        /* Cursor spotlight */
+        #spotlight {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: screen;
+            background: radial-gradient(180px 180px at var(--mx, 50%) var(--my, 50%), rgba(120, 166, 255, .14), rgba(102, 230, 210, .10) 40%, transparent 60%);
+            transition: background .08s linear;
+        }
 
+        /* Nav */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            height: var(--nav-h);
+            background: var(--surface-strong);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(var(--blur)) saturate(140%)
+        }
 
-    /* Top bar */
-    .nav{
-      position:sticky;top:0;z-index:999;backdrop-filter:blur(var(--blur));
-      background:var(--surface-strong);border-bottom:1px solid var(--border);
-      height: var(--nav-h);
-    }
-    .nav-inner{
-      width:min(1200px,94%);margin:0 auto;display:flex;align-items:center;gap:14px;
-      height:var(--nav-h); 
-    }
-    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
-    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(180deg,#6ea3ff,#4b82ff);box-shadow:0 10px 22px rgba(76,130,255,.22)}
-    .brand span{font-size:18px}
-    .spacer{flex:1}
-    .links{display:flex;gap:10px; align-items: center;}
-    .links a{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.06);text-decoration:none;color:var(--text);font-weight:800;transition:transform var(--speed-fast), box-shadow var(--speed), background var(--speed); outline: none;}
-    .links a:hover{transform:translateY(-1px); box-shadow:var(--shadow-1); background: rgba(255,255,255,.10)}
-    .cta{background:linear-gradient(180deg,#6ea3ff,#4b82ff);color:#fff;border-color:rgba(255,255,255,.25)}
-    .menu-btn{display:none;border:1px solid var(--border);background:rgba(255,255,255,.10);border-radius:12px;padding:10px 12px;font-weight:900;color:var(--text)}
-    #user-logo{transition: .25s; border:1px solid var(--border);}
-    #user-logo:hover{opacity: .8; transform: translateY(-1px);}
+        .nav-inner {
+            width: min(1120px, 92%);
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
 
-    /* Hero */  
-    .hero{position:relative;z-index:1; padding-block: 18px;}
-    .hero-inner{width:min(1200px,94%); margin:28px auto; display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center}
-    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.08);font-weight:900;color:var(--muted);letter-spacing:.3px}
-    .title{font-size: clamp(34px, 4.2vw, 52px); line-height:1.05;margin:12px 0 10px 0;font-weight:900;letter-spacing:.2px;text-shadow: 0 2px 16px rgba(0,0,0,.35);}
-    .subtitle{font-size:18px;line-height:1.75;color:var(--muted);max-width: 60ch}
-    .hero-cta, .results-div{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
-    .btn{height:55px;width:48%;padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed), filter var(--speed)}
-    .btn.primary{background:linear-gradient(180deg,#35d49f,#18b98a);color:#041b12;box-shadow:0 10px 24px rgba(24,185,138,.22), inset 0 1px 0 rgba(255,255,255,.5)}
-    .btn.secondary{background:linear-gradient(180deg,#a06bff,#8553f7);color:#fff;box-shadow:0 10px 26px rgba(160,107,255,.26), inset 0 1px 0 rgba(255,255,255,.5)}
-    .btn.third{background:linear-gradient(180deg,#b6f77e,#5b7c1b);color:#0a1305;box-shadow:0 10px 26px rgba(91,124,27,.26), inset 0 1px 0 rgba(255,255,255,.5)}
-    .btn:hover{transform:translateY(-1px); filter: brightness(1.03)}
-    .btn:focus-visible{outline: 2px solid var(--accent-2); outline-offset: 3px}
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 900;
+            letter-spacing: .2px
+        }
 
-    .mock{border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));box-shadow:var(--shadow-2);aspect-ratio:16/11;position:relative;overflow:hidden}
-    .mock .bar{position:absolute;inset:0 0 auto 0;height:40px;background:var(--surface-strong);border-bottom:1px solid var(--border)}
-    .mock .pane{height: fit-content; position:absolute;inset:50px 10px 10px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18); display:grid; place-items:center; overflow: hidden;}
-    .mock .pane img{max-width:80%; height:auto; filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));}
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #6ea3ff, #4b82ff);
+            box-shadow: 0 10px 22px rgba(76, 130, 255, .22)
+        }
 
-    /* Sections */
-    section{position:relative;z-index:1; scroll-margin-top: calc(var(--nav-h) + 16px);}
-    .section-inner{width:min(1200px,94%); margin:30px auto}
-    .sec-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}
-    .sec-head h2{margin:0;font-size:28px;letter-spacing:.2px;text-shadow: 0 1px 10px rgba(0,0,0,.25);}
-    .sec-head p{margin:4px 0 0 0;color:var(--muted)}
+        .spacer {
+            flex: 1
+        }
 
-    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-    .card{border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:var(--shadow-1);padding:16px;display:grid;grid-template-rows:auto 1fr auto;gap:10px}
-    .card h3{margin:2px 0 0 0}
-    .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.08);font-size:13px;color:var(--muted);font-weight:800}
-    .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
-    .kv div{padding:12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06)}
-    .kv b{display:block;font-size:18px}
+        .theme-btn,
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            border-radius: 12px
+        }
 
-    /* Achievements */
-    .ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .ach-card{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:12px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:10px}
-    .ach-top{display:flex;align-items:center;gap:12px}
-    .avatar{width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg,#86b3ff,#6ea3ff);display:grid;place-items:center;color:#0b1b30;font-weight:900;box-shadow:0 8px 18px rgba(110,163,255,.28);overflow:hidden}
-    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-    .name{font-weight:900}
-    .score-badges{display:flex;gap:8px;flex-wrap:wrap}
-    .badge-score{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.08);font-weight:800}
-    .bio{color:var(--muted);font-size:14px}
+        .theme-btn {
+            width: 40px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .08);
+            color: var(--text);
+            cursor: pointer
+        }
 
-    /* Mobile slider */
-    .ach-slider{display:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:6px}
-    .ach-slide{min-width:78%;scroll-snap-align:start}
+        .cta {
+            padding: 0 22px;
+            background: linear-gradient(180deg, #35d49f, #18b98a);
+            color: #061a11;
+            font-weight: 900;
+            text-decoration: none;
+            border: 0;
+            box-shadow: 0 10px 24px rgba(24, 185, 138, .22);
+            position: relative;
+            isolation: isolate;
+            will-change: transform;
+        }
 
-    /* Info banner */
-    .info{
-      border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center;box-shadow:var(--shadow-2)
-    }
+        .cta::after {
+            /* magnetic glow */
+            content: "";
+            position: absolute;
+            inset: -2px;
+            z-index: -1;
+            border-radius: 14px;
+            background: radial-gradient(220px 120px at var(--bx, 50%) 50%, rgba(53, 212, 159, .38), transparent 60%);
+            transition: .08s linear;
+        }
 
-    /* FAQ */
-    .faq{display:grid;gap:12px}
-    details{border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.06);padding:12px}
-    summary{cursor:pointer;font-weight:900;outline: none;}
-    details[open]{background:rgba(255,255,255,.10)}
+        /* Hero */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 74vh;
+            display: grid;
+            place-items: center;
+            overflow: hidden
+        }
 
-    /* Footer */
-    footer{margin:32px 0 18px 0}
-    .foot{width:min(1200px,94%);margin:0 auto;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .foot small{color:var(--muted)}
+        .hero video,
+        .hero .poster {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: .26;
+            filter: saturate(115%) contrast(105%);
+        }
 
-    /* Backdrop scrim */
-    #scrim{
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.55);
-      opacity: 0; pointer-events: none;
-      transition: opacity .22s ease;
-      z-index: 998;
-    }
-    body.nav-open #scrim{ opacity: 1; pointer-events: auto; }
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 14, 28, .62), rgba(10, 14, 28, .68))
+        }
 
-    /* Mobile menu */
-    .menu-btn{ display: none; }
-    #user-logo { position: static; width: 38px; height: 38px; border-radius: 12px; }
-    .nav-inner{ position: relative; }
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            width: min(1120px, 92%);
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 30px;
+            align-items: center
+        }
 
-    @media (max-width: 720px){
-      .menu-btn{ display: inline-block; }
-      .links{
-        display: none;                 
-        position: absolute;
-        top: 100%; left: 0; right: 0;
-        flex-direction: column; align-items: stretch; gap: 10px;
-        padding: 14px;
-        background: rgba(9,15,28,.98); 
-        border: 1px solid rgba(116,163,255,.35);
-        border-top: none;
-        backdrop-filter: blur(12px) saturate(140%);
-        box-shadow: 0 24px 60px rgba(0,0,0,.55);
-        border-bottom-left-radius: var(--radius-lg);
-        border-bottom-right-radius: var(--radius-lg);
-        max-height: calc(100vh - 64px);
-        overflow-y: auto;
-        z-index: 1000;                 
-      }
-      .links.open{ display: flex; }
-      .links a, .links .cta{
-        width: 100%;
-        justify-content: flex-start;
-        color: #fff;
-        font-size: 16px;
-        padding: 14px 16px;
-        border: 1px solid rgba(255,255,255,.10);
-        background: rgba(255,255,255,.06);
-        border-radius: 12px;
-      }
-      .links a:hover{ background: rgba(116,163,255,.20); }
-      .links a:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+        /* Rotating tests word */
+        .title {
+            font-size: clamp(40px, 5.2vw, 68px);
+            line-height: 1.03;
+            margin: 10px 0 8px;
+            font-weight: 900;
+            text-wrap: balance;
+            text-shadow: 0 2px 16px rgba(0, 0, 0, .28);
+        }
 
-      .hero-inner{grid-template-columns:1fr}
-      .cards{grid-template-columns:1fr}
-      .ach-grid{display:none}
-      .ach-slider{display:flex}
-      .info{grid-template-columns:1fr}
-    }
+        .rotator {
+            display: inline-block;
+            min-width: 8ch;
+            position: relative
+        }
 
-    /* Reveal animation utility */
-    .reveal{ transform: translateY(10px); opacity: 0; }
-    .reveal.in{ transform: translateY(0); opacity: 1; transition: transform .45s ease, opacity .45s ease; }
+        .rotator span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: swap 12s infinite;
+        }
 
-    /* Focus target highlight */
-    :target{ scroll-margin-top: calc(var(--nav-h) + 18px); }
-    .theme-btn{
-  /* display: inline-flex; */
-  align-items: center;
+        .rotator span:nth-child(1) {
+            animation-delay: 0s
+        }
+
+        .rotator span:nth-child(2) {
+            animation-delay: 3s
+        }
+
+        .rotator span:nth-child(3) {
+            animation-delay: 6s
+        }
+
+        .rotator span:nth-child(4) {
+            animation-delay: 9s
+        }
+
+        @keyframes swap {
+            0% {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            4% {
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            22% {
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            25% {
+                opacity: 0;
+                transform: translateY(-8px)
+            }
+
+            100% {
+                opacity: 0
+            }
+        }
+
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .1);
+            font-weight: 900;
+            color: var(--muted)
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: whitesmoke;
+            max-width: 60ch;
+            margin: 0
+        }
+
+        .hero-cta {
+            margin-top: 22px;
+            display: inline-flex
+        }
+
+        /* Kinetic motivation line */
+        .motivation {
+            margin-top: 14px;
+            font-weight: 800;
+            letter-spacing: .2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 6px 18px rgba(120, 166, 255, .18));
+        }
+
+        .mdot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: currentColor;
+            opacity: .75;
+            animation: ping 1.6s infinite
+        }
+
+        @keyframes ping {
+            0% {
+                transform: scale(.6);
+                opacity: .9
+            }
+
+            60% {
+                transform: scale(1.1);
+                opacity: .4
+            }
+
+            100% {
+                transform: scale(.6);
+                opacity: .9
+            }
+        }
+
+        /* Right hero panel (animated card) */
+        .hero-card {
+            padding: 18px;
+            aspect-ratio: 16/12;
+            display: grid;
+            place-items: center;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .04));
+            box-shadow: var(--shadow-2);
+            transform-style: preserve-3d
+        }
+
+        .hero-card h3 {
+            margin: 0 0 6px
+        }
+
+        .hero-card p {
+            margin: 0;
+            color: var(--muted)
+        }
+
+        .hero-card .chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px
+        }
+
+        .chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .08);
+            font-weight: 800;
+            font-size: 13px
+        }
+
+        /* Slim sections */
+        .section {
+            position: relative;
+            z-index: 2
+        }
+
+        .inner {
+            width: min(1120px, 92%);
+            margin: 32px auto
+        }
+
+        .h2 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, .2)
+        }
+
+        .lead {
+            margin: 0;
+            color: var(--muted)
+        }
+
+        /* Value tiles */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 14px
+        }
+
+        .tile {
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--card);
+            box-shadow: var(--shadow-1);
+            transition: transform var(--fast)
+        }
+
+        .tile:hover {
+            transform: translateY(-3px)
+        }
+
+        .tile h3 {
+            margin: 0 0 6px
+        }
+
+        .tile p {
+            margin: 0;
+            color: var(--muted)
+        }
+
+        /* Exams glance */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px
+        }
+
+        .kv {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px
+        }
+
+        .kv div {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06)
+        }
+
+        .kv b {
+            display: block
+        }
+
+        /* Gallery (short loops/gifs) */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px
+        }
+
+        .gallery figure {
+            margin: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06)
+        }
+
+        .gallery video,
+        .gallery img {
+            display: block;
+            width: 100%;
+            height: 220px;
+            object-fit: cover
+        }
+
+        /* CTA band */
+        .band {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap
+        }
+
+        .band p {
+            margin: 0
+        }
+/* Pricing */
+.pricing { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px }
+.plan{
+  position:relative; padding:18px; border-radius:var(--radius);
   border:1px solid var(--border);
-  background: rgba(255,255,255,.10);
-  border-radius: 12px;
-  /* padding: 10px 12px; */
-  color: var(--text);
-  font-weight: 900;
-  width: 100%;
-  font-size: 200px;
-  height: max-content;
-  cursor: pointer;
-  transition: transform .15s ease;
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+  box-shadow:var(--shadow-1); transition: transform var(--fast), box-shadow var(--fast);
 }
-.theme-btn:hover{ transform: translateY(-10px); }
+.plan:hover{ transform: translateY(-3px); box-shadow: var(--shadow-2); }
+.plan h3{ margin:0 0 4px 0; }
+.plan .tagline{ margin:0; color:var(--muted); }
+.plan .price{
+  margin:10px 0 8px 0; display:flex; align-items:baseline; gap:8px;
+  font-weight:900; letter-spacing:.2px;
+}
+.plan .price .big{ font-size:28px; }
+.plan .features{ margin:10px 0 12px 0; display:grid; gap:8px; }
+.plan .features li{
+  list-style: none; display:flex; align-items:center; gap:8px;
+  padding:10px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.06);
+}
+.plan .features li::before{ content:"✓"; font-weight:900; color:var(--accent-2); }
+.plan .cta{ display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 16px;
+  border-radius:12px; text-decoration:none; font-weight:900; border:0; cursor:pointer;
+  background:linear-gradient(180deg,#78a6ff,#4b82ff); color:#08152c; box-shadow:0 10px 26px rgba(120,166,255,.26);
+}
+.plan.premium .cta{ background:linear-gradient(180deg,#35d49f,#18b98a); color:#061a11; box-shadow:0 10px 24px rgba(24,185,138,.22); }
+.ribbon{
+  position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:999px;
+  border:1px solid var(--border); background:rgba(255,255,255,.12); font-size:12px; font-weight:900;
+}
+.disclaimer{ margin-top:10px; color:var(--muted); font-size:14px; text-align:center; }
+/* Mentors / Teachers */
+.mentors { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px }
+.mentor{
+  position:relative; display:grid; grid-template-columns:120px 1fr; gap:16px;
+  padding:16px; border-radius:var(--radius); border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+  box-shadow:var(--shadow-1);
+}
+.mentor .avatar{
+  width:120px; height:120px; border-radius:16px; overflow:hidden; border:1px solid var(--border);
+  background:rgba(255,255,255,.06); display:grid; place-items:center; font-weight:900; color:var(--muted)
+}
+.mentor .avatar img{width:100%; height:100%; object-fit:cover; display:block}
+.mentor h3{margin:0 0 4px 0}
+.mentor .role{margin:0; color:var(--muted); font-weight:800}
+.mentor .bio{margin:8px 0 10px 0; color:var(--muted)}
+.stats{display:flex; flex-wrap:wrap; gap:8px}
+.stat{
+  padding:8px 10px; border-radius:999px; border:1px solid var(--border);
+  background:rgba(255,255,255,.08); font-weight:900; font-size:13px
+}
+.ribbon-top{
+  position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:999px;
+  border:1px solid var(--border); background:rgba(255,255,255,.12); font-size:12px; font-weight:900;
+}
+.reviews-cta{
+  margin-top:16px; display:flex; justify-content:center;
+}
+.reviews-cta .cta{
+  background:linear-gradient(180deg,#78a6ff,#4b82ff); color:#08152c; box-shadow:0 10px 26px rgba(120,166,255,.26);
+}
 
-  </style>
-  <script>
-(() => {
-  const saved = localStorage.getItem('theme'); // 'light' | 'dark' | null
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-  } else {
-    // default to the system preference on first visit
-    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-  }
-})();
-</script>
-<meta name="color-scheme" content="dark light">
+/* Mobile */
+@media (max-width:900px){
+  .mentors{ grid-template-columns:1fr }
+  .mentor{ grid-template-columns:84px 1fr }
+  .mentor .avatar{ width:84px; height:84px; border-radius:12px }
+}
 
+/* Mobile layout */
+@media (max-width:900px){ .pricing{ grid-template-columns:1fr } }
+
+        /* Footer */
+        footer {
+            margin: 34px 0 18px
+        }
+
+        .foot {
+            width: min(1120px, 92%);
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px
+        }
+
+        .foot small {
+            color: var(--muted)
+        }
+        .box{
+            width: 20%;
+            background: var(--blur);
+            border-radius: 5px;
+        }
+        /* Reveal */
+        .reveal {
+            transform: translateY(10px);
+            opacity: 0
+        }
+
+        .reveal.in {
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform .45s ease, opacity .45s ease
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr
+            }
+
+            .gallery {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media (max-width: 640px) {
+            .gallery {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+
+    <script>
+        /* Theme boot */
+        (() => {
+            const saved = localStorage.getItem('theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+            else document.documentElement.setAttribute('data-theme',
+                matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+            );
+        })();
+    </script>
+    <meta name="color-scheme" content="dark light">
 </head>
+
 <body>
-  <!-- scrim for mobile menu -->
-  <div id="scrim" aria-hidden="true"></div>
+    <div id="spotlight" aria-hidden="true"></div>
 
-  <!-- Top Navigation -->
-  <nav class="nav" role="navigation" aria-label="Primary">
-    <div class="nav-inner">
-      <a class="brand" href="#home" aria-label="Go to top">
-        <img src="students/logo.svg" class="logo" alt="Exam Hub logo">
-        <span>Exam Hub</span>
+    <!-- NAV (logo + theme + single CTA) -->
+    <nav class="nav" role="navigation" aria-label="Primary">
+        <div class="nav-inner">
+            <a class="brand" href="#home" aria-label="Exam-hub">
+                <span class="logo" aria-hidden="true" style="overflow: hidden;">
+                    <img src="../students/logo-fin.png" width="39px">
+                </span>
+                <span>Vrshikyans</span>&nbsp;&nbsp;
+            <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌑</button>
+            </a>
+            <div class="spacer"></div>
+            <a class="cta" id="startTop" href="../indexes/account.html" aria-label="Start practicing" style="width: 40px; height: 40px; background: whitesmoke;">👤</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero" id="home" aria-label="Hero">
+        <video autoplay muted loop playsinline poster="media/hero-poster.jpg">
+            <source src="../students/home-hero.mp4" type="video/mp4" />
+        </video>
+        <img class="poster" src="media/hero-fallback.jpg" alt="" aria-hidden="true" />
+        <div class="hero-inner">
+            <div>
+                <span class="badge">Calm • Clear • Exam-style</span>
+                <h1 class="title">
+                    Prepare for <span class="rotator" aria-live="polite"><br>
+                        <span>TOEFL</span>
+                        <span>SAT</span>
+                        <span>IELTS</span>
+                    </span> with total focus
+                </h1>
+                <p class="subtitle">Minimal clicks. Real formats. A beautiful flow that makes studying feel natural.</p>
+                <div class="motivation">
+                    <span class="mdot"></span> Small sessions. Daily rhythm. Big results.
+                </div>
+                <div class="hero-cta">
+                    <a class="cta" id="startHero" href="indexes/test-selection.html">Free TOEFL test</a>&nbsp;&nbsp;
+                    <a class="cta" id="startHero" href="indexes/test-selection.html">Free SAT test</a>
+                </div>
+            </div>
+
+            <!-- Animated right card -->
+            <div class="reveal">
+                <div class="hero-card" id="heroCard">
+                    <div style="max-width:42ch; text-align:center">
+                        <h3>“Understand first. Speed follows.”</h3>
+                        <p>Short focused blocks, clean UI, smart review. Come back tomorrow — consistency compounds.</p>
+                        <div class="chips" aria-hidden="true">
+                            <span class="chip">Focus timer</span>
+                            <span class="chip">Clean math UI</span>
+                            <span class="chip">Real passages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+<!-- MENTORS -->
+<section class="section" id="mentors" aria-label="Meet the mentors">
+  <div class="inner">
+    <h2 class="h2">Meet your mentors</h2>
+    <p class="lead">Vrshikyans is led by experienced teachers who’ve guided thousands of learners to top scores. Beautiful design meets serious results.</p>
+
+    <div class="mentors">
+      <!-- Ms Heghine -->
+      <article class="mentor reveal">
+        <span class="ribbon-top" aria-hidden="true">SAT • ACT</span>
+        <div class="avatar">
+          <!-- Optional photo -->
+          <img src="students/heghine.jpg" alt="Ms Heghine portrait" onerror="this.remove();this.parentElement.textContent='H';">
+        </div>
+        <div class="meta">
+          <h3>Ms Heghine</h3>
+          <p class="role">SAT & ACT Teacher • Owner</p>
+          <p class="bio">
+            Over <b>2,000</b> students taught. Many hit a perfect <b>1600 SAT</b>, and the majority score <b>790+ in Math</b>.
+            Master’s degree, studied abroad. Calm, clear methods that build speed through understanding.
+          </p>
+          <div class="stats" aria-label="Key highlights">
+            <span class="stat">1600 SAT achievers</span>
+            <span class="stat">790+ Math majority</span>
+            <span class="stat">2,000+ students</span>
+            <span class="stat">Master’s • Abroad</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Ms Hasmik -->
+      <article class="mentor reveal">
+        <span class="ribbon-top" aria-hidden="true">TOEFL • IELTS</span>
+        <div class="avatar">
+          <!-- Optional photo -->
+          <img src="students/hasmik.jpg" alt="Ms Hasmik portrait" onerror="this.remove();this.parentElement.textContent='H';">
+        </div>
+        <div class="meta">
+          <h3>Ms Hasmik</h3>
+          <p class="role">TOEFL & IELTS Teacher</p>
+          <p class="bio">
+            Taught <b>2,000+</b> students. Most achieve outstanding results like <b>115+ TOEFL</b> or <b>8.5+ IELTS</b>.
+            Master’s degree, studied abroad. Strategy-first lessons that make hard tasks feel simple.
+          </p>
+          <div class="stats" aria-label="Key highlights">
+            <span class="stat">115+ TOEFL</span>
+            <span class="stat">8.5+ IELTS</span>
+            <span class="stat">2,000+ students</span>
+            <span class="stat">Master’s • Abroad</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="reviews-cta">
+      <a class="cta" href="/indexes/reviews.html" aria-label="Read student reviews about Ms Heghine and Ms Hasmik">
+        Read Reviews (scores & opinions)
       </a>
-
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="links">☰</button>
-      <div class="spacer" aria-hidden="true"></div>
-
-      <div class="links" id="links">
-        <a href="#home">Home</a>
-        <a href="#exams">Exams</a>
-        <a href="#achievements">Achievements</a>
-        <a href="#about">About</a>
-        <a href="#faq">FAQ</a>
-        <div class="lower-slide" style="width: 100%;">
-          <img src="students/user.jpg" class="logo" id="user-logo" alt="User center" title="User Center" onclick="window.location.href = '/indexes/user-center.html' ">
-        </div>
-
-      </div>
     </div>
-  </nav>
+    <p class="lead" style="text-align:center; margin-top:10px">
+      Students share verified scores and write honest opinions about Ms Heghine &amp; Ms Hasmik on our reviews page.
+    </p>
+  </div>
+</section>
 
-  <!-- Hero / Home -->
-  <header class="hero" id="home">
-    <div class="hero-inner">
-      <div>
-        <span class="badge">Fast • Minimal • Exam-style UI</span>
-        <h1 class="title">Your modern hub for <span style="color:var(--accent)">TOEFL</span> & <span style="color:var(--accent-2)">SAT</span> practice</h1>
-        <p class="subtitle">Built to match your Reading section’s aesthetic—now expanded into a polished homepage. Track results, showcase wins, and move seamlessly into tests.</p>
-        <div class="hero-cta">
-          <a href="indexes/test-selection.html" class="btn primary">Choose a TOEFL Test</a>
-          <a href="indexes/test-sat-selection.html" class="btn secondary">Choose a SAT Test</a>
+    <!-- VALUE -->
+    <section class="section">
+        <div class="inner">
+            <h2 class="h2">Designed for attention</h2>
+            <p class="lead">Everything supports thinking — layout, color, timing. You practice the format and the skill
+                together.</p>
+            <div class="grid-3">
+                <article class="tile reveal">
+                    <h3>Real test flow</h3>
+                    <p>Layouts & timing mirror the real exams, so the interface feels familiar on test day.</p>
+                </article>
+                <article class="tile reveal">
+                    <h3>Beautifully minimal</h3>
+                    <p>No distractions. Just you and the next question — on any device.</p>
+                </article>
+                <article class="tile reveal">
+                    <h3>Momentum first</h3>
+                    <p>Short sessions and light review build confidence faster than cramming.</p>
+                </article>
+            </div>
         </div>
-        <div class="results-div">
-          <a href="indexes/results.html" class="btn secondary">Go to the TOEFL results</a>
-          <a href="indexes/results-sat.html" class="btn primary">Go to the SAT results</a>
+    </section>
+
+    <!-- EXAMS AT A GLANCE -->
+    <section class="section" aria-label="Exam info">
+        <div class="inner">
+            <h2 class="h2">At a glance</h2>
+            <div class="grid-2">
+                <div class="tile reveal">
+                    <h3>TOEFL iBT®</h3>
+                    <div class="kv">
+                        <div><b>Reading</b><span>2 passages • 35 min</span></div>
+                        <div><b>Listening</b><span>5 sets • 41–57 min</span></div>
+                        <div><b>Speaking</b><span>4 tasks • 16 min</span></div>
+                        <div><b>Writing</b><span>2 tasks • 29 min</span></div>
+                    </div>
+                </div>
+                <div class="tile reveal">
+                    <h3>SAT®</h3>
+                    <div class="kv">
+                        <div><b>R&W</b><span>Short passages • Skills</span></div>
+                        <div><b>Math</b><span>Calculator throughout</span></div>
+                        <div><b>Timing</b><span>~2h 14m</span></div>
+                        <div><b>Scale</b><span>1600</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- mini gallery: swap with your clips/gifs -->
+            <div class="gallery" style="margin-top:16px">
+                <figure class="reveal">
+                    <video autoplay muted loop playsinline>
+                        <source src="../students/home-hero.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+                <figure class="reveal">
+                    <video autoplay muted loop playsinline>
+                        <source src="../students/girl-study.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+                <figure class="reveal">
+                    <video autoplay muted loop playsinline>
+                        <source src="../students/board-man.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+            </div>
         </div>
+    </section>
 
-      </div>
-      <div>
-<button id="themeToggle" class="theme-btn" aria-label="Toggle theme"></button>
+<!-- SUBSCRIPTION / PLANS -->
+<section class="section" aria-label="Subscription plans">
+  <div class="inner">
+    <h2 class="h2">Plans that match your pace</h2>
+    <p class="lead">Start simple or go all-in. Real exam layout, focus tools, and a calm UI in every plan.</p>
 
-      </div>
+    <div class="pricing">
+      <!-- CHEAP -->
+      <article class="plan" aria-labelledby="plan-cheap">
+        <h3 id="plan-cheap">Cheap</h3>
+        <p class="tagline">Quick start</p>
+        <div class="price"><span class="big">5</span><span>tests included</span></div>
+        <ul class="features">
+          <li>TOEFL & SAT sections</li>
+          <li>Exam-style timing bars</li>
+          <li>Clean, distraction-free UI</li>
+          <li>Mobile friendly</li>
+        </ul>
+        <a class="cta" href="/indexes/subscribe.html?plan=cheap" aria-label="Choose Cheap plan">Choose Cheap</a>
+      </article>
+
+      <!-- AVERAGE (MOST POPULAR) -->
+      <article class="plan" aria-labelledby="plan-average">
+        <span class="ribbon" aria-hidden="true">Most popular</span>
+        <h3 id="plan-average">Average</h3>
+        <p class="tagline">Balanced practice</p>
+        <div class="price"><span class="big">10</span><span>tests included</span></div>
+        <ul class="features">
+          <li>All Cheap features</li>
+          <li>Smart session rhythm</li>
+          <li>Lightweight review flow</li>
+          <li>Email support</li>
+        </ul>
+        <a class="cta" href="/indexes/subscribe.html?plan=average" aria-label="Choose Average plan">Choose Average</a>
+      </article>
+
+      <!-- PREMIUM -->
+      <article class="plan premium" aria-labelledby="plan-premium">
+        <h3 id="plan-premium">Premium</h3>
+        <p class="tagline">Serious prep</p>
+        <div class="price"><span class="big">20</span><span>tests included</span></div>
+        <ul class="features">
+          <li>All Average features</li>
+          <li>Full test library access</li>
+          <li>Priority support</li>
+          <li>Future test types (IELTS/DET)</li>
+        </ul>
+        <a class="cta" href="/indexes/subscribe.html?plan=premium" aria-label="Choose Premium plan">Choose Premium</a>
+      </article>
     </div>
-  </header>
 
-  <!-- Exams -->
-  <section id="exams" aria-labelledby="exams-title">
-    <div class="section-inner">
-      <div class="sec-head">
-        <div>
-          <h2 id="exams-title">Exam info</h2>
-          <p class="subtitle">Concise highlights for TOEFL & SAT. Links can route to your existing sections.</p>
+    <p class="disclaimer">Cancel anytime. Upgrade later — your progress stays with you.</p>
+  </div>
+</section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="foot">
+            <div>
+                <b>Contact</b>
+                <p class="lead" style="margin:.4rem 0 0 0">examHubYerevan@gmail.com</p>
+                <p class="lead" style="margin:.2rem 0 0 0">+374 96 361 236</p>
+            </div>
+            <div>
+                <b>Vrshikyans</b>
+                <p class="lead" style="margin:.4rem 0 0 0">Yerevan • Since 2025</p>
+                <small>© <span id="year"></span> Vrshikyans — All rights reserved.</small>
+            </div>
         </div>
-      </div>
+    </footer>
 
-      <div class="cards">
-        <article class="card reveal" aria-labelledby="toefl-title">
-          <div class="pill">TOEFL iBT®</div>
-          <h3 id="toefl-title">Academic English proficiency</h3>
-          <p class="subtitle">Test the core: Reading, Listening, Speaking, Writing. Interface matches real test flow.</p>
-          <div class="kv">
-            <div><b>Reading</b><span>2 passages • 35 min</span></div>
-            <div><b>Listening</b><span>5 sets • 41–57 min</span></div>
-            <div><b>Speaking</b><span>4 tasks • 16 min</span></div>
-            <div><b>Writing</b><span>2 tasks • 29 min</span></div>
-          </div>
-          <div style="display:flex;gap:10px;margin-top:6px">
-            <a class="btn primary" href="reading.html">Take a free TOEFL test!</a>
-          </div>
-        </article>
+    <script>
+        // Theme toggle
+        const themeBtn = document.getElementById('themeToggle');
+        const htmlEl = document.documentElement;
+        function setTheme(next) {
+            htmlEl.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            themeBtn.textContent = next === 'light' ? '🌕' : '🌑';
+            themeBtn.setAttribute('aria-label', next === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+        }
+        themeBtn.addEventListener('click', () => setTheme(htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
+        setTheme(htmlEl.getAttribute('data-theme') || 'dark');
 
-        <article class="card reveal" aria-labelledby="sat-title">
-          <div class="pill">SAT®</div>
-          <h3 id="sat-title">College-readiness assessment</h3>
-          <p class="subtitle">Emphasis on Reading & Writing, and Math. Practice with clean UI and responsive design.</p>
-          <div class="kv">
-            <div><b>Reading & Writing</b><span>Short passages • Grammar & Rhetoric</span></div>
-            <div><b>Math</b><span>Calculator & no-calculator sets</span></div>
-            <div><b>Timing</b><span>~2 hrs 14 min total</span></div>
-            <div><b>Scoring</b><span>1600 scale</span></div>
-          </div>
-          <div style="display:flex;gap:10px;margin-top:6px">
-            <a class="btn secondary" href="#">Take a free SAT test</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
+        // Scroll reveal
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { threshold: .14 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  <!-- Achievements -->
-  <section id="achievements" aria-labelledby="achievements-title">
-    <div class="section-inner">
-      <div class="sec-head">
-        <div>
-          <h2 id="achievements-title">Students’ achievements</h2>
-        </div>
-        <div class="score-badges">
-          <span class="badge-score">TOEFL 110+</span>
-          <span class="badge-score">SAT 1500+</span>
-          <span class="badge-score" style="background:rgba(53,212,159,.20)">Recent wins</span>
-        </div>
-      </div>
+        // Magnetic CTA + spotlight
+        const ctas = [document.getElementById('startTop'), document.getElementById('startHero'), document.getElementById('startBottom')].filter(Boolean);
+        const spot = document.getElementById('spotlight');
+        // document.addEventListener('mousemove', (e)=>{
+        //   document.body.style.setProperty('--mx', e.clientX + 'px');
+        //   document.body.style.setProperty('--my', e.clientY + 'px');
+        //   // move button glow
+        //   ctas.forEach(btn=>{
+        //     const r = btn.getBoundingClientRect();
+        //     const bx = Math.max(0, Math.min(1, (e.clientX - r.left)/r.width));
+        //     btn.style.setProperty('--bx', (bx*100)+'%');
+        //   });
+        // });
 
-      <!-- Desktop Grid -->
-      <div class="ach-grid" id="achGrid"></div>
-      <!-- Mobile Slider -->
-      <div class="ach-slider" id="achSlider" aria-label="Student results carousel"></div>
-    </div>
-  </section>
+        // Subtle 3D tilt on the hero card
+        const heroCard = document.getElementById('heroCard');
+        if (heroCard) {
+            let af;
+            heroCard.addEventListener('mousemove', (e) => {
+                const r = heroCard.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width - .5;
+                const y = (e.clientY - r.top) / r.height - .5;
+                const rx = (-y * 6).toFixed(2), ry = (x * 6).toFixed(2);
+                cancelAnimationFrame(af);
+                af = requestAnimationFrame(() => heroCard.style.transform = `translateY(-2px) rotateX(${rx}deg) rotateY(${ry}deg)`);
+            });
+            heroCard.addEventListener('mouseleave', () => heroCard.style.transform = 'translateY(0) rotateX(0) rotateY(0)');
+        }
 
-  <!-- Info banner / About -->
-  <section id="about" aria-labelledby="about-title">
-    <div class="section-inner">
-      <div class="info reveal">
-        <div>
-          <h2 id="about-title" style="margin:0 0 6px 0">Built for focus</h2>
-          <p class="subtitle" style="margin:0">Minimal distractions, sticky timer bars, responsive cards, and exam-style flows. Mirrors your Reading UI design.</p>
-        </div>
-        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
-          <a class="btn secondary" href="#faq">View FAQ</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" aria-labelledby="faq-title">
-    <div class="section-inner">
-      <div class="sec-head"><h2 id="faq-title">FAQ</h2></div>
-      <div class="faq">
-        <details class="reveal">
-          <summary>Can I use it on my phone?</summary>
-          <p>Yes. Navigation collapses, achievements become a swipeable carousel, and cards stack for small screens.</p>
-        </details>
-        <details class="reveal">
-          <summary>Can I add more students easily?</summary>
-          <p>Yes. Update the <code>students</code> array below or fetch from your API; the UI renders automatically.</p>
-        </details>
-        <details class="reveal">
-          <summary>Does it match my Reading section theme?</summary>
-          <p>It reuses your color variables, blur, borders, radii, and shadows for a consistent look and feel.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact / Footer -->
-  <footer id="contact" aria-labelledby="contact-title">
-    <div class="foot reveal" style="display: block;">
-      <div>
-        <b id="contact-title">Contact</b>
-        <p class="subtitle" style="margin:6px 0 0 0">Email: examHubYerevan@gmail.com<br/>Phone: +374 96 361 236</p>
-        <p class="subtitle" style="margin:6px 0 0 0">Created by artyom19032008@gmail.com</p>
-
-      </div>
-      <div >
-        <b>Exam Hub</b>
-        <p class="subtitle" style="margin:6px 0 0 0">Yerevan • Since 2025</p>
-        <small>© <span id="year"></span> Exam Hub — All rights reserved.</small>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-  // ===== Mobile menu toggle with scrim + scroll lock =====
-  const menuBtn = document.getElementById('menuBtn');
-  const links   = document.getElementById('links');
-  const scrim   = document.getElementById('scrim');
-
-  function closeMenu(){
-    links?.classList.remove('open');
-    document.body.style.overflow = '';
-    menuBtn?.setAttribute('aria-expanded', 'false');
-    document.body.classList.remove('nav-open');
-  }
-  function openMenu(){
-    links?.classList.add('open');
-    document.body.style.overflow = 'hidden'; // prevent background scroll
-    menuBtn?.setAttribute('aria-expanded', 'true');
-    document.body.classList.add('nav-open');
-  }
-  if (menuBtn && links) {
-    menuBtn.addEventListener('click', ()=>{
-      links.classList.contains('open') ? closeMenu() : openMenu();
-    });
-    scrim?.addEventListener('click', closeMenu);
-    // Close menu when clicking a link (nice on mobile)
-    links.addEventListener('click', (e)=>{
-      const target = e.target.closest('a');
-      if (target) closeMenu();
-    });
-    // Close on resize back to desktop
-    window.addEventListener('resize', ()=>{ if (window.innerWidth > 720) closeMenu(); });
-  }
-
-  // ===== Smooth scrolling with offset-safe behavior =====
-  // We already use CSS scroll-behavior: smooth and section { scroll-margin-top }.
-  // This JS adds smooth scrolling for same-page links that might be outside <section>.
-  document.addEventListener('click', function(e){
-    const a = e.target.closest('a[href^="#"]');
-    if(!a) return;
-    const id = a.getAttribute('href');
-    if(id.length > 1){
-      const el = document.querySelector(id);
-      if(el){
-        e.preventDefault();
-        el.scrollIntoView({ behavior:'smooth', block:'start' });
-        el.classList.add('pulse-target');
-        setTimeout(()=> el.classList.remove('pulse-target'), 700);
-      }
-    }
-  });
-
-  // ===== Data for achievements =====
-  const students = [
-    {name:'Ani M.', photo:'students/ani.jpg', toefl:112, sat:null, bio:'Admitted to CS @ AUA'},
-    {name:'Gor T.', photo:'students/gor.jpg', toefl:105, sat:1490, bio:'Scholarship winner'},
-    {name:'Lilit K.', photo:'students/lilit.jpg', toefl:110, sat:1510, bio:'Full-ride finalist'},
-    {name:'Aram S.', photo:'students/aram.jpg', toefl:98,  sat:1450, bio:'STEM Olympiad medalist'},
-    {name:'Mariam D.', photo:'students/mariam.jpg', toefl:108, sat:1520, bio:'NYU Abu Dhabi shortlist'},
-    {name:'David A.', photo:'students/david.jpg', toefl:104, sat:null, bio:'Exchange program USA'},
-    {name:'Nare H.', photo:'students/nare.jpg', toefl:115, sat:1530, bio:'Early Decision admit'},
-    {name:'Tigran P.', photo:'students/tigran.jpg', toefl:null, sat:1500, bio:'National Math Team'}
-  ];
-
-  // ===== Helpers =====
-  function avatarEl(src, initials){
-    const wrap = document.createElement('div');
-    wrap.className = 'avatar';
-    if(src){
-      const img = new Image(); img.src = src; img.alt = initials || 'Student photo';
-      img.onerror = ()=>{ wrap.textContent = initials || 'S'; };
-      wrap.appendChild(img);
-    } else {
-      wrap.textContent = initials || 'S';
-    }
-    return wrap;
-  }
-  function initials(name){
-    if(!name) return 'S';
-    const parts = name.replace(/\./g,'').split(/\s+/).filter(Boolean);
-    return (parts[0]?.[0]||'S') + (parts[1]?.[0]||'');
-  }
-  function achCard(s){
-    const card = document.createElement('div');
-    card.className = 'ach-card reveal';
-    const top = document.createElement('div'); top.className = 'ach-top';
-    top.appendChild(avatarEl(s.photo, initials(s.name)));
-    const meta = document.createElement('div');
-    const nm = document.createElement('div'); nm.className = 'name'; nm.textContent = s.name; meta.appendChild(nm);
-    const badges = document.createElement('div'); badges.className = 'score-badges';
-    if(s.toefl){ const b = document.createElement('span'); b.className='badge-score'; b.textContent = `TOEFL ${s.toefl}`; badges.appendChild(b); }
-    if(s.sat){ const b = document.createElement('span'); b.className='badge-score'; b.textContent = `SAT ${s.sat}`; badges.appendChild(b); }
-    meta.appendChild(badges);
-    top.appendChild(meta);
-    const bio = document.createElement('div'); bio.className = 'bio'; bio.textContent = s.bio || '';
-    card.appendChild(top); card.appendChild(bio);
-    return card;
-  }
-
-  // ===== Render achievements =====
-  const grid = document.getElementById('achGrid');
-  const slider = document.getElementById('achSlider');
-  students.forEach(s=>{
-    const c1 = achCard(s);
-    const c2 = achCard(s);
-    grid.appendChild(c1);
-    const slide = document.createElement('div'); slide.className='ach-card ach-slide';
-    slide.appendChild(c2); slider.appendChild(slide);
-  });
-
-  // ===== Reveal on scroll =====
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      }
-    })
-  },{threshold:.14});
-  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
-
-  // ===== Dynamic year =====
-  document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-  <script>
-const themeBtn = document.getElementById('themeToggle');
-const html = document.documentElement;
-
-themeBtn.innerHTML = html.getAttribute('data-theme') === 'light' ? "🌕" : "🌑"
-
-themeBtn?.addEventListener('click', () => {
-  const html = document.documentElement;
-  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-  themeBtn.innerHTML = html.getAttribute('data-theme') === 'light' ? "🌑" : "🌕"
-  html.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  themeBtn.setAttribute('aria-label', next === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
-});
-</script>
-
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
+
 </html>
