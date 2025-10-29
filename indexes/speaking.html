@@ -166,112 +166,79 @@
         userHasInteracted = true;
       });
 
-      // Override audio functions to handle mobile autoplay
-      overrideAudioFunctions();
+      // Simple override for main audio playback
+      overrideMainAudioPlayback();
     });
 
-    function overrideAudioFunctions() {
-      // Override playElementOnce to handle mobile autoplay
-      const originalPlayElementOnce = window.playElementOnce;
-      if (originalPlayElementOnce) {
-        window.playElementOnce = function(el) {
-          return new Promise(resolve => {
-            try { el.currentTime = 0; } catch {}
-            const onEnd = () => resolve();
-            el.addEventListener('ended', onEnd, { once: true });
-            
-            el.play().catch((error) => {
-              console.warn('Audio autoplay blocked for:', el.src);
-              // For bibPrepare and bibSpeak, show appropriate buttons
-              if (el.id === 'bibPrepare' || el.id === 'bibSpeak') {
-                showInstructionPlayButton(el, resolve);
-              } else {
-                // For other audio, use the fallback behavior
-                const resume = () => {
-                  document.removeEventListener('click', resume);
-                  el.play().catch(() => resolve());
-                };
-                document.addEventListener('click', resume, { once: true });
-              }
-            });
-          });
-        };
-      }
-
-      // Override playAudioListWithProgress to handle mobile autoplay
+    function overrideMainAudioPlayback() {
+      // Store original function
       const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
+      
       if (originalPlayAudioListWithProgress) {
         window.playAudioListWithProgress = function(srcList) {
           return new Promise(resolve => {
             const list = Array.isArray(srcList) ? srcList : [srcList];
             
-            // Show mobile play button if autoplay was previously blocked
+            // If autoplay was blocked and user hasn't interacted, show play button
             if (autoplayBlocked && !userHasInteracted) {
+              console.log('Showing mobile play button for main audio');
               showMainAudioPlayButton(list, resolve);
             } else {
-              // Proceed with normal playback
+              // Otherwise proceed normally
+              console.log('Proceeding with normal audio playback');
               originalPlayAudioListWithProgress.call(this, srcList).then(resolve);
             }
           });
         };
       }
-
-      // Override the intro playback in runQuestion
-      const originalRunQuestionAfterInterstitial = window.runQuestionAfterInterstitial;
-      if (originalRunQuestionAfterInterstitial) {
-        window.runQuestionAfterInterstitial = function(myToken) {
-          const q = window.questions[window.current];
-          if (!q) return;
-
-          // Handle intro audio with mobile support
-          if (q.intro) {
-            const introList = Array.isArray(q.intro) ? q.intro : [q.intro];
-            
-            if (autoplayBlocked && !userHasInteracted) {
-              showIntroPlayButton(introList, myToken, () => {
-                originalRunQuestionAfterInterstitial.call(this, myToken);
-              });
-              return;
-            }
-          }
-          
-          // Proceed normally if no autoplay issues
-          originalRunQuestionAfterInterstitial.call(this, myToken);
-        };
-      }
-
-      // Override interstitial audio playback
-      const originalShowInterstitial = window.showInterstitial;
-      if (originalShowInterstitial) {
-        window.showInterstitial = function(index, onContinue) {
-          originalShowInterstitial.call(this, index, onContinue);
-          
-          // Add mobile play button for interstitial audio if needed
-          const interstitialAudio = document.getElementById("interstitialAudio");
-          if (interstitialAudio.src && autoplayBlocked && !userHasInteracted) {
-            document.getElementById("mobileInterstitialPlayBtn").style.display = "block";
-            
-            document.getElementById("mobileInterstitialPlayBtn").onclick = () => {
-              userHasInteracted = true;
-              interstitialAudio.play().catch(e => console.error("Interstitial play failed:", e));
-              document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
-            };
-          }
-        };
-      }
     }
 
     function showMainAudioPlayButton(audioList, resolve) {
-      const container = document.getElementById("media-wrap");
       const playBtn = document.getElementById("mobileAudioPlayBtn");
       
       playBtn.style.display = "block";
       playBtn.onclick = () => {
         userHasInteracted = true;
         playBtn.style.display = "none";
-        // Now proceed with normal audio playback
-        window.playAudioListWithProgress(audioList).then(resolve);
+        // Now proceed with normal audio playback using original function
+        const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
+        if (originalPlayAudioListWithProgress) {
+          originalPlayAudioListWithProgress.call(this, audioList).then(resolve);
+        } else {
+          resolve(); // Fallback
+        }
       };
+    }
+
+    // Simple override for intro audio handling
+    function overrideIntroAudioHandling() {
+      // This will be called after speaking.js loads
+      setTimeout(() => {
+        const originalRunQuestionAfterInterstitial = window.runQuestionAfterInterstitial;
+        
+        if (originalRunQuestionAfterInterstitial) {
+          window.runQuestionAfterInterstitial = function(myToken) {
+            const q = window.questions[window.current];
+            if (!q) return;
+
+            // Reset intro container
+            document.getElementById("mobileIntroContainer").style.display = "none";
+            document.getElementById("mobileIntroPlayBtn").style.display = "none";
+
+            // Handle intro audio with mobile support
+            if (q.intro && autoplayBlocked && !userHasInteracted) {
+              console.log('Showing mobile play button for intro audio');
+              showIntroPlayButton(q.intro, myToken, () => {
+                // Continue with original function after user clicks play
+                originalRunQuestionAfterInterstitial.call(this, myToken);
+              });
+            } else {
+              // Proceed normally
+              originalRunQuestionAfterInterstitial.call(this, myToken);
+            }
+          };
+        }
+      }, 1000);
     }
 
     function showIntroPlayButton(introList, myToken, callback) {
@@ -289,34 +256,56 @@
       };
     }
 
-    function showInstructionPlayButton(audioElement, resolve) {
-      let button = document.getElementById("mobileInstructionPlayBtn");
-      if (!button) {
-        button = document.createElement("button");
-        button.id = "mobileInstructionPlayBtn";
-        button.style.cssText = "padding: 10px 20px; margin: 10px auto; background: #FF5722; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; display: block;";
-        button.textContent = "🔊 Tap to Play Instruction";
-        document.body.appendChild(button);
-      }
-      
-      button.style.display = "block";
-      button.onclick = () => {
-        userHasInteracted = true;
-        button.style.display = "none";
-        audioElement.play().catch(() => resolve());
-      };
+    // Override interstitial audio
+    function overrideInterstitialAudio() {
+      setTimeout(() => {
+        const originalShowInterstitial = window.showInterstitial;
+        
+        if (originalShowInterstitial) {
+          window.showInterstitial = function(index, onContinue) {
+            originalShowInterstitial.call(this, index, onContinue);
+            
+            // Add mobile play button for interstitial audio if needed
+            const interstitialAudio = document.getElementById("interstitialAudio");
+            if (interstitialAudio.src && autoplayBlocked && !userHasInteracted) {
+              document.getElementById("mobileInterstitialPlayBtn").style.display = "block";
+              
+              document.getElementById("mobileInterstitialPlayBtn").onclick = () => {
+                userHasInteracted = true;
+                interstitialAudio.play().catch(e => console.error("Interstitial play failed:", e));
+                document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
+              };
+            }
+          };
+        }
+      }, 1000);
     }
+
+    // Initialize overrides after speaking.js loads
+    setTimeout(() => {
+      overrideIntroAudioHandling();
+      overrideInterstitialAudio();
+    }, 1500);
 
     // Hide mobile buttons when audio plays successfully
     document.addEventListener('play', function(e) {
       if (e.target.id === 'audio-player') {
         document.getElementById("mobileAudioPlayBtn").style.display = "none";
+        autoplayBlocked = false;
       }
       if (e.target.id === 'interstitialAudio') {
         document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
+        autoplayBlocked = false;
       }
       // Once any audio plays successfully, autoplay should work for subsequent audio
       autoplayBlocked = false;
+    }, true);
+
+    // Also track audio errors to detect autoplay blocks
+    document.addEventListener('error', function(e) {
+      if (e.target.tagName === 'AUDIO' && e.target.error) {
+        console.warn('Audio error detected:', e.target.src, e.target.error);
+      }
     }, true);
   </script>
 </body>
