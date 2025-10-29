@@ -63,7 +63,7 @@
       </div>
       <!-- Mobile play button for main audio -->
       <button id="mobileAudioPlayBtn" style="display: none; padding: 12px 24px; margin: 10px auto; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-        🔊 Tap to Play Audio
+        🔊 Tap to Play Lecture Audio
       </button>
     </div>
 
@@ -161,14 +161,16 @@
         userHasInteracted = true;
       });
 
-      // Simple mobile audio support - wait for speaking.js to load
+      // Wait for speaking.js to load completely before setting up mobile support
       setTimeout(() => {
-        setupMobileAudioSupport();
-      }, 1000);
+        setupSmartMobileAudioSupport();
+      }, 1500);
     });
 
-    function setupMobileAudioSupport() {
-      // Only override the main audio playback function
+    function setupSmartMobileAudioSupport() {
+      console.log('Setting up smart mobile audio support');
+      
+      // Store original function
       const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
       
       if (originalPlayAudioListWithProgress) {
@@ -176,12 +178,20 @@
           return new Promise(resolve => {
             const list = Array.isArray(srcList) ? srcList : [srcList];
             
-            // If autoplay was blocked and user hasn't interacted, show play button
-            if (autoplayBlocked && !userHasInteracted) {
-              console.log('Showing mobile play button for main audio');
-              showMainAudioPlayButton(list, resolve);
+            console.log('playAudioListWithProgress called for:', list);
+            
+            // Only show mobile button for lecture/conversation audio, NOT for instructions
+            const isLectureAudio = list.some(src => 
+              src.includes('lecture') || src.includes('conversation') || 
+              src.includes('audio') || src.includes('talk')
+            );
+            
+            // If it's lecture audio AND autoplay was blocked AND user hasn't interacted, show play button
+            if (isLectureAudio && autoplayBlocked && !userHasInteracted) {
+              console.log('Showing mobile play button for lecture audio');
+              showLectureAudioPlayButton(list, resolve);
             } else {
-              // Otherwise proceed normally - this should work now
+              // Otherwise proceed normally - this should work for all other audio
               console.log('Proceeding with normal audio playback');
               originalPlayAudioListWithProgress.call(this, srcList).then(resolve);
             }
@@ -194,25 +204,34 @@
         if (e.target.id === 'audio-player') {
           document.getElementById("mobileAudioPlayBtn").style.display = "none";
           autoplayBlocked = false;
+          console.log('Audio started playing successfully');
         }
       }, true);
 
-      // Handle audio errors
+      // Handle audio errors to detect autoplay blocks
       document.addEventListener('error', function(e) {
         if (e.target.tagName === 'AUDIO' && e.target.error) {
-          console.warn('Audio error detected:', e.target.src);
-          // Don't automatically set autoplayBlocked here to avoid breaking normal flow
+          console.warn('Audio error detected:', e.target.src, e.target.error);
+          // If this is a lecture audio error and we haven't set autoplayBlocked yet
+          if (e.target.id === 'audio-player' && !userHasInteracted) {
+            autoplayBlocked = true;
+          }
         }
       }, true);
     }
 
-    function showMainAudioPlayButton(audioList, resolve) {
+    function showLectureAudioPlayButton(audioList, resolve) {
       const playBtn = document.getElementById("mobileAudioPlayBtn");
       
+      // Update button text to be more specific
+      playBtn.textContent = '🔊 Tap to Play Lecture Audio';
       playBtn.style.display = "block";
+      
       playBtn.onclick = () => {
         userHasInteracted = true;
         playBtn.style.display = "none";
+        console.log('User clicked mobile play button, proceeding with audio playback');
+        
         // Now proceed with normal audio playback using original function
         const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
         if (originalPlayAudioListWithProgress) {
@@ -220,6 +239,15 @@
         } else {
           resolve(); // Fallback
         }
+      };
+    }
+
+    // Debug: log question progression
+    const originalRunQuestionAfterInterstitial = window.runQuestionAfterInterstitial;
+    if (originalRunQuestionAfterInterstitial) {
+      window.runQuestionAfterInterstitial = function(myToken) {
+        console.log('runQuestionAfterInterstitial called for question:', window.current + 1);
+        return originalRunQuestionAfterInterstitial.call(this, myToken);
       };
     }
 
@@ -232,7 +260,7 @@
         createManualStartButton();
       }
     }, 3000);
-    //finliand
+
     function createManualStartButton() {
       const startBtn = document.createElement('button');
       startBtn.textContent = 'Start First Question';
@@ -245,6 +273,18 @@
       };
       document.getElementById("app").appendChild(startBtn);
     }
+
+    // Enhanced debugging: log all audio events
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const audioElements = document.querySelectorAll('audio');
+        audioElements.forEach((audio, index) => {
+          audio.addEventListener('play', () => console.log(`Audio ${index} started:`, audio.src));
+          audio.addEventListener('error', (e) => console.log(`Audio ${index} error:`, audio.src, e.target.error));
+          audio.addEventListener('ended', () => console.log(`Audio ${index} ended:`, audio.src));
+        });
+      }, 2000);
+    });
   </script>
 </body>
 </html>
