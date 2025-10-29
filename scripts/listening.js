@@ -12,6 +12,52 @@ const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
 
 const testId = window.TEST_ID || "default_test";
+// === Email config (reuse your existing Formspree project) ===
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
+
+// Prevent double-send/race conditions
+let __finalizedListening = false;
+
+/** Send Listening results (TOEFL/SH) to Formspree */
+function sendListeningResultsEmail(payload) {
+  // payload: { testType, testId, score, total, answers, finishedAt }
+  const label = (testType === "sh" ? "SH" : "TPO");
+  const wrong = Math.max(0, (payload.total || 0) - (payload.score || 0));
+  const pct   = payload.total ? Math.round((payload.score / payload.total) * 100) + "%" : "—";
+
+  const lines = [
+    `Exam: ${label} — Listening`,
+    `Test ID: ${payload.testId}`,
+    `Finished: ${new Date(payload.finishedAt || Date.now()).toLocaleString()}`,
+    `Score: ${payload.score}/${payload.total} (${pct})`,
+    `Wrong: ${wrong}`,
+  ];
+
+  const fd = new FormData();
+  fd.append("message", lines.join("\n"));
+  fd.append("source", "listening.html auto-send");
+  fd.append("subject", `${label} Listening Results • Test ${payload.testId}`);
+  fd.append("_subject", `${label} Listening Results • Test ${payload.testId}`);
+  // If you collect a student email on-page, include it:
+  // const studentEmail = document.querySelector("#studentEmail")?.value || "";
+  // if (studentEmail) fd.append("email", studentEmail);
+
+  // Prefer Beacon to survive navigation; fall back to fetch keepalive
+  try {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(FORMSPREE_ENDPOINT, fd);
+      return;
+    }
+  } catch (_) { /* ignore */ }
+
+  // Fire-and-forget; don't await to avoid blocking navigation
+  fetch(FORMSPREE_ENDPOINT, {
+    method: "POST",
+    headers: { "Accept": "application/json" },
+    body: fd,
+    keepalive: true,
+  }).catch(() => {});
+}
 
 const _paramsL = new URLSearchParams(window.location.search);
 let testType = (_paramsL.get("type") || sessionStorage.getItem("TEST_TYPE") || "toefl").toLowerCase();
@@ -130,12 +176,12 @@ function setUpTime() {
 }
 function valuedTime() {
   timeFull--;
-  if (timeFull === 0) {
-    sendToFinalResults();
-    if (typeof window.goToNextSection === "function") {
-      window.goToNextSection();
-    }
+if (timeFull === 0) {
+  sendToFinalResults();
+  if (typeof window.goToNextSection === "function") {
+    window.goToNextSection();
   }
+}
   setUpTime();
 }
 function goTime() {
@@ -341,17 +387,22 @@ function setsEqual(a, b) {
 }
 
 function sendToFinalResults() {
+  if (__finalizedListening) return;     // ✅ guard
+  __finalizedListening = true;
+
   const allQuestions = window.listeningData.flatMap(p => p.questions);
   const totalPoints = userAnswers.reduce((sum, ans) => {
     const q = allQuestions[ans.qNum - 1];
+    if (!q) return sum;
+
     if (q.type === "single") {
-      return sum + (ans.selected[0] === ans.correct[0] ? 1 : 0);
+      return sum + (ans.selected[0] === (q.correct?.[0] ?? "") ? 1 : 0);
     }
     if (q.type === "multiple" || q.type === "triple") {
-      return sum + (setsEqual(ans.selected, ans.correct) ? 1 : 0);
+      return sum + (setsEqual(ans.selected, q.correct || [] ) ? 1 : 0);
     }
     if (q.type === "matrix") {
-      const allCorrect = ans.selected.every((val, i) => val === q.rows[i].correct);
+      const allCorrect = ans.selected.every((val, i) => val === (q.rows?.[i]?.correct ?? ""));
       return sum + (allCorrect ? 1 : 0);
     }
     return sum;
@@ -359,14 +410,21 @@ function sendToFinalResults() {
 
   const maxPoints = allQuestions.length;
 
+  const effTestId = window.TEST_ID || testId;
   const result = {
     section: "listening",
     score: totalPoints,
     total: maxPoints,
-    answers: userAnswers
+    answers: userAnswers,
+    finishedAt: new Date().toISOString(),
+    testId: effTestId,
+    testType
   };
 
-  const effTestId = window.TEST_ID || testId;
+  // Save locally (as you already did)
   localStorage.setItem(`result_${testType}_${effTestId}_listening`, JSON.stringify(result));
   localStorage.setItem(`result_${effTestId}_listening`, JSON.stringify(result));
+
+  // Email summary (non-blocking; uses Beacon/keepalive)
+  sendListeningResultsEmail(result);
 }
