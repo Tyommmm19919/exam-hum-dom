@@ -10,7 +10,7 @@ const progressWrapper = document.querySelector(".audio-progress");
 const timerListening = document.getElementById("timerListening");
 const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
-//changed 3
+//final change
 const testId = window.TEST_ID || "default_test";
 // === Email config (reuse your existing Formspree project) ===
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
@@ -109,9 +109,81 @@ let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
 let questionV = 0;
 
-// SIMPLIFIED: Use relative paths for everything - no complex path fixing
+// ========== UNIVERSAL PATH CONFIGURATION ==========
+// This works on GitHub Pages, Local Development, and Future GoDaddy Domain
+function getUniversalBasePath() {
+  const hostname = window.location.hostname;
+  const pathname = window.location.pathname;
+  
+  // GitHub Pages detection
+  if (hostname.includes('github.io')) {
+    // Extract repo name from pathname (e.g., '/exam-hum-dom/' from '/exam-hum-dom/indexes/listening.html')
+    const parts = pathname.split('/').filter(part => part && !part.includes('.html'));
+    const repoName = parts[0];
+    return repoName ? `/${repoName}/` : '/';
+  }
+  
+  // Local development (Live Server, etc.)
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return '/';
+  }
+  
+  // Production domains (your future GoDaddy domain, Vercel, Netlify, etc.)
+  return '/';
+}
+
+// Universal path fixing - works everywhere
+function fixUniversalPath(path) {
+  if (!path || typeof path !== 'string') return path;
+  
+  const base = getUniversalBasePath();
+  
+  // If it's already a full URL, leave it alone
+  if (path.startsWith('http') || path.startsWith('//')) {
+    return path;
+  }
+  
+  // If path starts with / but we need base path, add it
+  if (path.startsWith('/') && base !== '/') {
+    return base + path.slice(1);
+  }
+  
+  // If it's a relative path without /, make it absolute from base
+  if (!path.startsWith('/') && !path.startsWith('../')) {
+    return base + path;
+  }
+  
+  return path;
+}
+
+// Apply universal path fixing to all data
+function applyUniversalPaths(data) {
+  if (Array.isArray(data)) {
+    return data.map(applyUniversalPaths);
+  }
+  
+  if (data && typeof data === 'object') {
+    const result = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'audio' || key === 'intro') {
+        if (Array.isArray(value)) {
+          result[key] = value.map(fixUniversalPath);
+        } else {
+          result[key] = fixUniversalPath(value);
+        }
+      } else {
+        result[key] = applyUniversalPaths(value);
+      }
+    }
+    return result;
+  }
+  
+  return data;
+}
+// ========== END UNIVERSAL PATH CONFIGURATION ==========
+
+// Data loading with relative paths
 function getListeningDataPath(tt, tnum) {
-  // Use relative paths that work from listening.html location
   if (tt === "sh") {
     return `../dataSH/${tnum}/listeningData_Test${tnum}.js`;
   } else {
@@ -126,6 +198,7 @@ function loadListeningData(tt, tnum) {
     const path = getListeningDataPath(tt, tnum);
     const src = `${path}?_=${Date.now()}`;
     console.log('Loading listening data from:', src);
+    console.log('Universal base path:', getUniversalBasePath());
     
     try { delete window.listeningData; } catch { }
     const s = document.createElement("script");
@@ -134,16 +207,19 @@ function loadListeningData(tt, tnum) {
     s.onload = () => {
       if (typeof window.listeningData !== "undefined") {
         console.log('Listening data loaded successfully');
-        console.log('First passage audio path:', window.listeningData[0]?.audio);
-        // DON'T fix paths - assume the data file already has correct relative paths
-        resolve(window.listeningData);
+        console.log('Raw audio path example:', window.listeningData[0]?.audio);
+        
+        // Apply universal path fixing
+        const fixedData = applyUniversalPaths(window.listeningData);
+        console.log('Fixed audio path example:', fixedData[0]?.audio);
+        
+        resolve(fixedData);
       } else {
         reject(new Error(`"${path}" loaded but window.listeningData is undefined`));
       }
     };
     s.onerror = (err) => {
       console.error('Failed to load listening data from:', src);
-      console.error('Error:', err);
       reject(new Error(`Failed to load ${path}`));
     };
     document.body.appendChild(s);
@@ -176,13 +252,15 @@ window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
   console.log('Starting listening test:', { 
     testType, 
-    effTestId
+    effTestId,
+    environment: window.location.hostname,
+    basePath: getUniversalBasePath()
   });
   
   loadListeningData(testType, effTestId)
     .then((data) => {
       window.listeningData = data;
-      console.log('Data loaded successfully, first passage audio:', data[0]?.audio);
+      console.log('Data loaded with universal paths applied');
       setTimeout(loadPassage, 1000);
     })
     .catch(err => {
@@ -195,10 +273,6 @@ window.startAllAll = function () {
 audioEl.addEventListener('error', function(e) {
   console.error('Main audio error:', e);
   console.log('Failed audio src:', audioEl.src);
-  // Try to diagnose the path issue
-  const currentPath = window.location.pathname;
-  console.log('Current page path:', currentPath);
-  console.log('Audio element src:', audioEl.src);
 });
 
 introEl.addEventListener('error', function(e) {
@@ -218,7 +292,6 @@ function loadPassage() {
   const passage = window.listeningData[passageIndex];
   console.log('Loading passage audio:', passage.audio);
   
-  // Use the audio path exactly as it is in the data
   audioEl.src = passage.audio;
   progressWrapper.style.display = "block";
   
@@ -229,23 +302,16 @@ function loadPassage() {
       
       // Show manual play button with debug info
       const playBtn = document.createElement('button');
-      playBtn.textContent = 'Click to Play Audio (Debug)';
+      playBtn.textContent = 'Click to Play Audio';
       playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer;';
       playBtn.onclick = () => {
-        console.log('Manual play attempt, current src:', audioEl.src);
         audioEl.play().catch(e => {
           console.error('Manual play failed:', e);
-          // Show the actual path that's failing
           alert(`Cannot play audio from: ${audioEl.src}\n\nPlease check if the audio file exists at this path.`);
         });
         playBtn.remove();
       };
       
-      const debugInfo = document.createElement('div');
-      debugInfo.style.cssText = 'color: red; margin: 10px; font-family: monospace;';
-      debugInfo.textContent = `Audio path: ${audioEl.src}`;
-      
-      progressWrapper.appendChild(debugInfo);
       progressWrapper.appendChild(playBtn);
     });
   };
@@ -305,7 +371,6 @@ function playIntroSequence(introList, callback) {
     
     introEl.play().catch((error) => {
       console.error('Intro audio play failed:', error);
-      console.log('Failed intro path:', introEl.src);
       index++;
       setTimeout(playNext, 100);
     });
@@ -324,8 +389,6 @@ function playIntroSequence(introList, callback) {
   
   playNext();
 }
-
-// ... rest of your functions remain exactly the same ...
 
 function renderOptions() {
   optionsDiv.innerHTML = "";
