@@ -177,7 +177,7 @@ function startReading() {
 timerInterval = setInterval(async () => {
   if (totalTime <= 0) {
     clearInterval(timerInterval);
-    await showFinalScore(); // ✅
+    await showFinalScore();
     if (readingContainer) readingContainer.style.display = 'none';
     if (timerEl) timerEl.style.display = 'none';
     if (typeof window.goToNextSection === 'function') window.goToNextSection();
@@ -588,10 +588,8 @@ nextBtn.onclick = async () => {
     window.currentQuestionIndex++;
     render();
   } else {
-    if (__finalizingReading) return;        // ✅ guard
-    __finalizingReading = true;             // ✅ set
     clearInterval(timerInterval);
-    await showFinalScore();
+    await showFinalScore();             // ← let the guard live inside the function
     readingContainer.style.display = 'none';
     timerEl.style.display = 'none';
     if (typeof window.goToNextSection === 'function') {
@@ -603,10 +601,8 @@ nextBtn.onclick = async () => {
 
 
 async function showFinalScore() {
-  if (__finalizingReading) return; // ✅ guard
-  __finalizingReading = true;      // ✅ set
-
-  // ...rest of your function unchanged...
+  if (__finalizingReading) return;   // ✅ single source of truth
+  __finalizingReading = true;
 
   document.getElementById('passage-section').style.display = 'none';
   document.getElementById('question-section').style.display = 'none';
@@ -618,13 +614,12 @@ async function showFinalScore() {
   const answers = [];
   const TOTAL = PASSAGE_META.total;
 
-  // per-type stats (points), optional but nice in email
   const stats = {
-    mcq: { correctPts: 0, totalPts: 0 },   // multiple-choice (1pt)
-    ms:  { correctPts: 0, totalPts: 0 },   // multiple-answer (1pt)
-    ins: { correctPts: 0, totalPts: 0 },   // insert-sentence (1pt)
-    sum: { correctPts: 0, totalPts: 0 },   // summary (0/1/2 pts)
-    db:  { correctPts: 0, totalPts: 0 },   // dual-bucket (0/1/2/3 pts)
+    mcq: { correctPts: 0, totalPts: 0 },
+    ms:  { correctPts: 0, totalPts: 0 },
+    ins: { correctPts: 0, totalPts: 0 },
+    sum: { correctPts: 0, totalPts: 0 },
+    db:  { correctPts: 0, totalPts: 0 },
   };
 
   for (let i = 0; i < TOTAL; i++) {
@@ -634,21 +629,18 @@ async function showFinalScore() {
 
     let earned = 0;
     let maxPts = 1;
-    let kind = "mcq"; // default label
+    let kind = "mcq";
 
     if (question.type === 'multiple-choice') {
-      kind = "mcq";
-      maxPts = 1;
+      kind = "mcq"; maxPts = 1;
       earned = (userAnswer === question.correct) ? 1 : 0;
 
     } else if (question.type === 'insert-sentence') {
-      kind = "ins";
-      maxPts = 1;
+      kind = "ins"; maxPts = 1;
       earned = (userAnswer === question.correct) ? 1 : 0;
 
     } else if (question.type === 'multiple-answer') {
-      kind = "ms";
-      maxPts = 1;
+      kind = "ms"; maxPts = 1;
       const correct = question.correct || [];
       const picked = Array.isArray(userAnswer) ? userAnswer : [];
       const set = new Set(picked);
@@ -656,23 +648,15 @@ async function showFinalScore() {
       earned = isCorrect ? 1 : 0;
 
     } else if (question.type === 'summary') {
-      kind = "sum";
-      maxPts = 2;
+      kind = "sum"; maxPts = 2;
       const correct = question.correct || [];
       const picked = Array.isArray(userAnswer) ? userAnswer : [];
       const correctSet = new Set(correct);
       const correctCount = picked.filter(x => correctSet.has(x)).length;
-      if (picked.length === 3 && correctCount === 3) {
-        earned = 2;
-      } else if (correctCount === 2) {
-        earned = 1;
-      } else {
-        earned = 0;
-      }
+      earned = (picked.length === 3 && correctCount === 3) ? 2 : (correctCount === 2 ? 1 : 0);
 
     } else if (question.type === 'dual-bucket') {
       kind = "db";
-      // rubric: 3/2/1/0 pts depending on wrongCount
       const state = userAnswer || { a: [], b: [] };
       const [bA, bB] = question.buckets || [{}, {}];
 
@@ -682,7 +666,6 @@ async function showFinalScore() {
       const aPicked = Array.isArray(state.a) ? state.a : [];
       const bPicked = Array.isArray(state.b) ? state.b : [];
 
-      // target pick counts:
       const totalNeeded = (bA.selectCount || 0) + (bB.selectCount || 0);
       const totalPicked = aPicked.length + bPicked.length;
 
@@ -693,13 +676,9 @@ async function showFinalScore() {
       const missing = Math.max(0, totalNeeded - totalPicked);
       const wrongCount = wrongPlacements + missing;
 
-      if (wrongCount === 0) earned = 3;
-      else if (wrongCount === 1) earned = 2;
-      else if (wrongCount === 2) earned = 1;
-      else earned = 0;
+      earned = (wrongCount === 0) ? 3 : (wrongCount === 1) ? 2 : (wrongCount === 2) ? 1 : 0;
 
       correctAnswer = { a: bA.correct, b: bB.correct };
-      // Dual-bucket carries up to 3 pts
       maxPts = 3;
     }
 
@@ -714,34 +693,28 @@ async function showFinalScore() {
     answers.push({ selected: (typeof userAnswer !== 'undefined' ? userAnswer : null), correct: correctAnswer });
   }
 
-  const payloadObj = {
-    score,
-    total: totalPoints,
-    answers
-  };
+  const payloadObj = { score, total: totalPoints, answers };
   const payload = JSON.stringify(payloadObj);
 
+  // ✅ Always write both keys so results page finds the data for any type
   localStorage.setItem(`result_${testType}_${testId}_reading`, payload);
-  if (testType === 'toefl') {
-    // Backward compatibility for existing TOEFL data
-    localStorage.setItem(`result_${testId}_reading`, payload);
-  }
+  localStorage.setItem(`result_${testId}_reading`, payload);
 
-  // ✅ Email summary before we navigate away
   try {
     await sendReadingResultsEmail({
       testType,
       testId,
       score,
       total: totalPoints,
-      answers,             // not printed, but kept for parity
+      answers,
       stats,
       finishedAt: new Date().toISOString(),
     });
   } catch (_) {
-    // swallow errors silently (don’t block navigation)
+    /* ignore email errors */
   }
 }
+
 
 
 function toKebab(prop) { return prop.replace(/[A-Z]/g, m => '-' + m.toLowerCase()); }

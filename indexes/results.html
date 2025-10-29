@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,12 +52,9 @@
       }
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: var(--font);
@@ -84,19 +80,8 @@
       opacity: .35;
     }
 
-    /* button[onclick*="test-selection.html"]{
-      position: fixed; left: 16px; top: 16px;
-      background: linear-gradient(180deg, #a06bff 0%, #8553f7 100%);
-      color:#fff; border:1px solid rgba(255,255,255,.25);
-      border-radius: 12px; height: 44px; padding: 0 14px;
-      font-weight: 800; letter-spacing:.2px; cursor: pointer;
-      box-shadow: 0 10px 22px rgba(160,107,255,.22), inset 0 1px 0 rgba(255,255,255,.5);
-      transition: transform var(--speed-fast), box-shadow var(--speed);
-      z-index: 20;
-    } */
     .topp {
       margin: auto;
-      /* border: 2px solid whitesmoke; */
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(9px);
       width: min(1200px, 94%);
@@ -120,15 +105,9 @@
       cursor: pointer;
       transition: transform var(--speed-fast), box-shadow var(--speed)
     }
+    .topp button:hover { transform: translateY(-1px) }
 
-    .topp button:hover {
-      transform: translateY(-1px)
-    }
-
-    .page {
-      width: min(1200px, 94%);
-      margin: 10px auto 50px;
-    }
+    .page { width: min(1200px, 94%); margin: 10px auto 50px; }
 
     .selector {
       background: var(--surface);
@@ -138,202 +117,97 @@
       backdrop-filter: blur(var(--blur));
       padding: 18px;
     }
-
-    .selector h2 {
-      margin: 0 0 12px 0;
-      font-size: 22px;
-      letter-spacing: .2px;
-    }
-
+    .selector h2 { margin: 0 0 12px 0; font-size: 22px; letter-spacing: .2px; }
     .selector .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 12px;
-      align-items: center;
+      display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center;
     }
-
-    .select-wrap {
-      position: relative;
-    }
-
+    .select-wrap { position: relative; }
     .select-wrap::after {
-      content: "▾";
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      pointer-events: none;
-      font-size: 16px;
+      content: "▾"; position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 16px;
     }
 
-    /* Style both selects the same way as your original */
-    #typeSelect,
-    #testSelect {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      width: 100%;
-      height: 44px;
-      font-size: 16px;
-      color: var(--text);
-      background: rgba(255, 255, 255, .08);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0 36px 0 12px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+    #typeSelect, #testSelect {
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      width: 100%; height: 44px; font-size: 16px; color: var(--text);
+      background: rgba(255, 255, 255, .08); border: 1px solid var(--border);
+      border-radius: 12px; padding: 0 36px 0 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
       transition: box-shadow var(--speed), border-color var(--speed);
     }
-
-    #typeSelect:focus,
-    #testSelect:focus {
-      outline: none;
-      border-color: rgba(116, 163, 255, .6);
+    #typeSelect:focus, #testSelect:focus {
+      outline: none; border-color: rgba(116, 163, 255, .6);
       box-shadow: 0 0 0 3px rgba(116, 163, 255, .18);
     }
-
-    option {
-      color: #0f1428;
-      background: #fff;
-    }
+    option { color: #0f1428; background: #fff; }
 
     .btn-primary {
-      height: 44px;
-      min-width: 140px;
+      height: 44px; min-width: 140px;
       background: linear-gradient(180deg, #6ea3ff 0%, var(--blue) 100%);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, .25);
-      border-radius: 12px;
-      font-weight: 900;
-      letter-spacing: .2px;
-      cursor: pointer;
+      color: #fff; border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 12px; font-weight: 900; letter-spacing: .2px; cursor: pointer;
       box-shadow: 0 10px 20px rgba(76, 130, 255, .20), inset 0 1px 0 rgba(255, 255, 255, .5);
       transition: transform var(--speed-fast), box-shadow var(--speed);
     }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-    }
+    .btn-primary:hover { transform: translateY(-1px); }
 
     #results {
-      display: none;
-      margin-top: 18px;
-      background: var(--surface);
+      display: none; margin-top: 18px; background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-2);
-      backdrop-filter: blur(var(--blur));
-      padding: 18px;
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur)); padding: 18px;
     }
+    #results.show { display: block; }
 
-    #results.show {
-      display: block;
-    }
-
-    #finalResultsText {
-      margin: 0 0 6px 0;
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: .2px;
-    }
+    #finalResultsText { margin: 0 0 6px 0; font-size: 24px; font-weight: 900; letter-spacing: .2px; }
 
     .section-block {
-      margin-top: 18px;
-      background: var(--surface-strong);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-1);
-      padding: 14px;
+      margin-top: 18px; background: var(--surface-strong); border: 1px solid var(--border);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-1); padding: 14px;
     }
-
-    .section-block h2 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-    }
-
+    .section-block h2 { margin: 0 0 8px 0; font-size: 18px; }
     .section-block p strong {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid var(--border);
+      display: inline-block; padding: 6px 10px; border-radius: 10px;
+      background: rgba(255, 255, 255, .06); border: 1px solid var(--border);
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      overflow: hidden;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-1);
-      table-layout: fixed;
-      word-break: break-word;
+      width: 100%; border-collapse: collapse; margin-top: 12px; overflow: hidden;
+      border-radius: var(--radius-md); box-shadow: var(--shadow-1);
+      table-layout: fixed; word-break: break-word;
     }
-
-    th,
-    td {
-      padding: 12px 10px;
-      border: 1px solid rgba(255, 255, 255, .10);
-      text-align: center;
-      background: rgba(255, 255, 255, .03);
-      color: var(--text);
-      font-size: 14px;
+    th, td {
+      padding: 12px 10px; border: 1px solid rgba(255,255,255,.10);
+      text-align: center; background: rgba(255,255,255,.03); color: var(--text); font-size: 14px;
     }
-
     thead th {
       background: linear-gradient(180deg, rgba(116, 163, 255, .18), rgba(116, 163, 255, .10));
-      font-weight: 900;
-      letter-spacing: .2px;
+      font-weight: 900; letter-spacing: .2px;
     }
-
-    tbody tr {
-      transition: transform var(--speed-fast), box-shadow var(--speed);
-    }
-
-    tbody tr:hover {
-      transform: translateY(-1px);
-      box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, .02);
-    }
-
-    .correct td {
-      background: linear-gradient(180deg, rgba(53, 212, 159, .18), rgba(53, 212, 159, .10));
-    }
-
-    .incorrect td {
-      background: linear-gradient(180deg, rgba(255, 107, 124, .18), rgba(255, 107, 124, .10));
-    }
+    tbody tr { transition: transform var(--speed-fast), box-shadow var(--speed); }
+    tbody tr:hover { transform: translateY(-1px); box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02); }
+    .correct td { background: linear-gradient(180deg, rgba(53,212,159,.18), rgba(53,212,159,.10)); }
+    .incorrect td { background: linear-gradient(180deg, rgba(255,107,124,.18), rgba(255,107,124,.10)); }
 
     #speaking-results audio {
-      width: 100%;
-      margin-bottom: 8px;
-      background: rgba(255, 255, 255, .04);
-      border-radius: 10px;
-      outline: none;
+      width: 100%; margin-bottom: 8px; background: rgba(255, 255, 255, .04);
+      border-radius: 10px; outline: none;
     }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    strong {
-      text-align: center;
-    }
+    .muted { color: var(--muted); }
+    strong { text-align: center; }
 
     @media (max-width: 720px) {
-      .selector .row {
-        grid-template-columns: 1fr;
-      }
+      .selector .row { grid-template-columns: 1fr; }
     }
   </style>
 
   <script src="../scripts/recStore.js"></script>
 </head>
-
 <body>
 
   <div class="topp">
     <button onclick="window.location.href = '../index.html'"
-      style="position: fixed; left: 0; z-index: 0;">Home</button>
+            style="position: fixed; left: 0; z-index: 0;">Home</button>
     <button onclick="window.location.href = 'test-selection.html'" style="position: fixed; right: 0;">Test
       Selection</button>
   </div>
@@ -347,6 +221,7 @@
             <option value="" selected disabled>Choose a type…</option>
             <option value="toefl">TPO</option>
             <option value="sh">SH</option>
+            <option value="toefl2026">TOEFL 2026</option>
           </select>
         </div>
         <div class="select-wrap">
@@ -374,7 +249,7 @@
     let currentTestId = null;
     let currentType = null;
 
-    const TYPE_LABELS = { toefl: 'TOEFL', sh: 'SH' };
+    const TYPE_LABELS = { toefl: 'TOEFL', sh: 'SH', toefl2026: 'TOEFL 2026' };
 
     function arraysEqual(a, b) {
       if (!Array.isArray(a) || !Array.isArray(b)) return false;
@@ -455,7 +330,6 @@
       return null;
     }
 
-
     function renderSection(title, data, targetId) {
       const container = document.getElementById(targetId);
       if (!container) return;
@@ -478,7 +352,7 @@
 
       const rows = (answers || []).map((a, i) => {
         const selectedDisplay = formatAnswer(a.selected);
-        const correctDisplay = formatAnswer(a.correct);
+        const correctDisplay  = formatAnswer(a.correct);
         const isCorrect = compareAnswers(a.selected, a.correct);
         return `
           <tr class="${isCorrect ? "correct" : "incorrect"}">
@@ -618,16 +492,15 @@
       const typeSel = document.getElementById('typeSelect');
       const testSel = document.getElementById('testSelect');
 
-      if (['toefl', 'sh'].includes(type)) typeSel.value = type;
+      if (['toefl', 'sh', 'toefl2026'].includes(type)) typeSel.value = type;
       if (test && [...testSel.options].some(o => o.value === test)) testSel.value = test;
 
       if (typeSel.value && testSel.value) {
         loadResults();
       }
     });
-      document.addEventListener("contextmenu", (e)=> e.preventDefault());
 
+    document.addEventListener("contextmenu", (e)=> e.preventDefault());
   </script>
 </body>
-
 </html>
