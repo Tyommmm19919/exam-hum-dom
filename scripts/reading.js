@@ -23,6 +23,54 @@ const mentionSection   = document.getElementById('mention-section');
 const viewText         = document.getElementById('viewText');
 const closeText        = document.getElementById('closeText');
 const directionsR      = document.getElementById('directionsR');
+let __finalizingReading = false;
+
+// Reuse your existing Formspree form:
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
+
+/** Send Reading results (TOEFL/SH) to Formspree */
+async function sendReadingResultsEmail(payload) {
+  // payload: { testType, testId, score, total, answers, finishedAt, stats }
+  const wrong = Math.max(0, (payload.total || 0) - (payload.score || 0));
+  const pct   = payload.total ? Math.round((payload.score / payload.total) * 100) + "%" : "—";
+  const label = (TYPE_LABELS?.[payload.testType] || payload.testType || '').toUpperCase();
+
+  // Optional short per-type breakdown (counts & points)
+  const st = payload.stats || {};
+  const tidy = (k) => st[k] ? `${st[k].correctPts}/${st[k].totalPts}` : "—";
+  // mcq=multiple-choice, ms=multiple-answer, ins=insert-sentence, sum=summary, db=dual-bucket
+
+  const lines = [
+    `Exam: ${label} — Reading`,
+    `Test ID: ${payload.testId}`,
+    `Finished: ${new Date(payload.finishedAt || Date.now()).toLocaleString()}`,
+    `Score: ${payload.score}/${payload.total} (${pct})`,
+    `Wrong points: ${wrong}`,
+    `Breakdown (points):`,
+    `  • Multiple-choice: ${tidy("mcq")}`,
+    `  • Multiple-answer: ${tidy("ms")}`,
+    `  • Insert-sentence: ${tidy("ins")}`,
+    `  • Summary:        ${tidy("sum")}`,
+    `  • Dual-bucket:    ${tidy("db")}`,
+  ];
+
+  const fd = new FormData();
+  fd.append("message", lines.join("\n"));
+  fd.append("source", "reading.html auto-send");
+  fd.append("subject", `${label} Reading Results • Test ${payload.testId}`);
+  fd.append("_subject", `${label} Reading Results • Test ${payload.testId}`);
+  // If you capture a student email on-page, include it so replies go straight to them:
+  // const studentEmail = document.querySelector("#studentEmail")?.value || "";
+  // if (studentEmail) fd.append("email", studentEmail);
+
+  await fetch(FORMSPREE_ENDPOINT, {
+    method: "POST",
+    headers: { "Accept": "application/json" },
+    body: fd,
+    keepalive: true, // ✅ lets the browser finish sending even if we navigate away
+  });
+}
+
 
 function buildCandidateUrls(tt, tnum) {
   // Simplified and reliable: direct paths
@@ -126,20 +174,21 @@ function startReading() {
   } else if(testType === "sh"){
     totalTime = 80*60
   }
-  timerInterval = setInterval(() => {
-    if (totalTime <= 0) {
-      clearInterval(timerInterval);
-      showFinalScore();
-      if (readingContainer) readingContainer.style.display = 'none';
-      if (timerEl) timerEl.style.display = 'none';
-      if (typeof window.goToNextSection === 'function') window.goToNextSection();
-      return;
-    }
-    const minutes = Math.floor(totalTime / 60);
-    const seconds = totalTime % 60;
-    timerEl.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    totalTime--;
-  }, 1000);
+timerInterval = setInterval(async () => {
+  if (totalTime <= 0) {
+    clearInterval(timerInterval);
+    await showFinalScore(); // ✅
+    if (readingContainer) readingContainer.style.display = 'none';
+    if (timerEl) timerEl.style.display = 'none';
+    if (typeof window.goToNextSection === 'function') window.goToNextSection();
+    return;
+  }
+  const minutes = Math.floor(totalTime / 60);
+  const seconds = totalTime % 60;
+  timerEl.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  totalTime--;
+}, 1000);
+
 
   setTimeout(() => render(), 0);
 }
@@ -533,14 +582,16 @@ prevBtn.onclick = () => {
   }
 };
 
-nextBtn.onclick = () => {
+nextBtn.onclick = async () => {
   const lastIndex = PASSAGE_META.total - 1;
   if (currentQuestionIndex < lastIndex) {
     window.currentQuestionIndex++;
     render();
   } else {
+    if (__finalizingReading) return;        // ✅ guard
+    __finalizingReading = true;             // ✅ set
     clearInterval(timerInterval);
-    showFinalScore();
+    await showFinalScore();
     readingContainer.style.display = 'none';
     timerEl.style.display = 'none';
     if (typeof window.goToNextSection === 'function') {
@@ -549,7 +600,14 @@ nextBtn.onclick = () => {
   }
 };
 
-function showFinalScore() {
+
+
+async function showFinalScore() {
+  if (__finalizingReading) return; // ✅ guard
+  __finalizingReading = true;      // ✅ set
+
+  // ...rest of your function unchanged...
+
   document.getElementById('passage-section').style.display = 'none';
   document.getElementById('question-section').style.display = 'none';
   finalScoreEl.style.display = 'none';
@@ -560,41 +618,61 @@ function showFinalScore() {
   const answers = [];
   const TOTAL = PASSAGE_META.total;
 
+  // per-type stats (points), optional but nice in email
+  const stats = {
+    mcq: { correctPts: 0, totalPts: 0 },   // multiple-choice (1pt)
+    ms:  { correctPts: 0, totalPts: 0 },   // multiple-answer (1pt)
+    ins: { correctPts: 0, totalPts: 0 },   // insert-sentence (1pt)
+    sum: { correctPts: 0, totalPts: 0 },   // summary (0/1/2 pts)
+    db:  { correctPts: 0, totalPts: 0 },   // dual-bucket (0/1/2/3 pts)
+  };
+
   for (let i = 0; i < TOTAL; i++) {
     const { question } = getPassageAndQuestion(i);
     const userAnswer = userAnswers[i];
     let correctAnswer = question.correct;
 
-    const maxPts = (question.type === 'summary' || question.type === 'dual-bucket') ? 2 : 1;
-    totalPoints += maxPts;
+    let earned = 0;
+    let maxPts = 1;
+    let kind = "mcq"; // default label
 
     if (question.type === 'multiple-choice') {
-      const isCorrect = userAnswer === question.correct;
-      if (isCorrect) score += 1;
+      kind = "mcq";
+      maxPts = 1;
+      earned = (userAnswer === question.correct) ? 1 : 0;
 
     } else if (question.type === 'insert-sentence') {
-      const isCorrect = userAnswer === question.correct;
-      if (isCorrect) score += 1;
+      kind = "ins";
+      maxPts = 1;
+      earned = (userAnswer === question.correct) ? 1 : 0;
 
     } else if (question.type === 'multiple-answer') {
+      kind = "ms";
+      maxPts = 1;
       const correct = question.correct || [];
       const picked = Array.isArray(userAnswer) ? userAnswer : [];
       const set = new Set(picked);
       const isCorrect = picked.length === correct.length && correct.every(x => set.has(x));
-      if (isCorrect) score += 1;
+      earned = isCorrect ? 1 : 0;
 
     } else if (question.type === 'summary') {
+      kind = "sum";
+      maxPts = 2;
       const correct = question.correct || [];
       const picked = Array.isArray(userAnswer) ? userAnswer : [];
       const correctSet = new Set(correct);
       const correctCount = picked.filter(x => correctSet.has(x)).length;
       if (picked.length === 3 && correctCount === 3) {
-        score += 2;
+        earned = 2;
       } else if (correctCount === 2) {
-        score += 1;
+        earned = 1;
+      } else {
+        earned = 0;
       }
 
     } else if (question.type === 'dual-bucket') {
+      kind = "db";
+      // rubric: 3/2/1/0 pts depending on wrongCount
       const state = userAnswer || { a: [], b: [] };
       const [bA, bB] = question.buckets || [{}, {}];
 
@@ -604,6 +682,7 @@ function showFinalScore() {
       const aPicked = Array.isArray(state.a) ? state.a : [];
       const bPicked = Array.isArray(state.b) ? state.b : [];
 
+      // target pick counts:
       const totalNeeded = (bA.selectCount || 0) + (bB.selectCount || 0);
       const totalPicked = aPicked.length + bPicked.length;
 
@@ -614,24 +693,56 @@ function showFinalScore() {
       const missing = Math.max(0, totalNeeded - totalPicked);
       const wrongCount = wrongPlacements + missing;
 
-      if (wrongCount === 0) { score += 3; }
-      else if (wrongCount === 1) { score += 2; }
-      else if (wrongCount === 2) { score += 1; }
+      if (wrongCount === 0) earned = 3;
+      else if (wrongCount === 1) earned = 2;
+      else if (wrongCount === 2) earned = 1;
+      else earned = 0;
 
       correctAnswer = { a: bA.correct, b: bB.correct };
+      // Dual-bucket carries up to 3 pts
+      maxPts = 3;
     }
 
-    answers.push({ selected: typeof userAnswer !== 'undefined' ? userAnswer : null, correct: correctAnswer });
+    score += earned;
+    totalPoints += maxPts;
+
+    if (stats[kind]) {
+      stats[kind].correctPts += earned;
+      stats[kind].totalPts += maxPts;
+    }
+
+    answers.push({ selected: (typeof userAnswer !== 'undefined' ? userAnswer : null), correct: correctAnswer });
   }
 
-  const payload = JSON.stringify({ score, total: totalPoints, answers });
+  const payloadObj = {
+    score,
+    total: totalPoints,
+    answers
+  };
+  const payload = JSON.stringify(payloadObj);
 
   localStorage.setItem(`result_${testType}_${testId}_reading`, payload);
-  // Backward compatibility for existing TOEFL data
   if (testType === 'toefl') {
+    // Backward compatibility for existing TOEFL data
     localStorage.setItem(`result_${testId}_reading`, payload);
   }
+
+  // ✅ Email summary before we navigate away
+  try {
+    await sendReadingResultsEmail({
+      testType,
+      testId,
+      score,
+      total: totalPoints,
+      answers,             // not printed, but kept for parity
+      stats,
+      finishedAt: new Date().toISOString(),
+    });
+  } catch (_) {
+    // swallow errors silently (don’t block navigation)
+  }
 }
+
 
 function toKebab(prop) { return prop.replace(/[A-Z]/g, m => '-' + m.toLowerCase()); }
 function applyStyles(el, styles = {}) {
