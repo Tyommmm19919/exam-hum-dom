@@ -10,7 +10,7 @@ const progressWrapper = document.querySelector(".audio-progress");
 const timerListening = document.getElementById("timerListening");
 const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
-//edited
+//edited 2
 const testId = window.TEST_ID || "default_test";
 // === Email config (reuse your existing Formspree project) ===
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
@@ -20,7 +20,6 @@ let __finalizedListening = false;
 
 /** Send Listening results (TOEFL/SH) to Formspree */
 function sendListeningResultsEmail(payload) {
-  // payload: { testType, testId, score, total, answers, finishedAt }
   const label = (testType === "sh" ? "SH" : "TPO");
   const wrong = Math.max(0, (payload.total || 0) - (payload.score || 0));
   const pct   = payload.total ? Math.round((payload.score / payload.total) * 100) + "%" : "—";
@@ -38,11 +37,7 @@ function sendListeningResultsEmail(payload) {
   fd.append("source", "listening.html auto-send");
   fd.append("subject", `${label} Listening Results • Test ${payload.testId}`);
   fd.append("_subject", `${label} Listening Results • Test ${payload.testId}`);
-  // If you collect a student email on-page, include it:
-  // const studentEmail = document.querySelector("#studentEmail")?.value || "";
-  // if (studentEmail) fd.append("email", studentEmail);
 
-  // Prefer Beacon to survive navigation; fall back to fetch keepalive
   try {
     if (navigator.sendBeacon) {
       navigator.sendBeacon(FORMSPREE_ENDPOINT, fd);
@@ -50,7 +45,6 @@ function sendListeningResultsEmail(payload) {
     }
   } catch (_) { /* ignore */ }
 
-  // Fire-and-forget; don't await to avoid blocking navigation
   fetch(FORMSPREE_ENDPOINT, {
     method: "POST",
     headers: { "Accept": "application/json" },
@@ -69,12 +63,12 @@ if(testType === "toefl"){
 } else if(testType === "sh"){
   typeName = "SH"
 }
-// prefer URL test if present; keep session in sync
+
 const urlTestId = _paramsL.get("test");
 if (urlTestId) window.TEST_ID = urlTestId;
 sessionStorage.setItem("TEST_ID", window.TEST_ID || testId);
 
-// ---------- CHANGED: router to preserve ?type=... just like reading ----------
+// Router function
 window.goToNextSection = function () {
   const selected = JSON.parse(sessionStorage.getItem("SELECTED_SECTIONS") || "[]");
   let currentIndex = parseInt(sessionStorage.getItem("CURRENT_SECTION_INDEX") || "0");
@@ -95,11 +89,7 @@ window.goToNextSection = function () {
   }
 };
 
-// document.addEventListener('contextmenu', function (e) {
-//   e.preventDefault();
-//   alert("Right-click is disabled on this page.");
-// });
-
+// Visibility handler
 let visibilityTimeout = null;
 function visibilityHandler() {
   if (document.visibilityState === "hidden") {
@@ -113,66 +103,107 @@ function visibilityHandler() {
   }
 }
 document.addEventListener("visibilitychange", visibilityHandler);
+
 let timeFull = testType === "toefl"? 15*60 : 20*60;
 let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
 let questionV = 0;
 
+// FIXED: GitHub Pages compatible path detection
 function getRepoBasePath() {
-  const parts = window.location.pathname.split('/').filter(Boolean);
-  const repo = parts[0] || '';
-  return repo ? `/${repo}/` : '/';
+  // For GitHub Pages: /repo-name/ or root /
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  
+  // If we're at root (/), return empty base
+  if (path === '/' || parts.length === 0) return '/';
+  
+  // If we're in a GitHub Pages repo (like /toefl-tester/), return that as base
+  const repoName = parts[0];
+  return `/${repoName}/`;
 }
 
-// FIXED: Only fix paths for specific asset types, not audio files
-function fixLeadingSlashesInData(data) {
+// FIXED: Simpler path fixing that works on GitHub Pages
+function fixAssetPath(path) {
+  if (!path || typeof path !== 'string') return path;
+  
   const base = getRepoBasePath();
-
-  const visit = (node, key = '') => {
-    if (Array.isArray(node)) return node.map(item => visit(item, key));
-    if (node && typeof node === 'object') {
-      const out = {};
-      for (const [k, v] of Object.entries(node)) {
-        out[k] = visit(v, k);
-      }
-      return out;
-    }
-    // Only fix paths for specific fields, NOT audio files
-    if (typeof node === 'string' && node.startsWith('/') && 
-        !key.includes('audio') && !node.match(/\.(mp3|wav|ogg|m4a)$/i)) {
-      return base + node.slice(1);
-    }
-    return node;
-  };
-
-  return visit(data);
+  
+  // If path already has base, leave it alone
+  if (path.startsWith(base)) return path;
+  
+  // If path starts with / but we're in a repo, add repo name
+  if (path.startsWith('/') && base !== '/') {
+    return base + path.slice(1);
+  }
+  
+  // If it's a relative path, make it absolute from base
+  if (!path.startsWith('/') && !path.startsWith('http')) {
+    return base + path;
+  }
+  
+  return path;
 }
 
 function getListeningDataPath(tt, tnum) {
-  return tt === "sh"
-    ? `../dataSH/${tnum}/listeningData_Test${tnum}.js`
-    : `../data/${tnum}/listeningData_Test${tnum}.js`;
+  const basePath = tt === "sh" ? `dataSH/${tnum}/listeningData_Test${tnum}.js` : `data/${tnum}/listeningData_Test${tnum}.js`;
+  return fixAssetPath(basePath);
 }
+
 mentionSection.innerHTML = `${typeName} — Test ${testId} — Listening`;
 
 function loadListeningData(tt, tnum) {
   return new Promise((resolve, reject) => {
     const path = getListeningDataPath(tt, tnum);
     const src = `${path}?_=${Date.now()}`;
+    console.log('Loading listening data from:', src); // Debug log
+    
     try { delete window.listeningData; } catch { }
     const s = document.createElement("script");
     s.src = src;
     s.async = true;
     s.onload = () => {
       if (typeof window.listeningData !== "undefined") {
-        resolve(window.listeningData);
+        console.log('Listening data loaded successfully'); // Debug log
+        // FIXED: Apply path fixing to loaded data
+        const fixedData = fixDataPaths(window.listeningData);
+        resolve(fixedData);
       } else {
-        reject(new Error(`"${path}" loaded but window.listeningData is undefined. Ensure the file sets: window.listeningData = [...]`));
+        reject(new Error(`"${path}" loaded but window.listeningData is undefined`));
       }
     };
-    s.onerror = () => reject(new Error(`Failed to load ${path}`));
+    s.onerror = (err) => {
+      console.error('Failed to load listening data:', err);
+      reject(new Error(`Failed to load ${path}`));
+    };
     document.body.appendChild(s);
   });
+}
+
+// FIXED: Proper path fixing for all data including audio
+function fixDataPaths(data) {
+  if (Array.isArray(data)) {
+    return data.map(item => fixDataPaths(item));
+  }
+  
+  if (data && typeof data === 'object') {
+    const fixed = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'audio' || key === 'intro' || (key === 'src' && typeof value === 'string')) {
+        // Fix audio paths
+        if (Array.isArray(value)) {
+          fixed[key] = value.map(path => fixAssetPath(path));
+        } else {
+          fixed[key] = fixAssetPath(value);
+        }
+      } else {
+        fixed[key] = fixDataPaths(value);
+      }
+    }
+    return fixed;
+  }
+  
+  return data;
 }
 
 function setUpTime() {
@@ -180,16 +211,18 @@ function setUpTime() {
   const sec = timeFull % 60;
   timerListening.innerHTML = `${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}`;
 }
+
 function valuedTime() {
   timeFull--;
-if (timeFull === 0) {
-  sendToFinalResults();
-  if (typeof window.goToNextSection === "function") {
-    window.goToNextSection();
+  if (timeFull === 0) {
+    sendToFinalResults();
+    if (typeof window.goToNextSection === "function") {
+      window.goToNextSection();
+    }
   }
-}
   setUpTime();
 }
+
 function goTime() {
   interval = setInterval(valuedTime, 1000);
   timerListening.style.display = "block";
@@ -197,64 +230,73 @@ function goTime() {
 
 window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
+  console.log('Starting listening test:', { testType, effTestId, basePath: getRepoBasePath() }); // Debug log
+  
   loadListeningData(testType, effTestId)
     .then((data) => {
-      // FIXED: Only fix non-audio paths
-      window.listeningData = fixLeadingSlashesInData(data);
+      window.listeningData = data;
+      console.log('Data loaded, first passage audio:', data[0]?.audio); // Debug log
       setTimeout(loadPassage, 1000);
     })
     .catch(err => {
-      console.error(err);
+      console.error('Loading error:', err);
       alert("Could not load listening test data. Check file paths and that the data file sets window.listeningData.");
     });
 };
 
-// FIXED: Add audio event listeners for better error handling
+// Audio error handling
 audioEl.addEventListener('error', function(e) {
-  console.error('Audio loading error:', e);
-  console.log('Current audio src:', audioEl.src);
+  console.error('Main audio error:', e);
+  console.log('Failed audio src:', audioEl.src);
 });
 
 introEl.addEventListener('error', function(e) {
-  console.error('Intro audio loading error:', e);
-  console.log('Current intro src:', introEl.src);
+  console.error('Intro audio error:', e);
+  console.log('Failed intro src:', introEl.src);
 });
 
 audioEl.onended = loadQuestion;
 
 function loadPassage() {
-  audioPlayer.style.display = "block"
+  audioPlayer.style.display = "block";
   nextBtn.style.display = "none";
   timerListening.style.display = "none";
   clearInterval(interval);
-  document.getElementById("listening-section").display = "block";
+  document.getElementById("listening-section").style.display = "block";
+  
   const passage = window.listeningData[passageIndex];
+  console.log('Loading passage audio:', passage.audio); // Debug log
   
-  // FIXED: Debug audio path
-  console.log('Loading audio from:', passage.audio);
   audioEl.src = passage.audio;
-  
   progressWrapper.style.display = "block";
   
-  // FIXED: Better audio play with error handling
-  audioEl.play().catch((error) => {
-    console.error('Audio play failed:', error);
-    // If autoplay fails, show play button to user
-    const playBtn = document.createElement('button');
-    playBtn.textContent = 'Click to Play Audio';
-    playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px;';
-    playBtn.onclick = () => {
-      audioEl.play().catch(e => console.error('Manual play also failed:', e));
-      playBtn.remove();
-    };
-    progressWrapper.appendChild(playBtn);
-  });
+  // FIXED: Better audio play with user interaction fallback
+  const playAudio = () => {
+    audioEl.play().catch((error) => {
+      console.error('Audio play failed:', error);
+      // Show manual play button
+      const playBtn = document.createElement('button');
+      playBtn.textContent = 'Click to Play Audio';
+      playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer;';
+      playBtn.onclick = () => {
+        audioEl.play().catch(e => {
+          console.error('Manual play failed:', e);
+          alert('Cannot play audio. Please check the audio file path.');
+        });
+        playBtn.remove();
+      };
+      progressWrapper.appendChild(playBtn);
+    });
+  };
+  
+  // Try to play immediately, might need user interaction
+  playAudio();
   updateProgress();
 }
 
 function updateProgress() {
   const progressInterval = setInterval(() => {
-    if (audioEl.duration) {
+    if (audioEl.duration && !isNaN(audioEl.duration)) {
       const percent = (audioEl.currentTime / audioEl.duration) * 100;
       progressBar.style.width = percent + "%";
     }
@@ -268,9 +310,10 @@ function updateProgress() {
 }
 
 function loadQuestion() {
-  audioPlayer.style.display = "none"
+  audioPlayer.style.display = "none";
   currentQuestion = window.listeningData[passageIndex].questions[questionIndex];
   questionText.innerHTML = `${questionV + 1}. &nbsp;${currentQuestion.question}`;
+  
   if (currentQuestion.type === "multiple") {
     questionText.innerHTML += "<h3>Select 2 answers</h3>";
   } else if (currentQuestion.type === "triple") {
@@ -278,9 +321,13 @@ function loadQuestion() {
   } else if (currentQuestion.type === "matrix") {
     questionText.innerHTML += "<h3>Click in the correct box for each phrase</h3>";
   }
+  
   clearInterval(interval);
   questionContainer.style.display = "block";
+  
   const intros = Array.isArray(currentQuestion.intro) ? currentQuestion.intro : [currentQuestion.intro];
+  console.log('Loading intro audios:', intros); // Debug log
+  
   playIntroSequence(intros, () => {
     renderOptions();
     goTime();
@@ -289,18 +336,18 @@ function loadQuestion() {
 
 function playIntroSequence(introList, callback) {
   let index = 0;
+  
   function playNext() {
     if (index >= introList.length) return callback();
     
-    // FIXED: Debug intro audio paths
-    console.log('Loading intro audio from:', introList[index]);
+    console.log('Playing intro:', introList[index]); // Debug log
     introEl.src = introList[index];
     
     introEl.play().catch((error) => {
       console.error('Intro audio play failed:', error);
-      // Continue to next intro even if current fails
+      // Continue anyway
       index++;
-      playNext();
+      setTimeout(playNext, 100);
     });
     
     introEl.onended = () => {
@@ -311,13 +358,14 @@ function playIntroSequence(introList, callback) {
     introEl.onerror = () => {
       console.error('Intro audio loading failed');
       index++;
-      playNext(); // Continue despite errors
+      setTimeout(playNext, 100);
     };
   }
+  
   playNext();
 }
 
-// ... rest of the functions remain the same (renderOptions, nextBtn.onclick, confirmBtn.onclick, etc.)
+// ... rest of the functions (renderOptions, nextBtn.onclick, confirmBtn.onclick, setsEqual, sendToFinalResults) remain the same as your first code ...
 
 function renderOptions() {
   optionsDiv.innerHTML = "";
@@ -418,7 +466,7 @@ confirmBtn.onclick = () => {
     passageIndex++;
     questionIndex = 0;
     if (passageIndex >= window.listeningData.length) {
-      sendToFinalResults(); // Ensure results are saved
+      sendToFinalResults();
       if (typeof window.goToNextSection === "function") {
         window.goToNextSection();
       }
@@ -438,7 +486,7 @@ function setsEqual(a, b) {
 }
 
 function sendToFinalResults() {
-  if (__finalizedListening) return;     // ✅ guard
+  if (__finalizedListening) return;
   __finalizedListening = true;
 
   const allQuestions = window.listeningData.flatMap(p => p.questions);
@@ -472,10 +520,8 @@ function sendToFinalResults() {
     testType
   };
 
-  // Save locally (as you already did)
   localStorage.setItem(`result_${testType}_${effTestId}_listening`, JSON.stringify(result));
   localStorage.setItem(`result_${effTestId}_listening`, JSON.stringify(result));
 
-  // Email summary (non-blocking; uses Beacon/keepalive)
   sendListeningResultsEmail(result);
 }
