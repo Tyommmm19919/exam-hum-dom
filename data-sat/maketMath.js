@@ -1,4 +1,4 @@
-<img src="/data-sat/4/1.6.png">
+{/* <img src="/data-sat/4/1.6.png">
 
 
 // //fraction
@@ -38,7 +38,7 @@ a²              ²
   </tr>
 </table>
 
-correct: { answers: ["9/16", "0.5625"], numeric: 0.5625, tolerance: 1e-6 }
+correct: { answers: ["1"], numeric: 1, tolerance: 0 }
 
 
 window.satMathData = {
@@ -520,4 +520,4 @@ window.satMathData = {
         },
         
     ]
-};
+}; */}

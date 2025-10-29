@@ -1,80 +1,364 @@
 <!-- FILE: /sat/test-selection.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Select a SAT Test</title>
   <style>
-    :root{
-      --bg: #0f1320; --bg-2: #101626; --surface: rgba(255,255,255,0.06); --surface-strong: rgba(255,255,255,0.10); --border: rgba(255,255,255,0.18);
-      --text: #eef3ff; --muted: #b8c2e6; --accent: #74a3ff; --accent-2: #66e6d2; --green: #35d49f; --amber: #ffd166; --red: #ff6b7c;
-      --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px; --shadow-1: 0 6px 20px rgba(0,0,0,.25); --shadow-2: 0 14px 40px rgba(0,0,0,.35);
-      --blur: 14px; --speed-fast: .15s; --speed: .25s; --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+    :root {
+      --bg: #0f1320;
+      --bg-2: #101626;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(255, 255, 255, 0.18);
+      --text: #eef3ff;
+      --muted: #b8c2e6;
+      --accent: #74a3ff;
+      --accent-2: #66e6d2;
+      --green: #35d49f;
+      --amber: #ffd166;
+      --red: #ff6b7c;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --shadow-1: 0 6px 20px rgba(0, 0, 0, .25);
+      --shadow-2: 0 14px 40px rgba(0, 0, 0, .35);
+      --blur: 14px;
+      --speed-fast: .15s;
+      --speed: .25s;
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f7f8fd; --bg-2:#eef1fb; --surface: rgba(255,255,255,.65); --surface-strong: rgba(255,255,255,.9); --border: rgba(23,32,58,.10); --text:#0f1428; --muted:#475070; --shadow-1: 0 8px 18px rgba(23, 32, 58, .08); --shadow-2: 0 18px 40px rgba(23, 32, 58, .12); }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fd;
+        --bg-2: #eef1fb;
+        --surface: rgba(255, 255, 255, .65);
+        --surface-strong: rgba(255, 255, 255, .9);
+        --border: rgba(23, 32, 58, .10);
+        --text: #0f1428;
+        --muted: #475070;
+        --shadow-1: 0 8px 18px rgba(23, 32, 58, .08);
+        --shadow-2: 0 18px 40px rgba(23, 32, 58, .12);
+      }
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; min-height: 100%; color: var(--text); font-family: var(--font);
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family: var(--font);
       background: radial-gradient(1000px 1000px at 10% -10%, #1a2240, transparent 60%), radial-gradient(1400px 800px at 100% 10%, #18244a, transparent 40%), linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-      background-attachment: fixed; }
-    body::before{ content:""; position: fixed; inset: 0; background-image:
-      radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.14) 50%, transparent 51%),
-      radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.09) 50%, transparent 51%),
-      radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.07) 50%, transparent 51%),
-      radial-gradient(2px 2px at 80% 60%, rgba(255,255,255,.10) 50%, transparent 51%);
-      pointer-events: none; opacity: .35; z-index: 0; }
-    .topp{ margin: auto; /* border: 2px solid whitesmoke; */ backdrop-filter: blur(8px);      -webkit-backdrop-filter: blur(9px);  width: min(1200px, 94%); height: 10vh; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;}
-    .topp button{min-width: 35%; background:linear-gradient(180deg,#35d49f,#18b98a);color:#041b12;box-shadow:0 10px 20px rgba(24,185,138,.18), inset 0 1px 0 rgba(255,255,255,.5); height:46px;min-width:160px;padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed)}
-    .topp button:hover{transform:translateY(-1px)}
-    .shell{ width: min(1200px, 94%); margin: 32px auto 80px; position: relative; z-index: 1; }
-    .header{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-2); backdrop-filter: blur(var(--blur)); display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
-    .header h2{ margin: 0; font-size: 28px; letter-spacing: .2px; }
-    .tools{ display: flex; gap: 10px; align-items: center; }
-    .search{ position: relative; }
-    .search input{ width: 220px; height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-strong); color: var(--text); outline: none; transition: box-shadow var(--speed), transform var(--speed-fast); }
-    .search input::placeholder{ color: rgba(255,255,255,.55); }
-    .search input:focus{ box-shadow: 0 0 0 3px rgba(116,163,255,.25); transform: translateY(-1px); }
-    .filter{ height: 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-strong); color: var(--text); padding: 0 12px; color: gray; outline: none; }
+      background-attachment: fixed;
+    }
 
-    #testList{ display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px; margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-2); backdrop-filter: blur(var(--blur)); }
-    .testButton{ height: 120px; border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); color: var(--text); font-weight: 900; font-size: 22px; letter-spacing: .3px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; transition: transform var(--speed-fast), box-shadow var(--speed), border-color var(--speed), background var(--speed); box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255,255,255,.06); user-select: none; animation: popIn .35s ease forwards; opacity: 0; transform: translateY(4px) scale(.98); }
-    .testButton::before{ content:""; position: absolute; inset: 0; background: radial-gradient(600px 300px at -10% -10%, rgba(116,163,255,.15), transparent 60%); opacity: .4; pointer-events: none; }
-    .testButton:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 16px 36px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08); border-color: rgba(116,163,255,.55); background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); }
-    @keyframes popIn{ to { opacity: 1; transform: translateY(0) scale(1); } }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, .14) 50%, transparent 51%),
+        radial-gradient(2px 2px at 70% 30%, rgba(255, 255, 255, .09) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 80%, rgba(255, 255, 255, .07) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 60%, rgba(255, 255, 255, .10) 50%, transparent 51%);
+      pointer-events: none;
+      opacity: .35;
+      z-index: 0;
+    }
 
-    .ribbon{ position: absolute; top: 10px; right: -38px; width: 140px; text-align: center; transform: rotate(35deg); font-size: 11px; font-weight: 900; letter-spacing: .3px; color: #071b14; padding: 4px 0; box-shadow: 0 4px 14px rgba(0,0,0,.20); border: 1px solid rgba(0,0,0,.1); }
-    .ribbon.done{  background: linear-gradient(180deg, #35d49f, #18b98a); }
-    .ribbon.part{  background: linear-gradient(180deg, #ffd166, #ffbf55); }
-    .ribbon.none{  background: linear-gradient(180deg, #ff9aa8, #ff6b7c); }
+    .topp {
+      margin: auto;
+      /* border: 2px solid whitesmoke; */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(9px);
+      width: min(1200px, 94%);
+      height: 10vh;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
 
-    .testButton.completed{ box-shadow: 0 12px 26px rgba(53,212,159,.20), inset 0 1px 0 rgba(255,255,255,.08); border-color: rgba(53,212,159,.45); }
-    .testButton.partial{ box-shadow: 0 12px 26px rgba(255,209,102,.20), inset 0 1px 0 rgba(255,255,255,.08); border-color: rgba(255,209,102,.45); }
-    .testButton.not-started{ box-shadow: 0 12px 26px rgba(255,107,124,.20), inset 0 1px 0 rgba(255,255,255,.08); border-color: rgba(255,107,124,.45); }
+    .topp button {
+      min-width: 35%;
+      background: linear-gradient(180deg, #35d49f, #18b98a);
+      color: #041b12;
+      box-shadow: 0 10px 20px rgba(24, 185, 138, .18), inset 0 1px 0 rgba(255, 255, 255, .5);
+      height: 46px;
+      min-width: 160px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 14px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      cursor: pointer;
+      transition: transform var(--speed-fast), box-shadow var(--speed)
+    }
 
-    .legend{ display: flex; gap: 10px; align-items: center; margin-top: 10px; color: var(--muted); font-size: 13px; }
-    .dot{ width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-    .dot.done{  background: var(--green); }
-    .dot.part{  background: var(--amber); }
-    .dot.none{  background: var(--red); }
+    .topp button:hover {
+      transform: translateY(-1px)
+    }
 
-    .testButton[title]{ position: relative; }
-    .testButton[title]:hover::after{ content: attr(title); position: absolute; bottom: -34px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.75); color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 12px; white-space: nowrap; pointer-events: none; }
+    .shell {
+      width: min(1200px, 94%);
+      margin: 32px auto 80px;
+      position: relative;
+      z-index: 1;
+    }
 
-    @media (max-width: 640px){ .header{ grid-template-columns: 1fr; } .tools{ justify-content: stretch; } .search input{ width: 100%; } }
+    .header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      width: 220px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      outline: none;
+      transition: box-shadow var(--speed), transform var(--speed-fast);
+    }
+
+    .search input::placeholder {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .search input:focus {
+      box-shadow: 0 0 0 3px rgba(116, 163, 255, .25);
+      transform: translateY(-1px);
+    }
+
+    .filter {
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      padding: 0 12px;
+      color: gray;
+      outline: none;
+    }
+
+    #testList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+    }
+
+    .testButton {
+      height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02));
+      color: var(--text);
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--speed-fast), box-shadow var(--speed), border-color var(--speed), background var(--speed);
+      box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .06);
+      user-select: none;
+      animation: popIn .35s ease forwards;
+      opacity: 0;
+      transform: translateY(4px) scale(.98);
+    }
+
+    .testButton::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px 300px at -10% -10%, rgba(116, 163, 255, .15), transparent 60%);
+      opacity: .4;
+      pointer-events: none;
+    }
+
+    .testButton:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, .30), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(116, 163, 255, .55);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
+    }
+
+    @keyframes popIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .ribbon {
+      position: absolute;
+      top: 10px;
+      right: -38px;
+      width: 140px;
+      text-align: center;
+      transform: rotate(35deg);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .3px;
+      color: #071b14;
+      padding: 4px 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .20);
+      border: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    .ribbon.done {
+      background: linear-gradient(180deg, #35d49f, #18b98a);
+    }
+
+    .ribbon.part {
+      background: linear-gradient(180deg, #ffd166, #ffbf55);
+    }
+
+    .ribbon.none {
+      background: linear-gradient(180deg, #ff9aa8, #ff6b7c);
+    }
+
+    .testButton.completed {
+      box-shadow: 0 12px 26px rgba(53, 212, 159, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(53, 212, 159, .45);
+    }
+
+    .testButton.partial {
+      box-shadow: 0 12px 26px rgba(255, 209, 102, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(255, 209, 102, .45);
+    }
+
+    .testButton.not-started {
+      box-shadow: 0 12px 26px rgba(255, 107, 124, .20), inset 0 1px 0 rgba(255, 255, 255, .08);
+      border-color: rgba(255, 107, 124, .45);
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .dot.done {
+      background: var(--green);
+    }
+
+    .dot.part {
+      background: var(--amber);
+    }
+
+    .dot.none {
+      background: var(--red);
+    }
+
+    .testButton[title] {
+      position: relative;
+    }
+
+    .testButton[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: -34px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, .75);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    #go{height:40px;width:20%;text-align:center; padding:0 18px;border:0;border-radius:14px;font-weight:900;letter-spacing:.2px;cursor:pointer;transition:transform var(--speed-fast), box-shadow var(--speed), filter var(--speed); background:linear-gradient(180deg, rgb(244, 228, 228), rgb(98, 91, 91));color:#041b12;box-shadow:0 10px 24px rgba(24,185,138,.22), inset 0 1px 0 rgba(255,255,255,.5)}
+    #go:hover{transform: translateY(-5px);}
+    @media (max-width: 640px) {
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .tools {
+        justify-content: stretch;
+      }
+
+      .search input {
+        width: 100%;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="topp">
-    <button onclick="window.location.href = '../index.html'" style="position: fixed; left: 0;">Home</button>
-    <button onclick="window.location.href = 'results-sat.html'" style="position: fixed; right: 0;">Results</button>
+    <button onclick="window.location.href = '/index.html'" style="position: fixed; left: 0;">Home</button>
+    <button onclick="window.location.href = '/indexes/results-sat.html'"
+      style="position: fixed; right: 0;">Results</button>
   </div>
   <div class="shell">
     <div class="header">
-      <h2>Select a SAT Test</h2>
+      <h2 id="pageTitle">Select a SAT Test</h2>
       <div class="tools">
-        <div class="search"><input id="quickFind" type="number" min="1" placeholder="Go to test #"/></div>
+        <!-- SAT/ACT selector -->
+        <select id="examPicker" class="filter" title="Choose exam">
+          <option value="sat" selected>SAT</option>
+          <option value="act">ACT</option>
+        </select>
+
+        <div class="search"><input id="quickFind" type="number" min="1" placeholder="Go to test #" /></div>
+        <button id="go">Go</button>
+
         <select id="statusFilter" class="filter" title="Filter by status">
           <option value="all">All</option>
           <option value="completed">Completed</option>
@@ -94,72 +378,129 @@
   </div>
 
   <script>
+    // === SAT/ACT Test Selection — SAME DESIGN, minimal additions ===
+
     const testListEl = document.getElementById("testList");
     const quickFind = document.getElementById("quickFind");
     const statusFilter = document.getElementById("statusFilter");
+    const examPicker = document.getElementById("examPicker");
+    const pageTitle = document.getElementById("pageTitle");
 
-    // Adjust how many SAT tests you have
-    const TOTAL_SAT_TESTS = 50; // change as needed
+    // You can change counts as needed
+    const TOTAL_SAT_TESTS = 50;
+    const TOTAL_ACT_TESTS = 20;
 
-    function getSATStatusForTest(id){
-      // Use SAT-specific keys so we don't collide with TOEFL
-      const e = localStorage.getItem(`result_sat_${id}_english`);
-      const m = localStorage.getItem(`result_sat_${id}_math`);
-      const hasAny = e || m;
-      const hasAll = e && m;
-      if (hasAll) return "completed";
-      if (hasAny) return "partial";
+    // SAT: math-only tests (keep your list)
+    const MATH_ONLY_TESTS = new Set([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]);
+
+    function sectionsForSAT(id) {
+      return MATH_ONLY_TESTS.has(id) ? ['math'] : ['english', 'math'];
+    }
+
+    function getSATStatusForTest(id) {
+      const required = sectionsForSAT(id);
+      let doneCount = 0;
+      for (const sec of required) {
+        const key = `result_sat_${id}_${sec}`;
+        const val = localStorage.getItem(key);
+        if (val !== null && String(val).trim() !== "") doneCount++;
+      }
+      if (doneCount === 0) return "not-started";
+      if (doneCount === required.length) return "completed";
+      return "partial";
+    }
+
+    // ACT: single-section (Math) status
+    function getACTStatusForTest(id) {
+      const key = `result_act_${id}_math`;
+      const val = localStorage.getItem(key);
+      if (val && String(val).trim() !== "") return "completed";
       return "not-started";
     }
 
-    function ribbonFor(status){
+    function ribbonFor(status) {
       if (status === "completed") return '<span class="ribbon done">COMPLETED</span>';
-      if (status === "partial")   return '<span class="ribbon part">IN&nbsp;PROGRESS</span>';
+      if (status === "partial") return '<span class="ribbon part">IN&nbsp;PROGRESS</span>';
       return '<span class="ribbon none">NOT&nbsp;STARTED</span>';
     }
-    function titleFor(status){
-      if (status === "completed") return "Both sections recorded for this test";
-      if (status === "partial")   return "You started this test (1 section recorded)";
-      return "No sections done yet";
+    function titleFor(status, exam) {
+      if (exam === 'sat') {
+        if (status === "completed") return "All required sections recorded for this SAT test";
+        if (status === "partial") return "Some required sections recorded";
+        return "No sections done yet";
+      } else {
+        if (status === "completed") return "ACT Math completed";
+        return "Not started";
+      }
     }
 
-    function renderGrid(){
+    function selectedExam() {
+      return (examPicker?.value || "sat").toLowerCase();
+    }
+
+    function renderGrid() {
+      const exam = selectedExam();
+      const total = exam === "sat" ? TOTAL_SAT_TESTS : TOTAL_ACT_TESTS;
+
+      pageTitle.textContent = exam === "sat" ? "Select a SAT Test" : "Select an ACT Test";
+
       testListEl.innerHTML = "";
-      for (let i = 1; i <= TOTAL_SAT_TESTS; i++){
-        const status = getSATStatusForTest(i);
+      for (let i = 1; i <= total; i++) {
+        const status = (exam === "sat") ? getSATStatusForTest(i) : getACTStatusForTest(i);
         if (statusFilter.value !== "all" && statusFilter.value !== status) continue;
 
         const btn = document.createElement("button");
         btn.className = `testButton ${status}`;
-        btn.title = titleFor(status);
+        btn.title = titleFor(status, exam);
         btn.style.animationDelay = `${i * 8}ms`;
-        btn.innerHTML = `${ribbonFor(status)}SAT ${i}`;
+        btn.innerHTML = `${ribbonFor(status)}${exam.toUpperCase()} ${i}`;
+
+        // ✅ Common section-selection page for BOTH SAT and ACT:
         btn.onclick = () => {
-          sessionStorage.setItem("SAT_TEST_ID", String(i));
-          window.location.href = `section-sat-selection.html?test=${i}`;
+          const dest = `section-sat-selection.html?exam=${encodeURIComponent(exam)}&test=${i}`;
+          if (exam === "sat") {
+            sessionStorage.setItem("SAT_TEST_ID", String(i));
+          } else {
+            sessionStorage.setItem("ACT_TEST_ID", String(i));
+          }
+          window.location.href = dest;
         };
+
         testListEl.appendChild(btn);
       }
     }
 
-    quickFind.addEventListener("keydown", (e)=>{
-      if (e.key === "Enter"){
-        const n = parseInt(quickFind.value, 10);
-        if (!Number.isNaN(n) && n >= 1 && n <= TOTAL_SAT_TESTS){
+    // Quick "Go" uses current exam + range and same common section-selection page
+    const go = document.getElementById("go");
+    function find() {
+      const exam = selectedExam();
+      const total = exam === "sat" ? TOTAL_SAT_TESTS : TOTAL_ACT_TESTS;
+      const n = parseInt(quickFind.value, 10);
+
+      if (!Number.isNaN(n) && n >= 1 && n <= total) {
+        if (exam === "sat") {
           sessionStorage.setItem("SAT_TEST_ID", String(n));
-          window.location.href = `section-sat-selection.html?test=${n}`;
-        } else{
-          quickFind.style.transition = "0.5s";
-          quickFind.style.color = "red";
-          setTimeout(()=> quickFind.style.color = "white", 1600);
+        } else {
+          sessionStorage.setItem("ACT_TEST_ID", String(n));
         }
+        window.location.href = `/indexes/section-sat-selection.html?exam=${encodeURIComponent(exam)}&test=${n}`;
+      } else {
+        quickFind.style.transition = "0.5s";
+        quickFind.style.color = "red";
+        setTimeout(() => quickFind.style.color = "white", 1600);
       }
-    });
+    }
+    quickFind.addEventListener("keydown", (e) => { if (e.key === "Enter") find(); });
+    go.onclick = find;
 
     statusFilter.addEventListener("change", renderGrid);
-    renderGrid();
-      document.addEventListener("contextmenu", (e)=> e.preventDefault());
+    examPicker.addEventListener("change", renderGrid);
 
+    // Initial render
+    renderGrid();
+
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
   </script>
 </body>
+
 </html>

@@ -48,12 +48,9 @@
       }
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: var(--font);
@@ -82,7 +79,6 @@
 
     .topp {
       margin: auto;
-      /* border: 2px solid whitesmoke; */
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(9px);
       width: min(1200px, 94%);
@@ -107,14 +103,9 @@
       transition: transform var(--speed-fast), box-shadow var(--speed)
     }
 
-    .topp button:hover {
-      transform: translateY(-1px)
-    }
+    .topp button:hover { transform: translateY(-1px) }
 
-    .page {
-      width: min(1200px, 94%);
-      margin: 32px auto 120px;
-    }
+    .page { width: min(1200px, 94%); margin: 32px auto 120px; }
 
     .topbar {
       display: flex;
@@ -141,9 +132,7 @@
       transition: transform var(--speed-fast), box-shadow var(--speed);
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform: translateY(-1px); }
 
     .btn-primary {
       background: linear-gradient(180deg, #6ea3ff 0%, var(--blue) 100%);
@@ -159,11 +148,7 @@
       padding: 18px;
     }
 
-    .selector h2 {
-      margin: 0 0 12px 0;
-      font-size: 22px;
-      letter-spacing: .2px;
-    }
+    .selector h2 { margin: 0 0 12px 0; font-size: 22px; letter-spacing: .2px; }
 
     .selector .row {
       display: grid;
@@ -172,9 +157,7 @@
       align-items: center;
     }
 
-    .select-wrap {
-      position: relative;
-    }
+    .select-wrap { position: relative; }
 
     .select-wrap::after {
       content: "▾";
@@ -187,7 +170,7 @@
       font-size: 16px;
     }
 
-    #testSelect {
+    #testSelect, #examSelect {
       appearance: none;
       width: 100%;
       height: 44px;
@@ -201,16 +184,13 @@
       transition: box-shadow var(--speed), border-color var(--speed);
     }
 
-    #testSelect:focus {
+    #testSelect:focus, #examSelect:focus {
       outline: none;
       border-color: rgba(116, 163, 255, .6);
       box-shadow: 0 0 0 3px rgba(116, 163, 255, .18);
     }
 
-    option {
-      color: #0f1428;
-      background: #fff;
-    }
+    option { color: #0f1428; background: #fff; }
 
     #results {
       display: none;
@@ -223,9 +203,7 @@
       padding: 18px;
     }
 
-    #results.show {
-      display: block;
-    }
+    #results.show { display: block; }
 
     #finalResultsText {
       margin: 0 0 6px 0;
@@ -249,10 +227,7 @@
       font-weight: 800;
     }
 
-    .muted {
-      color: var(--muted);
-      font-weight: 700;
-    }
+    .muted { color: var(--muted); font-weight: 700; }
 
     .section {
       margin-top: 18px;
@@ -263,21 +238,11 @@
       padding: 14px;
     }
 
-    .section h2 {
-      margin: 0 0 8px 0;
-      font-size: 20px;
-    }
+    .section h2 { margin: 0 0 8px 0; font-size: 20px; }
 
-    .section .sub {
-      color: var(--muted);
-      margin: 0 0 8px 0;
-    }
+    .section .sub { color: var(--muted); margin: 0 0 8px 0; }
 
-    .modules {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
+    .modules { display: grid; grid-template-columns: 1fr; gap: 12px; }
 
     .module-card {
       background: rgba(255, 255, 255, .05);
@@ -305,8 +270,7 @@
       word-break: break-word;
     }
 
-    th,
-    td {
+    th, td {
       padding: 10px 8px;
       border: 1px solid rgba(255, 255, 255, .10);
       text-align: center;
@@ -321,34 +285,17 @@
       letter-spacing: .2px;
     }
 
-    tbody tr {
-      transition: transform var(--speed-fast), box-shadow var(--speed);
-    }
-
+    tbody tr { transition: transform var(--speed-fast), box-shadow var(--speed); }
     tbody tr:hover {
       transform: translateY(-1px);
       box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, .02);
     }
 
-    .correct td {
-      background: linear-gradient(180deg, rgba(53, 212, 159, .18), rgba(53, 212, 159, .10));
-    }
+    .correct td { background: linear-gradient(180deg, rgba(53, 212, 159, .18), rgba(53, 212, 159, .10)); }
+    .incorrect td { background: linear-gradient(180deg, rgba(255, 107, 124, .18), rgba(255, 107, 124, .10)); }
 
-    .incorrect td {
-      background: linear-gradient(180deg, rgba(255, 107, 124, .18), rgba(255, 107, 124, .10));
-    }
-
-    @media (max-width: 880px) {
-      .modules {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .selector .row {
-        grid-template-columns: 1fr;
-      }
-    }
+    @media (max-width: 880px) { .modules { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) { .selector .row { grid-template-columns: 1fr; } }
   </style>
 </head>
 
@@ -363,22 +310,43 @@
     <div class="selector">
       <h2>Select the SAT test</h2>
       <div class="row">
-        <div class="select-wrap">
-          <select id="testSelect">
-            <option value="" selected disabled>Choose a test…</option>
-            <option value="1">Test 1</option>
-            <option value="2">Test 2</option>
-            <option value="3">Test 3</option>
-            <option value="4">Test 4</option>
-            <option value="5">Test 5</option>
-            <option value="6">Test 6</option>
-            <option value="7">Test 7</option>
-            <option value="8">Test 8</option>
-            <option value="9">Test 9</option>
-            <option value="10">Test 10</option>
-          </select>
+        <div>
+          <!-- NEW: exam switcher (keeps design) -->
+          <div class="select-wrap" style="margin-bottom:8px;">
+            <select id="examSelect">
+              <option value="sat" selected>SAT</option>
+              <option value="act">ACT</option>
+            </select>
+          </div>
+          <!-- Existing test picker (unchanged options) -->
+          <div class="select-wrap">
+            <select id="testSelect">
+              <option value="" selected disabled>Choose a test…</option>
+              <option value="1">Test 1</option>
+              <option value="2">Test 2</option>
+              <option value="3">Test 3</option>
+              <option value="4">Test 4</option>
+              <option value="5">Test 5</option>
+              <option value="6">Test 6</option>
+              <option value="7">Test 7</option>
+              <option value="8">Test 8</option>
+              <option value="9">Test 9</option>
+              <option value="10">Test 10</option>
+              <option value="11">Test 11</option>
+              <option value="12">Test 12</option>
+              <option value="13">Test 13</option>
+              <option value="14">Test 14</option>
+              <option value="15">Test 15</option>
+              <option value="16">Test 16</option>
+              <option value="17">Test 17</option>
+              <option value="18">Test 18</option>
+              <option value="19">Test 19</option>
+              <option value="20">Test 20</option>
+            </select>
+          </div>
         </div>
-        <button class="btn btn-primary" onclick="loadSatResults()">View Results</button>
+        <!-- Unified button -->
+        <button class="btn btn-primary" onclick="loadResults()">View Results</button>
       </div>
     </div>
 
@@ -396,8 +364,9 @@
       <div id="mathSection" class="section"></div>
     </div>
   </div>
-
+<!-- retake -->
   <script>
+    /* ========= Your existing SAT helpers (kept) ========= */
     function pct(s, t) { return t ? Math.round((s / t) * 100) + "%" : "—"; }
     function letter(n) { return (typeof n === "number" && isFinite(n)) ? String.fromCharCode(65 + n) : String(n ?? "—"); }
 
@@ -449,7 +418,6 @@
 
       return String(v);
     }
-
 
     function normalizeInput(str) {
       if (!str && str !== 0) return "";
@@ -590,6 +558,7 @@
       `;
     }
 
+    /* ========= Your SAT section rendering (unchanged logic) ========= */
     function renderSection(title, payloadJSON, targetId) {
       const el = document.getElementById(targetId);
       if (!el) return null;
@@ -626,7 +595,7 @@
         </div>
       `;
 
-      return { score, total, perItem };
+      return { score, total, perItem, finishedAt: data?.finishedAt || null };
     }
 
     function renderOverall(english, math) {
@@ -652,12 +621,14 @@
         `Math M1: ${mMods.m1.score}/${mMods.m1.total}, Math M2: ${mMods.m2.score}/${mMods.m2.total}`;
     }
 
+    /* ========= Original SAT loader, with header date/retake added ========= */
     function loadSatResults() {
       const id = document.getElementById("testSelect").value;
       if (!id) return;
 
-      document.getElementById("results").classList.add("show");
-      document.getElementById("finalResultsText").textContent = `SAT — Results for Test ${id}`;
+      const results = document.getElementById("results");
+      const title = document.getElementById("finalResultsText");
+      results.classList.add("show");
 
       const englishData = localStorage.getItem(`result_sat_${id}_english`);
       const mathData = localStorage.getItem(`result_sat_${id}_math`);
@@ -666,22 +637,185 @@
       const math = renderSection("Math", mathData, "mathSection");
 
       renderOverall(english, math);
+
+      // Date taken (latest of the two) + Retake link (keeps your design)
+      const dates = [];
+      try { const e = englishData && JSON.parse(englishData); if (e?.finishedAt) dates.push(new Date(e.finishedAt)); } catch {}
+      try { const m = mathData && JSON.parse(mathData); if (m?.finishedAt) dates.push(new Date(m.finishedAt)); } catch {}
+      const latest = dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : null;
+
+      title.innerHTML = `SAT — Results for Test ${id}` +
+        (latest ? ` <span class="muted" style="font-size:14px;">• Taken ${latest.toLocaleString()}</span>` : "") +
+        ` <a href="math.html?test=${encodeURIComponent(id)}" class="btn btn-primary" style="margin-left:8px; padding:6px 10px; font-size:13px;">Retake</a>`;
     }
     window.loadSatResults = loadSatResults;
 
+    /* ========= ACT support (math-only), matching your cards/pills ========= */
+
+    // tiny helpers
+    function _qsParam(k){ return new URLSearchParams(location.search).get(k); }
+    function _pct(s,t){ return t ? Math.round((s/t)*100) + "%" : "—"; }
+    function _normItems(maybe){ return Array.isArray(maybe) ? maybe.slice() : (maybe && typeof maybe==='object' ? Object.values(maybe) : []); }
+    function _extractPerItem(data){
+      const cands = [data?.perItem, data?.answers, data?.items, data?.details, data?.results, data?.per_item];
+      for(const c of cands){ const arr=_normItems(c); if(arr.length) return arr; }
+      return [];
+    }
+    function _toRow(r,i){
+      const user = ("user" in (r||{})) ? r.user
+                : ("selected" in (r||{})) ? r.selected
+                : ("choice" in (r||{})) ? r.choice
+                : ("response" in (r||{})) ? r.response
+                : ("answer" in (r||{})) ? r.answer
+                : null;
+      const key = ("key" in (r||{})) ? r.key
+                : (typeof r?.correct !== 'boolean' ? r?.correct : null);
+      const corr = (r?.correctBool === true) || (r?.correct === true) || (r?.isCorrect === true) || (r?.correct === 1);
+      return {
+        idx: i+1,
+        user: (typeof user === 'number' ? String.fromCharCode(65+user) : (user ?? "No answer")),
+        key:  (typeof key  === 'number' ? String.fromCharCode(65+key)  : (key  ?? "—")),
+        isCorrect: !!corr
+      };
+    }
+
+    function renderACTMathSection(payloadJSON, targetId){
+      const el = document.getElementById(targetId);
+      if(!el){ return { score:0, total:0, perItem:[] }; }
+
+      let data;
+      try{ data = (typeof payloadJSON==='string') ? JSON.parse(payloadJSON) : payloadJSON; }
+      catch{ el.innerHTML = `<h2>Math</h2><p class="sub">Data is corrupted.</p>`; return { score:0,total:0,perItem:[] }; }
+
+      const raw = _extractPerItem(data);
+      const rows = raw.map((r,i)=>_toRow(r,i));
+      const score = rows.filter(r=>r.isCorrect).length;
+      const total = rows.length;
+
+      const body = rows.map(r => `
+        <tr class="${r.isCorrect ? 'correct' : 'incorrect'}">
+          <td>${r.idx}</td>
+          <td>${(r.user==="" ? "No answer" : r.user)}</td>
+          <td>${(r.key==="" ? "—" : r.key)}</td>
+        </tr>
+      `).join("");
+
+      el.innerHTML = `
+        <h2>Math</h2>
+        <p class="sub"><strong>Score:</strong> ${score}/${total} (${_pct(score,total)}) • <strong>Section:</strong> Single ACT Math section</p>
+        <div class="modules">
+          <div class="module-card">
+            <h3>ACT Math — <span style="font-weight:800;">${score}/${total} (${_pct(score,total)})</span></h3>
+            ${total ? `
+              <table>
+                <thead><tr><th>#</th><th>Your Answer</th><th>Correct</th></tr></thead>
+                <tbody>${body}</tbody>
+              </table>` : `<p class="sub">No questions found.</p>`
+            }
+          </div>
+        </div>
+      `;
+
+      return { score, total, perItem: rows, finishedAt: data?.finishedAt || null };
+    }
+
+    function renderOverall_ACT(mathOnly){
+      const wrap = document.getElementById("overallSummary");
+      const os = document.getElementById("overallScore");
+      const es = document.getElementById("englishSummary");
+      const ms = document.getElementById("mathSummary");
+      const mb = document.getElementById("modulesBreakdown");
+
+      const mScore = mathOnly?.score || 0, mTotal = mathOnly?.total || 0;
+
+      wrap.style.display = "grid";
+      os.innerHTML = `Overall: ${mScore}/${mTotal} <br>(${_pct(mScore, mTotal)}) right answers`;
+      es.innerHTML = `English: —`;
+      ms.innerHTML = `Math: ${mScore}/${mTotal} <br>(${_pct(mScore, mTotal)}) right answers`;
+      mb.textContent = `Single section — ACT Math`;
+    }
+
+    function loadActResults(){
+      const id = document.getElementById("testSelect").value;
+      if(!id) return;
+
+      const results = document.getElementById("results");
+      const title = document.getElementById("finalResultsText");
+      results.classList.add("show");
+
+      const actMathRaw = localStorage.getItem(`result_act_${id}_math`);
+
+      if(!actMathRaw){
+        title.textContent = `ACT — Results for Test ${id}`;
+        document.getElementById("englishSection").innerHTML = `<h2>English</h2><p class="sub">This exam has only Math.</p>`;
+        document.getElementById("mathSection").innerHTML = `<h2>Math</h2><p class="sub">You haven’t taken this section.</p>`;
+        document.getElementById("overallSummary").style.display = "grid";
+        document.getElementById("overallScore").textContent = "Overall: —";
+        document.getElementById("englishSummary").textContent = "English: —";
+        document.getElementById("mathSummary").textContent = "Math: —";
+        document.getElementById("modulesBreakdown").textContent = "Single section — ACT Math";
+        return;
+      }
+
+      let payload; try{ payload = JSON.parse(actMathRaw); }catch{ payload=null; }
+      const when = payload?.finishedAt ? new Date(payload.finishedAt).toLocaleString() : null;
+
+      title.innerHTML = `ACT — Results for Test ${id}` +
+        (when ? ` <span class="muted" style="font-size:14px;">• Taken ${when}</span>` : "") +
+        ` <a href="act.html?test=${encodeURIComponent(id)}" class="btn btn-primary" style="margin-left:8px; padding:6px 10px; font-size:13px;">Retake</a>`;
+
+      const eng = document.getElementById("englishSection");
+      eng.innerHTML = `<h2>English</h2><p class="sub">ACT page here shows Math only.</p>`;
+
+      const math = renderACTMathSection(payload, "mathSection");
+
+      renderOverall_ACT(math);
+    }
+    window.loadActResults = loadActResults;
+
+    /* ========= Unified loader + exam switch behavior ========= */
+    function loadResults(){
+      const exam = (document.getElementById('examSelect')?.value || 'sat').toLowerCase();
+      const heading = document.querySelector('.selector h2');
+      if (heading) heading.textContent = (exam === 'act') ? 'Select the ACT test' : 'Select the SAT test';
+
+      if(exam === 'act'){
+        loadActResults();
+      }else{
+        loadSatResults();
+      }
+    }
+    window.loadResults = loadResults;
+
     document.addEventListener("DOMContentLoaded", () => {
       const qp = new URLSearchParams(location.search);
+      const exam = (qp.get("exam") || "sat").toLowerCase();
       const t = qp.get("test");
-      if (t) {
-        const sel = document.getElementById("testSelect");
-        if ([...sel.options].some(o => o.value === t)) {
-          sel.value = t;
-          loadSatResults();
-        }
+
+      // set selectors
+      const examSel = document.getElementById("examSelect");
+      const testSel = document.getElementById("testSelect");
+      if (examSel && (exam === "sat" || exam === "act")) examSel.value = exam;
+      if (t && testSel && [...testSel.options].some(o => o.value === t)) testSel.value = t;
+
+      const heading = document.querySelector(".selector h2");
+      if (heading) heading.textContent = (exam === "act") ? "Select the ACT test" : "Select the SAT test";
+
+      // react to switching exam after a test is picked
+      if (examSel){
+        examSel.addEventListener("change", ()=>{
+          const h = document.querySelector(".selector h2");
+          if (h) h.textContent = (examSel.value === 'act') ? 'Select the ACT test' : 'Select the SAT test';
+          if (testSel && testSel.value) loadResults();
+        });
+      }
+
+      // Auto-open if both present
+      if (t){
+        if (exam === "act") loadActResults();
+        else loadSatResults();
       }
     });
-    // document.addEventListener("contextmenu", (e) => e.preventDefault());
-
   </script>
 </body>
 
