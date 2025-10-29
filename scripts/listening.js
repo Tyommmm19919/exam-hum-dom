@@ -10,7 +10,7 @@ const progressWrapper = document.querySelector(".audio-progress");
 const timerListening = document.getElementById("timerListening");
 const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
-
+//edited
 const testId = window.TEST_ID || "default_test";
 // === Email config (reuse your existing Formspree project) ===
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
@@ -117,23 +117,29 @@ let timeFull = testType === "toefl"? 15*60 : 20*60;
 let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
 let questionV = 0;
+
 function getRepoBasePath() {
   const parts = window.location.pathname.split('/').filter(Boolean);
   const repo = parts[0] || '';
   return repo ? `/${repo}/` : '/';
 }
 
+// FIXED: Only fix paths for specific asset types, not audio files
 function fixLeadingSlashesInData(data) {
   const base = getRepoBasePath();
 
-  const visit = (node) => {
-    if (Array.isArray(node)) return node.map(visit);
+  const visit = (node, key = '') => {
+    if (Array.isArray(node)) return node.map(item => visit(item, key));
     if (node && typeof node === 'object') {
       const out = {};
-      for (const [k, v] of Object.entries(node)) out[k] = visit(v);
+      for (const [k, v] of Object.entries(node)) {
+        out[k] = visit(v, k);
+      }
       return out;
     }
-    if (typeof node === 'string' && node.startsWith('/')) {
+    // Only fix paths for specific fields, NOT audio files
+    if (typeof node === 'string' && node.startsWith('/') && 
+        !key.includes('audio') && !node.match(/\.(mp3|wav|ogg|m4a)$/i)) {
       return base + node.slice(1);
     }
     return node;
@@ -192,9 +198,9 @@ function goTime() {
 window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
   loadListeningData(testType, effTestId)
-    .then(() => {
-      // 🔥 Fix all "/data/..." paths inside your loaded data
-      window.listeningData = fixLeadingSlashesInData(window.listeningData);
+    .then((data) => {
+      // FIXED: Only fix non-audio paths
+      window.listeningData = fixLeadingSlashesInData(data);
       setTimeout(loadPassage, 1000);
     })
     .catch(err => {
@@ -203,6 +209,16 @@ window.startAllAll = function () {
     });
 };
 
+// FIXED: Add audio event listeners for better error handling
+audioEl.addEventListener('error', function(e) {
+  console.error('Audio loading error:', e);
+  console.log('Current audio src:', audioEl.src);
+});
+
+introEl.addEventListener('error', function(e) {
+  console.error('Intro audio loading error:', e);
+  console.log('Current intro src:', introEl.src);
+});
 
 audioEl.onended = loadQuestion;
 
@@ -211,11 +227,28 @@ function loadPassage() {
   nextBtn.style.display = "none";
   timerListening.style.display = "none";
   clearInterval(interval);
-  document.getElementById("listening-section").style.display = "block";
+  document.getElementById("listening-section").display = "block";
   const passage = window.listeningData[passageIndex];
+  
+  // FIXED: Debug audio path
+  console.log('Loading audio from:', passage.audio);
   audioEl.src = passage.audio;
+  
   progressWrapper.style.display = "block";
-  audioEl.play().catch(() => console.warn("Autoplay blocked"));
+  
+  // FIXED: Better audio play with error handling
+  audioEl.play().catch((error) => {
+    console.error('Audio play failed:', error);
+    // If autoplay fails, show play button to user
+    const playBtn = document.createElement('button');
+    playBtn.textContent = 'Click to Play Audio';
+    playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px;';
+    playBtn.onclick = () => {
+      audioEl.play().catch(e => console.error('Manual play also failed:', e));
+      playBtn.remove();
+    };
+    progressWrapper.appendChild(playBtn);
+  });
   updateProgress();
 }
 
@@ -258,15 +291,33 @@ function playIntroSequence(introList, callback) {
   let index = 0;
   function playNext() {
     if (index >= introList.length) return callback();
+    
+    // FIXED: Debug intro audio paths
+    console.log('Loading intro audio from:', introList[index]);
     introEl.src = introList[index];
-    introEl.play().catch(() => console.warn("Intro autoplay blocked"));
+    
+    introEl.play().catch((error) => {
+      console.error('Intro audio play failed:', error);
+      // Continue to next intro even if current fails
+      index++;
+      playNext();
+    });
+    
     introEl.onended = () => {
       index++;
       playNext();
     };
+    
+    introEl.onerror = () => {
+      console.error('Intro audio loading failed');
+      index++;
+      playNext(); // Continue despite errors
+    };
   }
   playNext();
 }
+
+// ... rest of the functions remain the same (renderOptions, nextBtn.onclick, confirmBtn.onclick, etc.)
 
 function renderOptions() {
   optionsDiv.innerHTML = "";
