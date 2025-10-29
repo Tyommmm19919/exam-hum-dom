@@ -68,7 +68,7 @@
 
     <!-- Mobile-friendly play button for intro audio -->
     <div id="introAudioContainer" style="display: none; text-align: center; margin: 10px 0;">
-      <button id="mobileIntroPlayBtn" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+      <button id="mobileIntroPlayBtn" style="display: none; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
         🔊 Tap to Play Question Audio
       </button>
     </div>
@@ -107,6 +107,10 @@
     const dataScript = document.createElement("script");
     dataScript.src = `../data/${testNumber}/listeningData_Test${testNumber}.js`;
 
+    // Track user interaction state
+    let userHasInteracted = false;
+    let autoplayBlocked = false;
+
     dataScript.onload = () => {
       if (!window.listeningData) {
         document.body.innerHTML = "<h2 style='color:red;'>Listening data failed to load.</h2>";
@@ -127,6 +131,11 @@
         const mobileIntroPlayBtn = document.getElementById("mobileIntroPlayBtn");
         const introAudioContainer = document.getElementById("introAudioContainer");
 
+        // Track user interactions
+        document.addEventListener('click', () => {
+          userHasInteracted = true;
+        }, { once: true });
+
         const start = () => {
           directions.style.display = "none";
           testSection.style.display = "block";
@@ -134,6 +143,7 @@
         };
 
         btn.onclick = () => {
+          userHasInteracted = true;
           audio.pause();
           start();
         };
@@ -143,51 +153,65 @@
         // Try autoplay, if it fails show mobile play button
         audio.play().catch((error) => {
           console.warn("⚠️ Directions autoplay failed:", error);
-          // Show a play button for directions audio
+          autoplayBlocked = true;
+          
+          // Show a play button for directions audio only if autoplay was blocked
           const directionsPlayBtn = document.createElement('button');
           directionsPlayBtn.textContent = '🔊 Tap to Play Directions';
           directionsPlayBtn.style.cssText = 'padding: 12px 24px; margin: 20px auto; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; display: block;';
           directionsPlayBtn.onclick = () => {
+            userHasInteracted = true;
             audio.play().catch(e => console.error('Manual play failed:', e));
             directionsPlayBtn.style.display = 'none';
           };
           directions.querySelector('.topBreak').appendChild(directionsPlayBtn);
         });
 
-        // Override the playIntroSequence function to handle mobile autoplay issues
+        // Smart intro audio handling - only show button if autoplay was previously blocked
         const originalPlayIntroSequence = window.playIntroSequence;
         if (originalPlayIntroSequence) {
           window.playIntroSequence = function(introList, callback) {
-            introAudioContainer.style.display = 'block';
-            mobileIntroPlayBtn.style.display = 'block';
-            
-            mobileIntroPlayBtn.onclick = () => {
-              introAudioContainer.style.display = 'none';
+            // Only show intro play button if autoplay was blocked AND user hasn't interacted yet
+            if (autoplayBlocked && !userHasInteracted) {
+              introAudioContainer.style.display = 'block';
+              mobileIntroPlayBtn.style.display = 'block';
+              
+              mobileIntroPlayBtn.onclick = () => {
+                userHasInteracted = true;
+                introAudioContainer.style.display = 'none';
+                mobileIntroPlayBtn.style.display = 'none';
+                originalPlayIntroSequence(introList, callback);
+              };
+            } else {
+              // Autoplay should work now - proceed normally
               originalPlayIntroSequence(introList, callback);
-            };
+            }
           };
         }
 
-        // Override audio play in loadPassage to handle mobile autoplay
+        // Smart main audio handling
         const originalLoadPassage = window.loadPassage;
         if (originalLoadPassage) {
           window.loadPassage = function() {
             originalLoadPassage.apply(this, arguments);
             
-            // Show mobile play button for main audio
-            setTimeout(() => {
-              const mainAudio = document.getElementById("mainAudio");
-              if (mainAudio) {
-                mobilePlayBtn.style.display = 'block';
-                mobilePlayBtn.onclick = () => {
-                  mainAudio.play().catch(e => {
-                    console.error('Mobile play failed:', e);
-                    alert('Cannot play audio. Please check your device volume and try again.');
-                  });
-                  mobilePlayBtn.style.display = 'none';
-                };
-              }
-            }, 500);
+            // Only show main audio play button if autoplay was blocked
+            if (autoplayBlocked) {
+              setTimeout(() => {
+                const mainAudio = document.getElementById("mainAudio");
+                if (mainAudio && !userHasInteracted) {
+                  mobilePlayBtn.style.display = 'block';
+                  mobilePlayBtn.onclick = () => {
+                    userHasInteracted = true;
+                    mainAudio.play().catch(e => {
+                      console.error('Mobile play failed:', e);
+                      alert('Cannot play audio. Please check your device volume and try again.');
+                    });
+                    mobilePlayBtn.style.display = 'none';
+                  };
+                }
+              }, 500);
+            }
           };
         }
 
@@ -195,10 +219,22 @@
         document.addEventListener('play', function(e) {
           if (e.target.id === 'mainAudio') {
             mobilePlayBtn.style.display = 'none';
+            // Once main audio plays successfully, autoplay should work for subsequent audio
+            autoplayBlocked = false;
           }
           if (e.target.id === 'introAudio') {
             mobileIntroPlayBtn.style.display = 'none';
             introAudioContainer.style.display = 'none';
+            // Once intro audio plays successfully, autoplay should work
+            autoplayBlocked = false;
+          }
+        }, true);
+
+        // Also track when audio fails to play
+        document.addEventListener('error', function(e) {
+          if (e.target.tagName === 'AUDIO') {
+            console.warn('Audio error detected:', e.target.src);
+            // Don't set autoplayBlocked here - only set it on initial autoplay failures
           }
         }, true);
 
