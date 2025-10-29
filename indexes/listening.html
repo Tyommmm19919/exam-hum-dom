@@ -25,7 +25,7 @@
         The Listening section is divided into 2 separate timed parts.You will hear each conversation or lecture only one
         time.<br>
         After each conversation or lecture, you will answer some questions about it. The questions typically ask about
-        the main idea and supporting details. Some questions ask about a speaker’s purpose or attitude. Answer the
+        the main idea and supporting details. Some questions ask about a speaker's purpose or attitude. Answer the
         questions base on what is stated or implied by the speakers.<br>
         You may take notes while you listen. You may use your notes to help you answer the questions. Your notes will
         not be scored.<br>
@@ -58,9 +58,20 @@
       <div class="audio-progress">
         <div id="progressBar" class="audio-progress-filled"></div>
       </div>
+      <!-- Mobile-friendly play button for main audio -->
+      <button id="mobilePlayBtn" style="display: none; padding: 12px 24px; margin: 10px auto; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+        🔊 Tap to Play Audio
+      </button>
     </div>
 
     <audio id="introAudio" hidden></audio>
+
+    <!-- Mobile-friendly play button for intro audio -->
+    <div id="introAudioContainer" style="display: none; text-align: center; margin: 10px 0;">
+      <button id="mobileIntroPlayBtn" style="padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+        🔊 Tap to Play Question Audio
+      </button>
+    </div>
 
     <div class="question-container">
       <div class="numbtext">
@@ -110,6 +121,11 @@
         const btn = document.getElementById("startListeningBtn");
         const directions = document.getElementById("listening-directions");
         const testSection = document.getElementById("listening-section");
+        
+        // Mobile play buttons
+        const mobilePlayBtn = document.getElementById("mobilePlayBtn");
+        const mobileIntroPlayBtn = document.getElementById("mobileIntroPlayBtn");
+        const introAudioContainer = document.getElementById("introAudioContainer");
 
         const start = () => {
           directions.style.display = "none";
@@ -124,9 +140,68 @@
 
         audio.onended = start;
 
-        audio.play().catch(() => {
-          console.warn("⚠️ Directions autoplay failed.");
+        // Try autoplay, if it fails show mobile play button
+        audio.play().catch((error) => {
+          console.warn("⚠️ Directions autoplay failed:", error);
+          // Show a play button for directions audio
+          const directionsPlayBtn = document.createElement('button');
+          directionsPlayBtn.textContent = '🔊 Tap to Play Directions';
+          directionsPlayBtn.style.cssText = 'padding: 12px 24px; margin: 20px auto; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; display: block;';
+          directionsPlayBtn.onclick = () => {
+            audio.play().catch(e => console.error('Manual play failed:', e));
+            directionsPlayBtn.style.display = 'none';
+          };
+          directions.querySelector('.topBreak').appendChild(directionsPlayBtn);
         });
+
+        // Override the playIntroSequence function to handle mobile autoplay issues
+        const originalPlayIntroSequence = window.playIntroSequence;
+        if (originalPlayIntroSequence) {
+          window.playIntroSequence = function(introList, callback) {
+            introAudioContainer.style.display = 'block';
+            mobileIntroPlayBtn.style.display = 'block';
+            
+            mobileIntroPlayBtn.onclick = () => {
+              introAudioContainer.style.display = 'none';
+              originalPlayIntroSequence(introList, callback);
+            };
+          };
+        }
+
+        // Override audio play in loadPassage to handle mobile autoplay
+        const originalLoadPassage = window.loadPassage;
+        if (originalLoadPassage) {
+          window.loadPassage = function() {
+            originalLoadPassage.apply(this, arguments);
+            
+            // Show mobile play button for main audio
+            setTimeout(() => {
+              const mainAudio = document.getElementById("mainAudio");
+              if (mainAudio) {
+                mobilePlayBtn.style.display = 'block';
+                mobilePlayBtn.onclick = () => {
+                  mainAudio.play().catch(e => {
+                    console.error('Mobile play failed:', e);
+                    alert('Cannot play audio. Please check your device volume and try again.');
+                  });
+                  mobilePlayBtn.style.display = 'none';
+                };
+              }
+            }, 500);
+          };
+        }
+
+        // Hide mobile play buttons when audio starts playing successfully
+        document.addEventListener('play', function(e) {
+          if (e.target.id === 'mainAudio') {
+            mobilePlayBtn.style.display = 'none';
+          }
+          if (e.target.id === 'introAudio') {
+            mobileIntroPlayBtn.style.display = 'none';
+            introAudioContainer.style.display = 'none';
+          }
+        }, true);
+
       };
 
       document.body.appendChild(logicScript);
