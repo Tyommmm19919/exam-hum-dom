@@ -17,6 +17,10 @@
     <audio src="../commonAudios/SpeakingDirectionsAudio.mp3" id="spDirectionAu"></audio>
     <div class="topSpDir">
       <button id="continueDirec">Continue</button>
+      <!-- Mobile play button for directions -->
+      <button id="mobileDirectionsPlayBtn" style="display: none; padding: 12px 24px; margin: 10px auto; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+        🔊 Tap to Play Directions
+      </button>
     </div>
     <div class="spDirecText">
       <h1>Speaking section directions</h1>
@@ -50,7 +54,6 @@
       <p id="sectionName"></p>
       <div style="position: fixed; right: 5px;">
       <button id="interstitialContinue" style="float: right;">Continue</button>
-
       </div>
     </div>
 
@@ -59,6 +62,10 @@
       <div id="progress-container" class="hidden">
         <div id="progress-bar"></div>
       </div>
+      <!-- Mobile play button for main audio -->
+      <button id="mobileAudioPlayBtn" style="display: none; padding: 12px 24px; margin: 10px auto; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+        🔊 Tap to Play Audio
+      </button>
     </div>
 
     <div id="question-wrap">
@@ -66,12 +73,23 @@
       <div id="quesT"></div>
       <div id="timer"></div>
     </div>
+    
+    <!-- Mobile play button for intro audio -->
+    <div id="mobileIntroContainer" style="display: none; text-align: center; margin: 10px 0;">
+      <button id="mobileIntroPlayBtn" style="display: none; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+        🔊 Tap to Play Question Audio
+      </button>
+    </div>
+
     <!-- Interstitial between directions and each question -->
     <div id="interstitial" style="display:none;">
       <audio id="interstitialAudio"></audio>
       <div class="interstitialText" id="interstitialText"></div>
+      <!-- Mobile play button for interstitial audio -->
+      <button id="mobileInterstitialPlayBtn" style="display: none; padding: 10px 20px; margin: 10px auto; background: #9C27B0; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+        🔊 Tap to Play Task Audio
+      </button>
     </div>
-
 
     <div id="recordings" class="hidden"></div>
     <button id="download-btn" class="hidden">Download All Responses</button>
@@ -84,6 +102,10 @@
   <script src="../scripts/speaking.js"></script>
 
   <script>
+    // Track autoplay state
+    let autoplayBlocked = false;
+    let userHasInteracted = false;
+
     document.addEventListener("DOMContentLoaded", () => {
       const testId = sessionStorage.getItem("TEST_ID");
       if (!testId) {
@@ -100,7 +122,14 @@
       script.onload = () => {
         if (window.questions && Array.isArray(window.questions)) {
           document.getElementById("speakingDirections").style.display = "block";
-          document.getElementById("spDirectionAu").play();
+          
+          // Try to play directions audio, show button if blocked
+          const directionsAudio = document.getElementById("spDirectionAu");
+          directionsAudio.play().catch((error) => {
+            console.warn("Directions autoplay blocked:", error);
+            autoplayBlocked = true;
+            document.getElementById("mobileDirectionsPlayBtn").style.display = "block";
+          });
         } else {
           alert("Speaking test data failed to load.");
         }
@@ -112,8 +141,17 @@
 
       document.body.appendChild(script);
 
+      // Mobile directions play button
+      document.getElementById("mobileDirectionsPlayBtn").onclick = () => {
+        userHasInteracted = true;
+        const directionsAudio = document.getElementById("spDirectionAu");
+        directionsAudio.play().catch(e => console.error("Directions play failed:", e));
+        document.getElementById("mobileDirectionsPlayBtn").style.display = "none";
+      };
+
       const continueBtn = document.getElementById("continueDirec");
       continueBtn.onclick = () => {
+        userHasInteracted = true;
         const audio = document.getElementById("spDirectionAu");
         audio.pause();
         audio.currentTime = 0;
@@ -122,7 +160,164 @@
         document.getElementById("sectionName").innerText = "Speaking section";
         getMicAccess().then(runQuestion);
       };
+
+      // Track user interactions
+      document.addEventListener('click', () => {
+        userHasInteracted = true;
+      });
+
+      // Override audio functions to handle mobile autoplay
+      overrideAudioFunctions();
     });
+
+    function overrideAudioFunctions() {
+      // Override playElementOnce to handle mobile autoplay
+      const originalPlayElementOnce = window.playElementOnce;
+      if (originalPlayElementOnce) {
+        window.playElementOnce = function(el) {
+          return new Promise(resolve => {
+            try { el.currentTime = 0; } catch {}
+            const onEnd = () => resolve();
+            el.addEventListener('ended', onEnd, { once: true });
+            
+            el.play().catch((error) => {
+              console.warn('Audio autoplay blocked for:', el.src);
+              // For bibPrepare and bibSpeak, show appropriate buttons
+              if (el.id === 'bibPrepare' || el.id === 'bibSpeak') {
+                showInstructionPlayButton(el, resolve);
+              } else {
+                // For other audio, use the fallback behavior
+                const resume = () => {
+                  document.removeEventListener('click', resume);
+                  el.play().catch(() => resolve());
+                };
+                document.addEventListener('click', resume, { once: true });
+              }
+            });
+          });
+        };
+      }
+
+      // Override playAudioListWithProgress to handle mobile autoplay
+      const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
+      if (originalPlayAudioListWithProgress) {
+        window.playAudioListWithProgress = function(srcList) {
+          return new Promise(resolve => {
+            const list = Array.isArray(srcList) ? srcList : [srcList];
+            
+            // Show mobile play button if autoplay was previously blocked
+            if (autoplayBlocked && !userHasInteracted) {
+              showMainAudioPlayButton(list, resolve);
+            } else {
+              // Proceed with normal playback
+              originalPlayAudioListWithProgress.call(this, srcList).then(resolve);
+            }
+          });
+        };
+      }
+
+      // Override the intro playback in runQuestion
+      const originalRunQuestionAfterInterstitial = window.runQuestionAfterInterstitial;
+      if (originalRunQuestionAfterInterstitial) {
+        window.runQuestionAfterInterstitial = function(myToken) {
+          const q = window.questions[window.current];
+          if (!q) return;
+
+          // Handle intro audio with mobile support
+          if (q.intro) {
+            const introList = Array.isArray(q.intro) ? q.intro : [q.intro];
+            
+            if (autoplayBlocked && !userHasInteracted) {
+              showIntroPlayButton(introList, myToken, () => {
+                originalRunQuestionAfterInterstitial.call(this, myToken);
+              });
+              return;
+            }
+          }
+          
+          // Proceed normally if no autoplay issues
+          originalRunQuestionAfterInterstitial.call(this, myToken);
+        };
+      }
+
+      // Override interstitial audio playback
+      const originalShowInterstitial = window.showInterstitial;
+      if (originalShowInterstitial) {
+        window.showInterstitial = function(index, onContinue) {
+          originalShowInterstitial.call(this, index, onContinue);
+          
+          // Add mobile play button for interstitial audio if needed
+          const interstitialAudio = document.getElementById("interstitialAudio");
+          if (interstitialAudio.src && autoplayBlocked && !userHasInteracted) {
+            document.getElementById("mobileInterstitialPlayBtn").style.display = "block";
+            
+            document.getElementById("mobileInterstitialPlayBtn").onclick = () => {
+              userHasInteracted = true;
+              interstitialAudio.play().catch(e => console.error("Interstitial play failed:", e));
+              document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
+            };
+          }
+        };
+      }
+    }
+
+    function showMainAudioPlayButton(audioList, resolve) {
+      const container = document.getElementById("media-wrap");
+      const playBtn = document.getElementById("mobileAudioPlayBtn");
+      
+      playBtn.style.display = "block";
+      playBtn.onclick = () => {
+        userHasInteracted = true;
+        playBtn.style.display = "none";
+        // Now proceed with normal audio playback
+        window.playAudioListWithProgress(audioList).then(resolve);
+      };
+    }
+
+    function showIntroPlayButton(introList, myToken, callback) {
+      const container = document.getElementById("mobileIntroContainer");
+      const playBtn = document.getElementById("mobileIntroPlayBtn");
+      
+      container.style.display = "block";
+      playBtn.style.display = "block";
+      
+      playBtn.onclick = () => {
+        userHasInteracted = true;
+        container.style.display = "none";
+        playBtn.style.display = "none";
+        callback();
+      };
+    }
+
+    function showInstructionPlayButton(audioElement, resolve) {
+      let button = document.getElementById("mobileInstructionPlayBtn");
+      if (!button) {
+        button = document.createElement("button");
+        button.id = "mobileInstructionPlayBtn";
+        button.style.cssText = "padding: 10px 20px; margin: 10px auto; background: #FF5722; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; display: block;";
+        button.textContent = "🔊 Tap to Play Instruction";
+        document.body.appendChild(button);
+      }
+      
+      button.style.display = "block";
+      button.onclick = () => {
+        userHasInteracted = true;
+        button.style.display = "none";
+        audioElement.play().catch(() => resolve());
+      };
+    }
+
+    // Hide mobile buttons when audio plays successfully
+    document.addEventListener('play', function(e) {
+      if (e.target.id === 'audio-player') {
+        document.getElementById("mobileAudioPlayBtn").style.display = "none";
+      }
+      if (e.target.id === 'interstitialAudio') {
+        document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
+      }
+      // Once any audio plays successfully, autoplay should work for subsequent audio
+      autoplayBlocked = false;
+    }, true);
   </script>
 </body>
 
