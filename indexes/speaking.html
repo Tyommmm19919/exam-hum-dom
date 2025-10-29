@@ -7,7 +7,6 @@
   <title>TOEFL Speaking Section</title>
   <link rel="stylesheet" href="../styles/speaking.css" />
   <meta name="color-scheme" content="dark">
-
 </head>
 
 <body>
@@ -53,7 +52,7 @@
     <div class="topSpWr">
       <p id="sectionName"></p>
       <div style="position: fixed; right: 5px;">
-      <button id="interstitialContinue" style="float: right;">Continue</button>
+        <button id="interstitialContinue" style="float: right;">Continue</button>
       </div>
     </div>
 
@@ -73,22 +72,11 @@
       <div id="quesT"></div>
       <div id="timer"></div>
     </div>
-    
-    <!-- Mobile play button for intro audio -->
-    <div id="mobileIntroContainer" style="display: none; text-align: center; margin: 10px 0;">
-      <button id="mobileIntroPlayBtn" style="display: none; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
-        🔊 Tap to Play Question Audio
-      </button>
-    </div>
 
     <!-- Interstitial between directions and each question -->
     <div id="interstitial" style="display:none;">
       <audio id="interstitialAudio"></audio>
       <div class="interstitialText" id="interstitialText"></div>
-      <!-- Mobile play button for interstitial audio -->
-      <button id="mobileInterstitialPlayBtn" style="display: none; padding: 10px 20px; margin: 10px auto; background: #9C27B0; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
-        🔊 Tap to Play Task Audio
-      </button>
     </div>
 
     <div id="recordings" class="hidden"></div>
@@ -158,7 +146,14 @@
         document.getElementById("speakingDirections").style.display = "none";
         document.getElementById("app").style.display = "block";
         document.getElementById("sectionName").innerText = "Speaking section";
-        getMicAccess().then(runQuestion);
+        getMicAccess().then(() => {
+          // Give speaking.js time to initialize before running questions
+          setTimeout(() => {
+            if (typeof runQuestion === 'function') {
+              runQuestion();
+            }
+          }, 500);
+        });
       };
 
       // Track user interactions
@@ -166,12 +161,14 @@
         userHasInteracted = true;
       });
 
-      // Simple override for main audio playback
-      overrideMainAudioPlayback();
+      // Simple mobile audio support - wait for speaking.js to load
+      setTimeout(() => {
+        setupMobileAudioSupport();
+      }, 1000);
     });
 
-    function overrideMainAudioPlayback() {
-      // Store original function
+    function setupMobileAudioSupport() {
+      // Only override the main audio playback function
       const originalPlayAudioListWithProgress = window.playAudioListWithProgress;
       
       if (originalPlayAudioListWithProgress) {
@@ -184,13 +181,29 @@
               console.log('Showing mobile play button for main audio');
               showMainAudioPlayButton(list, resolve);
             } else {
-              // Otherwise proceed normally
+              // Otherwise proceed normally - this should work now
               console.log('Proceeding with normal audio playback');
               originalPlayAudioListWithProgress.call(this, srcList).then(resolve);
             }
           });
         };
       }
+
+      // Add a global audio error handler to detect autoplay blocks
+      document.addEventListener('play', function(e) {
+        if (e.target.id === 'audio-player') {
+          document.getElementById("mobileAudioPlayBtn").style.display = "none";
+          autoplayBlocked = false;
+        }
+      }, true);
+
+      // Handle audio errors
+      document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'AUDIO' && e.target.error) {
+          console.warn('Audio error detected:', e.target.src);
+          // Don't automatically set autoplayBlocked here to avoid breaking normal flow
+        }
+      }, true);
     }
 
     function showMainAudioPlayButton(audioList, resolve) {
@@ -210,104 +223,28 @@
       };
     }
 
-    // Simple override for intro audio handling
-    function overrideIntroAudioHandling() {
-      // This will be called after speaking.js loads
-      setTimeout(() => {
-        const originalRunQuestionAfterInterstitial = window.runQuestionAfterInterstitial;
-        
-        if (originalRunQuestionAfterInterstitial) {
-          window.runQuestionAfterInterstitial = function(myToken) {
-            const q = window.questions[window.current];
-            if (!q) return;
-
-            // Reset intro container
-            document.getElementById("mobileIntroContainer").style.display = "none";
-            document.getElementById("mobileIntroPlayBtn").style.display = "none";
-
-            // Handle intro audio with mobile support
-            if (q.intro && autoplayBlocked && !userHasInteracted) {
-              console.log('Showing mobile play button for intro audio');
-              showIntroPlayButton(q.intro, myToken, () => {
-                // Continue with original function after user clicks play
-                originalRunQuestionAfterInterstitial.call(this, myToken);
-              });
-            } else {
-              // Proceed normally
-              originalRunQuestionAfterInterstitial.call(this, myToken);
-            }
-          };
-        }
-      }, 1000);
-    }
-
-    function showIntroPlayButton(introList, myToken, callback) {
-      const container = document.getElementById("mobileIntroContainer");
-      const playBtn = document.getElementById("mobileIntroPlayBtn");
-      
-      container.style.display = "block";
-      playBtn.style.display = "block";
-      
-      playBtn.onclick = () => {
-        userHasInteracted = true;
-        container.style.display = "none";
-        playBtn.style.display = "none";
-        callback();
-      };
-    }
-
-    // Override interstitial audio
-    function overrideInterstitialAudio() {
-      setTimeout(() => {
-        const originalShowInterstitial = window.showInterstitial;
-        
-        if (originalShowInterstitial) {
-          window.showInterstitial = function(index, onContinue) {
-            originalShowInterstitial.call(this, index, onContinue);
-            
-            // Add mobile play button for interstitial audio if needed
-            const interstitialAudio = document.getElementById("interstitialAudio");
-            if (interstitialAudio.src && autoplayBlocked && !userHasInteracted) {
-              document.getElementById("mobileInterstitialPlayBtn").style.display = "block";
-              
-              document.getElementById("mobileInterstitialPlayBtn").onclick = () => {
-                userHasInteracted = true;
-                interstitialAudio.play().catch(e => console.error("Interstitial play failed:", e));
-                document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
-              };
-            }
-          };
-        }
-      }, 1000);
-    }
-
-    // Initialize overrides after speaking.js loads
+    // Fallback: if questions don't start after 3 seconds, show a manual start button
     setTimeout(() => {
-      overrideIntroAudioHandling();
-      overrideInterstitialAudio();
-    }, 1500);
-
-    // Hide mobile buttons when audio plays successfully
-    document.addEventListener('play', function(e) {
-      if (e.target.id === 'audio-player') {
-        document.getElementById("mobileAudioPlayBtn").style.display = "none";
-        autoplayBlocked = false;
+      if (document.getElementById("app").style.display === "block" && 
+          document.getElementById("question-text").innerHTML === "" && 
+          document.getElementById("interstitial").style.display === "none") {
+        console.log("First question didn't load automatically, showing manual start");
+        createManualStartButton();
       }
-      if (e.target.id === 'interstitialAudio') {
-        document.getElementById("mobileInterstitialPlayBtn").style.display = "none";
-        autoplayBlocked = false;
-      }
-      // Once any audio plays successfully, autoplay should work for subsequent audio
-      autoplayBlocked = false;
-    }, true);
-
-    // Also track audio errors to detect autoplay blocks
-    document.addEventListener('error', function(e) {
-      if (e.target.tagName === 'AUDIO' && e.target.error) {
-        console.warn('Audio error detected:', e.target.src, e.target.error);
-      }
-    }, true);
+    }, 3000);
+    //finliand
+    function createManualStartButton() {
+      const startBtn = document.createElement('button');
+      startBtn.textContent = 'Start First Question';
+      startBtn.style.cssText = 'padding: 12px 24px; margin: 20px auto; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; display: block;';
+      startBtn.onclick = () => {
+        if (typeof runQuestion === 'function') {
+          startBtn.remove();
+          runQuestion();
+        }
+      };
+      document.getElementById("app").appendChild(startBtn);
+    }
   </script>
 </body>
-
 </html>
