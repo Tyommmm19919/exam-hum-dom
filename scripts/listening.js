@@ -10,7 +10,7 @@ const progressWrapper = document.querySelector(".audio-progress");
 const timerListening = document.getElementById("timerListening");
 const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
-//edited 2
+//changed 3
 const testId = window.TEST_ID || "default_test";
 // === Email config (reuse your existing Formspree project) ===
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xblpovwz";
@@ -109,45 +109,14 @@ let interval = null;
 let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
 let questionV = 0;
 
-// FIXED: GitHub Pages compatible path detection
-function getRepoBasePath() {
-  // For GitHub Pages: /repo-name/ or root /
-  const path = window.location.pathname;
-  const parts = path.split('/').filter(Boolean);
-  
-  // If we're at root (/), return empty base
-  if (path === '/' || parts.length === 0) return '/';
-  
-  // If we're in a GitHub Pages repo (like /toefl-tester/), return that as base
-  const repoName = parts[0];
-  return `/${repoName}/`;
-}
-
-// FIXED: Simpler path fixing that works on GitHub Pages
-function fixAssetPath(path) {
-  if (!path || typeof path !== 'string') return path;
-  
-  const base = getRepoBasePath();
-  
-  // If path already has base, leave it alone
-  if (path.startsWith(base)) return path;
-  
-  // If path starts with / but we're in a repo, add repo name
-  if (path.startsWith('/') && base !== '/') {
-    return base + path.slice(1);
-  }
-  
-  // If it's a relative path, make it absolute from base
-  if (!path.startsWith('/') && !path.startsWith('http')) {
-    return base + path;
-  }
-  
-  return path;
-}
-
+// SIMPLIFIED: Use relative paths for everything - no complex path fixing
 function getListeningDataPath(tt, tnum) {
-  const basePath = tt === "sh" ? `dataSH/${tnum}/listeningData_Test${tnum}.js` : `data/${tnum}/listeningData_Test${tnum}.js`;
-  return fixAssetPath(basePath);
+  // Use relative paths that work from listening.html location
+  if (tt === "sh") {
+    return `../dataSH/${tnum}/listeningData_Test${tnum}.js`;
+  } else {
+    return `../data/${tnum}/listeningData_Test${tnum}.js`;
+  }
 }
 
 mentionSection.innerHTML = `${typeName} — Test ${testId} — Listening`;
@@ -156,7 +125,7 @@ function loadListeningData(tt, tnum) {
   return new Promise((resolve, reject) => {
     const path = getListeningDataPath(tt, tnum);
     const src = `${path}?_=${Date.now()}`;
-    console.log('Loading listening data from:', src); // Debug log
+    console.log('Loading listening data from:', src);
     
     try { delete window.listeningData; } catch { }
     const s = document.createElement("script");
@@ -164,46 +133,21 @@ function loadListeningData(tt, tnum) {
     s.async = true;
     s.onload = () => {
       if (typeof window.listeningData !== "undefined") {
-        console.log('Listening data loaded successfully'); // Debug log
-        // FIXED: Apply path fixing to loaded data
-        const fixedData = fixDataPaths(window.listeningData);
-        resolve(fixedData);
+        console.log('Listening data loaded successfully');
+        console.log('First passage audio path:', window.listeningData[0]?.audio);
+        // DON'T fix paths - assume the data file already has correct relative paths
+        resolve(window.listeningData);
       } else {
         reject(new Error(`"${path}" loaded but window.listeningData is undefined`));
       }
     };
     s.onerror = (err) => {
-      console.error('Failed to load listening data:', err);
+      console.error('Failed to load listening data from:', src);
+      console.error('Error:', err);
       reject(new Error(`Failed to load ${path}`));
     };
     document.body.appendChild(s);
   });
-}
-
-// FIXED: Proper path fixing for all data including audio
-function fixDataPaths(data) {
-  if (Array.isArray(data)) {
-    return data.map(item => fixDataPaths(item));
-  }
-  
-  if (data && typeof data === 'object') {
-    const fixed = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (key === 'audio' || key === 'intro' || (key === 'src' && typeof value === 'string')) {
-        // Fix audio paths
-        if (Array.isArray(value)) {
-          fixed[key] = value.map(path => fixAssetPath(path));
-        } else {
-          fixed[key] = fixAssetPath(value);
-        }
-      } else {
-        fixed[key] = fixDataPaths(value);
-      }
-    }
-    return fixed;
-  }
-  
-  return data;
 }
 
 function setUpTime() {
@@ -230,17 +174,20 @@ function goTime() {
 
 window.startAllAll = function () {
   const effTestId = window.TEST_ID || testId;
-  console.log('Starting listening test:', { testType, effTestId, basePath: getRepoBasePath() }); // Debug log
+  console.log('Starting listening test:', { 
+    testType, 
+    effTestId
+  });
   
   loadListeningData(testType, effTestId)
     .then((data) => {
       window.listeningData = data;
-      console.log('Data loaded, first passage audio:', data[0]?.audio); // Debug log
+      console.log('Data loaded successfully, first passage audio:', data[0]?.audio);
       setTimeout(loadPassage, 1000);
     })
     .catch(err => {
       console.error('Loading error:', err);
-      alert("Could not load listening test data. Check file paths and that the data file sets window.listeningData.");
+      alert("Could not load listening test data. Check:\n1. Data file exists\n2. File sets window.listeningData\n3. Correct test number\n\nError: " + err.message);
     });
 };
 
@@ -248,6 +195,10 @@ window.startAllAll = function () {
 audioEl.addEventListener('error', function(e) {
   console.error('Main audio error:', e);
   console.log('Failed audio src:', audioEl.src);
+  // Try to diagnose the path issue
+  const currentPath = window.location.pathname;
+  console.log('Current page path:', currentPath);
+  console.log('Audio element src:', audioEl.src);
 });
 
 introEl.addEventListener('error', function(e) {
@@ -265,31 +216,40 @@ function loadPassage() {
   document.getElementById("listening-section").style.display = "block";
   
   const passage = window.listeningData[passageIndex];
-  console.log('Loading passage audio:', passage.audio); // Debug log
+  console.log('Loading passage audio:', passage.audio);
   
+  // Use the audio path exactly as it is in the data
   audioEl.src = passage.audio;
   progressWrapper.style.display = "block";
   
-  // FIXED: Better audio play with user interaction fallback
   const playAudio = () => {
     audioEl.play().catch((error) => {
       console.error('Audio play failed:', error);
-      // Show manual play button
+      console.log('Trying to play from:', audioEl.src);
+      
+      // Show manual play button with debug info
       const playBtn = document.createElement('button');
-      playBtn.textContent = 'Click to Play Audio';
+      playBtn.textContent = 'Click to Play Audio (Debug)';
       playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer;';
       playBtn.onclick = () => {
+        console.log('Manual play attempt, current src:', audioEl.src);
         audioEl.play().catch(e => {
           console.error('Manual play failed:', e);
-          alert('Cannot play audio. Please check the audio file path.');
+          // Show the actual path that's failing
+          alert(`Cannot play audio from: ${audioEl.src}\n\nPlease check if the audio file exists at this path.`);
         });
         playBtn.remove();
       };
+      
+      const debugInfo = document.createElement('div');
+      debugInfo.style.cssText = 'color: red; margin: 10px; font-family: monospace;';
+      debugInfo.textContent = `Audio path: ${audioEl.src}`;
+      
+      progressWrapper.appendChild(debugInfo);
       progressWrapper.appendChild(playBtn);
     });
   };
   
-  // Try to play immediately, might need user interaction
   playAudio();
   updateProgress();
 }
@@ -326,7 +286,7 @@ function loadQuestion() {
   questionContainer.style.display = "block";
   
   const intros = Array.isArray(currentQuestion.intro) ? currentQuestion.intro : [currentQuestion.intro];
-  console.log('Loading intro audios:', intros); // Debug log
+  console.log('Loading intro audios:', intros);
   
   playIntroSequence(intros, () => {
     renderOptions();
@@ -340,12 +300,12 @@ function playIntroSequence(introList, callback) {
   function playNext() {
     if (index >= introList.length) return callback();
     
-    console.log('Playing intro:', introList[index]); // Debug log
+    console.log('Playing intro:', introList[index]);
     introEl.src = introList[index];
     
     introEl.play().catch((error) => {
       console.error('Intro audio play failed:', error);
-      // Continue anyway
+      console.log('Failed intro path:', introEl.src);
       index++;
       setTimeout(playNext, 100);
     });
@@ -365,7 +325,7 @@ function playIntroSequence(introList, callback) {
   playNext();
 }
 
-// ... rest of the functions (renderOptions, nextBtn.onclick, confirmBtn.onclick, setsEqual, sendToFinalResults) remain the same as your first code ...
+// ... rest of your functions remain exactly the same ...
 
 function renderOptions() {
   optionsDiv.innerHTML = "";
