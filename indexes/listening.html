@@ -141,55 +141,61 @@
         audio.onended = start;
 
         // Try autoplay, if it fails show mobile play button
-        audio.play().catch((error) => {
-          console.warn("⚠️ Directions autoplay failed:", error);
-          // Show a play button for directions audio
-          const directionsPlayBtn = document.createElement('button');
-          directionsPlayBtn.textContent = '🔊 Tap to Play Directions';
-          directionsPlayBtn.style.cssText = 'padding: 12px 24px; margin: 20px auto; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; display: block;';
-          directionsPlayBtn.onclick = () => {
-            audio.play().catch(e => console.error('Manual play failed:', e));
-            directionsPlayBtn.style.display = 'none';
-          };
-          directions.querySelector('.topBreak').appendChild(directionsPlayBtn);
-        });
+// Try autoplay; only show button if blocked
+playWithAutoplayGuard(audio, (getUserGesture) => {
+  const directionsPlayBtn = document.createElement('button');
+  directionsPlayBtn.textContent = '🔊 Tap to Play Directions';
+  directionsPlayBtn.style.cssText = 'padding: 12px 24px; margin: 20px auto; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; display: block;';
+  directionsPlayBtn.onclick = async () => {
+    directionsPlayBtn.style.display = 'none';
+    await getUserGesture(); // plays and unlocks
+  };
+  directions.querySelector('.topBreak').appendChild(directionsPlayBtn);
+});
+
 
         // Override the playIntroSequence function to handle mobile autoplay issues
-        const originalPlayIntroSequence = window.playIntroSequence;
-        if (originalPlayIntroSequence) {
-          window.playIntroSequence = function(introList, callback) {
-            introAudioContainer.style.display = 'block';
-            mobileIntroPlayBtn.style.display = 'block';
-            
-            mobileIntroPlayBtn.onclick = () => {
-              introAudioContainer.style.display = 'none';
-              originalPlayIntroSequence(introList, callback);
-            };
-          };
-        }
+// Override the playIntroSequence to only show the blue button if the first intro is blocked
+const originalPlayIntroSequence = window.playIntroSequence;
+if (originalPlayIntroSequence) {
+  window.playIntroSequence = function(introList, callback) {
+    // fetch introEl locally so scope is correct
+    const introEl = document.getElementById("introAudio");
 
-        // Override audio play in loadPassage to handle mobile autoplay
-        const originalLoadPassage = window.loadPassage;
-        if (originalLoadPassage) {
-          window.loadPassage = function() {
-            originalLoadPassage.apply(this, arguments);
-            
-            // Show mobile play button for main audio
-            setTimeout(() => {
-              const mainAudio = document.getElementById("mainAudio");
-              if (mainAudio) {
-                mobilePlayBtn.style.display = 'block';
-                mobilePlayBtn.onclick = () => {
-                  mainAudio.play().catch(e => {
-                    console.error('Mobile play failed:', e);
-                    alert('Cannot play audio. Please check your device volume and try again.');
-                  });
-                  mobilePlayBtn.style.display = 'none';
-                };
-              }
-            }, 500);
-          };
-        }
+    const firstSrc = Array.isArray(introList) ? introList[0] : introList;
+    if (!firstSrc) return callback();
+
+    introEl.src = firstSrc;
+
+    const showIntroPlayUi = (getUserGesture) => {
+      introAudioContainer.style.display = 'block';
+      mobileIntroPlayBtn.style.display = 'block';
+      mobileIntroPlayBtn.onclick = async () => {
+        mobileIntroPlayBtn.style.display = 'none';
+        introAudioContainer.style.display = 'none';
+        await getUserGesture(); // plays first intro and unlocks
+        // Hand off to the original sequence after unlocking
+        originalPlayIntroSequence(introList, callback);
+      };
+    };
+
+    if (window.AUDIO_UNLOCKED) {
+      // Already unlocked; run the original sequence immediately
+      return originalPlayIntroSequence(introList, callback);
+    }
+
+    // Try autoplay; if blocked, show the blue button once
+    playWithAutoplayGuard(introEl, showIntroPlayUi).then((ok) => {
+      if (ok) {
+        introEl.pause();
+        introEl.currentTime = 0;
+        originalPlayIntroSequence(introList, callback);
+      }
+    });
+  };
+}
+
+
 
         // Hide mobile play buttons when audio starts playing successfully
         document.addEventListener('play', function(e) {

@@ -10,6 +10,52 @@ const progressWrapper = document.querySelector(".audio-progress");
 const timerListening = document.getElementById("timerListening");
 const audioPlayer = document.getElementById("audio-player");
 const mentionSection = document.getElementById("mention-section")
+const mobileIntroPlayBtn = document.getElementById("mobileIntroPlayBtn");
+const introAudioContainer = document.getElementById("introAudioContainer");
+const mobilePlayBtn = document.getElementById("mobilePlayBtn");
+//baba
+// ===== Autoplay helper + state (add once at top of listening.js) =====
+window.AUDIO_UNLOCKED = sessionStorage.getItem("AUDIO_UNLOCKED") === "1";
+
+["pointerdown","keydown","touchstart"].forEach(evt =>
+  window.addEventListener(evt, () => {
+    if (!window.AUDIO_UNLOCKED) {
+      window.AUDIO_UNLOCKED = true;
+      sessionStorage.setItem("AUDIO_UNLOCKED","1");
+    }
+  }, { once: true, capture: true })
+);
+
+/**
+ * Attempt to play() an <audio>. If blocked by autoplay policy, call showUi(getUserGesture)
+ * where getUserGesture() must be called from a click/tap to retry play().
+ */
+window.playWithAutoplayGuard = async function(el, showUi){
+  try {
+    await el.play();
+    window.AUDIO_UNLOCKED = true;
+    sessionStorage.setItem("AUDIO_UNLOCKED","1");
+    return true;
+  } catch (e) {
+    const blocked = e?.name === "NotAllowedError" || /play\(\) failed/i.test(e?.message||"");
+    if (!blocked) { console.error("Audio play failed:", e); return false; }
+    if (typeof showUi === "function") {
+      showUi(async () => {
+        try {
+          await el.play();
+          window.AUDIO_UNLOCKED = true;
+          sessionStorage.setItem("AUDIO_UNLOCKED","1");
+        } catch (err) {
+          console.error("Manual play failed:", err);
+          alert("Cannot play audio. Please check your device volume and try again.");
+        }
+      });
+    }
+    return false;
+  }
+};
+
+
 //final change
 const testId = window.TEST_ID || "default_test";
 // === Email config (reuse your existing Formspree project) ===
@@ -295,28 +341,21 @@ function loadPassage() {
   audioEl.src = passage.audio;
   progressWrapper.style.display = "block";
   
-  const playAudio = () => {
-    audioEl.play().catch((error) => {
-      console.error('Audio play failed:', error);
-      console.log('Trying to play from:', audioEl.src);
-      
-      // Show manual play button with debug info
-      const playBtn = document.createElement('button');
-      playBtn.textContent = 'Click to Play Audio';
-      playBtn.style.cssText = 'padding: 10px 20px; font-size: 16px; margin: 10px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer;';
-      playBtn.onclick = () => {
-        audioEl.play().catch(e => {
-          console.error('Manual play failed:', e);
-          alert(`Cannot play audio from: ${audioEl.src}\n\nPlease check if the audio file exists at this path.`);
-        });
-        playBtn.remove();
-      };
-      
-      progressWrapper.appendChild(playBtn);
-    });
+  const showMainPlayUi = (getUserGesture) => {
+    // Use your existing green mobile button
+    mobilePlayBtn.style.display = 'block';
+    mobilePlayBtn.onclick = async () => {
+      mobilePlayBtn.style.display = 'none';
+      await getUserGesture(); // calls audioEl.play() and unlocks on success
+    };
   };
-  
-  playAudio();
+
+  if (window.AUDIO_UNLOCKED) {
+    audioEl.play().catch(e => console.error('Audio play failed after unlock:', e));
+  } else {
+    window.playWithAutoplayGuard(audioEl, showMainPlayUi);
+  }
+
   updateProgress();
 }
 
