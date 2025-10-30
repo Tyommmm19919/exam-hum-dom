@@ -14,27 +14,6 @@ const mobileIntroPlayBtn = document.getElementById("mobileIntroPlayBtn");
 const introAudioContainer = document.getElementById("introAudioContainer");
 const mobilePlayBtn = document.getElementById("mobilePlayBtn");
 
-const showMainPlayUi = (getUserGesture) => {
-  if (mobilePlayBtn) {
-    mobilePlayBtn.style.display = 'block';
-    mobilePlayBtn.onclick = async () => {
-      mobilePlayBtn.style.display = 'none';
-      await getUserGesture();
-    };
-  } else {
-    // Fallback inline button
-    const btn = document.createElement('button');
-    btn.textContent = '🔊 Tap to Play Audio';
-    btn.style.cssText = 'padding:12px 24px; margin:10px auto; display:block;';
-    btn.onclick = async () => {
-      btn.remove();
-      await getUserGesture();
-    };
-    document.getElementById('audio-player').appendChild(btn);
-  }
-};
-
-
 //baba
 // ===== Autoplay helper + state (add once at top of listening.js) =====
 window.AUDIO_UNLOCKED = sessionStorage.getItem("AUDIO_UNLOCKED") === "1";
@@ -372,11 +351,8 @@ function loadPassage() {
     };
   };
 
-  if (window.AUDIO_UNLOCKED) {
-    audioEl.play().catch(e => console.error('Audio play failed after unlock:', e));
-  } else {
-    window.playWithAutoplayGuard(audioEl, showMainPlayUi);
-  }
+window.playWithAutoplayGuard(audioEl, showMainPlayUi);
+
 
   updateProgress();
 }
