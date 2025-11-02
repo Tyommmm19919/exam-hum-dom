@@ -3,7 +3,7 @@ window.listeningData = [
         audio: `../commonAudios/choose_the_best_response.mp3`,
         questions: [
             {
-                intro: `/data2026/1/audio/1.1.mp3`,
+                intro: `../data2026/1/audio/1.1.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -15,7 +15,7 @@ window.listeningData = [
                 correct: ["0"]
             },
             {
-                intro: `/data2026/1/audio/1.2.mp3`,
+                intro: `../data2026/1/audio/1.2.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -27,7 +27,7 @@ window.listeningData = [
                 correct: ["2"]
             },
             {
-                intro: `/data2026/1/audio/1.3.mp3`,
+                intro: `../data2026/1/audio/1.3.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -39,7 +39,7 @@ window.listeningData = [
                 correct: ["1"]
             },
             {
-                intro: `/data2026/1/audio/1.4.mp3`,
+                intro: `../data2026/1/audio/1.4.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -51,7 +51,7 @@ window.listeningData = [
                 correct: ["1"]
             },
             {
-                intro: `/data2026/1/audio/1.5.mp3`,
+                intro: `../data2026/1/audio/1.5.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -63,7 +63,7 @@ window.listeningData = [
                 correct: ["3"]
             },
             {
-                intro: `/data2026/1/audio/1.6.mp3`,
+                intro: `../data2026/1/audio/1.6.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -74,7 +74,7 @@ window.listeningData = [
                 ],
                 correct: ["3"]
             }, {
-                intro: `/data2026/1/audio/1.7.mp3`,
+                intro: `../data2026/1/audio/1.7.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -85,7 +85,7 @@ window.listeningData = [
                 ],
                 correct: ["3"]
             }, {
-                intro: `/data2026/1/audio/1.8.mp3`,
+                intro: `../data2026/1/audio/1.8.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -99,7 +99,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: ["/data2026/1/audio/2.01.mp3", "/data2026/1/audio/2.02.mp3", "/data2026/1/audio/2.03.mp3", "/data2026/1/audio/2.04.mp3", "/data2026/1/audio/2.05.mp3", "/data2026/1/audio/2.06.mp3", "/data2026/1/audio/2.07.mp3", "/data2026/1/audio/2.08.mp3", "/data2026/1/audio/2.09.mp3"],
+        audio: ["../data2026/1/audio/2.01.mp3", "../data2026/1/audio/2.02.mp3", "../data2026/1/audio/2.03.mp3", "../data2026/1/audio/2.04.mp3", "../data2026/1/audio/2.05.mp3", "../data2026/1/audio/2.06.mp3", "../data2026/1/audio/2.07.mp3", "../data2026/1/audio/2.08.mp3", "../data2026/1/audio/2.09.mp3"],
         questions: [
             {
                 type: "single",
@@ -126,7 +126,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: [`/data2026/1/audio/3.01.mp3`,`/data2026/1/audio/3.02.mp3`,`/data2026/1/audio/3.03.mp3`,`/data2026/1/audio/3.04.mp3`,],
+        audio: [`../data2026/1/audio/3.01.mp3`,`../data2026/1/audio/3.02.mp3`,`../data2026/1/audio/3.03.mp3`,`../data2026/1/audio/3.04.mp3`,],
         questions: [
             {
                 type: "single",
@@ -153,7 +153,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: `/data2026/1/audio/4.01.mp3`,
+        audio: `../data2026/1/audio/4.01.mp3`,
         questions: [
             {
                 type: "single",
@@ -180,7 +180,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: `/data2026/1/audio/5.01.mp3`,
+        audio: `../data2026/1/audio/5.01.mp3`,
         questions: [
             {
                 type: "single",
@@ -229,10 +229,10 @@ window.listeningData = [
         ]
     },
     {
-        audio: `/commonAudios/choose_the_best_response.mp3`,
+        audio: `../commonAudios/choose_the_best_response.mp3`,
         questions: [
             {
-                intro: `/data2026/1/audio/5.1.mp3`,
+                intro: `../data2026/1/audio/5.1.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -244,7 +244,7 @@ window.listeningData = [
                 correct: ["1"]
             },
             {
-                intro: `/data2026/1/audio/5.2.mp3`,
+                intro: `../data2026/1/audio/5.2.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -256,7 +256,7 @@ window.listeningData = [
                 correct: ["0"]
             },
             {
-                intro: `/data2026/1/audio/5.3.mp3`,
+                intro: `../data2026/1/audio/5.3.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -268,7 +268,7 @@ window.listeningData = [
                 correct: ["3"]
             },
             {
-                intro: `/data2026/1/audio/5.4.mp3`,
+                intro: `../data2026/1/audio/5.4.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -280,7 +280,7 @@ window.listeningData = [
                 correct: ["1"]
             },
             {
-                intro: `/data2026/1/audio/5.5.mp3`,
+                intro: `../data2026/1/audio/5.5.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -292,7 +292,7 @@ window.listeningData = [
                 correct: ["0"]
             },
             {
-                intro: `/data2026/1/audio/5.6.mp3`,
+                intro: `../data2026/1/audio/5.6.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -304,7 +304,7 @@ window.listeningData = [
                 correct: ["1"]
             },
             {
-                intro: `/data2026/1/audio/5.7.mp3`,
+                intro: `../data2026/1/audio/5.7.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -316,7 +316,7 @@ window.listeningData = [
                 correct: ["2"]
             },
             {
-                intro: `/data2026/1/audio/5.8.mp3`,
+                intro: `../data2026/1/audio/5.8.mp3`,
                 type: "single",
                 question: "",
                 options: [
@@ -330,7 +330,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: [`/data2026/1/audio/7.01.mp3`,`/data2026/1/audio/7.02.mp3`,`/data2026/1/audio/7.03.mp3`,`/data2026/1/audio/7.04.mp3`,`/data2026/1/audio/7.05.mp3`,],
+        audio: [`../data2026/1/audio/7.01.mp3`,`../data2026/1/audio/7.02.mp3`,`../data2026/1/audio/7.03.mp3`,`../data2026/1/audio/7.04.mp3`,`../data2026/1/audio/7.05.mp3`,],
         questions: [
             {
                 type: "single",
@@ -357,7 +357,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: `/data2026/1/audio/8.01.mp3`,
+        audio: `../data2026/1/audio/8.01.mp3`,
         questions: [
             {
                 type: "single",
@@ -384,7 +384,7 @@ window.listeningData = [
         ]
     },
     {
-        audio: `/data2026/1/audio/9.01.mp3`,
+        audio: `../data2026/1/audio/9.01.mp3`,
         questions: [
             {
                 type: "single",
