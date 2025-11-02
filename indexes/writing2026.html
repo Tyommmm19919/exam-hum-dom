@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOEFL Writing 2026</title>
+  <link rel="stylesheet" href="../styles/writing.css" />
+  <meta name="color-scheme" content="dark">
+</head>
+
+<body>
+
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <!-- Directions (landing) -->
+  <div id="writingDirections">
+    <div class="topBreak">
+      <button id="startWritingBtn">Continue</button>
+    </div>
+    <div class="direcText">
+      <h1>Writing Section (2026)</h1>
+      <h2>
+        This section may include three task types:
+        <ul>
+          <li><b>Integrated</b>: Read a passage, listen to a lecture, then write a response.</li>
+          <li><b>Independent</b>: Write an essay response to a prompt.</li>
+          <li><b>Drag &amp; Drop (2026)</b>: Complete a sentence by dragging words into blanks.</li>
+        </ul>
+        A timer shows your remaining time on each task. Click Continue to start.
+      </h2>
+    </div>
+  </div>
+
+  <!-- Section -->
+  <div id="writing-section" class="hidden" style="display:none;">
+    <div class="topSpWr">
+      <p id="sectionName">Writing 2026</p>
+      <div id="writing-timer"></div>
+    </div>
+
+    <div id="writing-directions" class="directions"></div>
+
+    <div id="writing-layout">
+      <!-- Left: Reading / Prompt box -->
+      <div id="reading-passage" class="reading-box"></div>
+
+      <!-- Right: Typing area (integrated + independent) -->
+      <div id="typing" class="hidden" style="display:none;">
+        <div class="writing-tools">
+          <div class="buttons">
+            <button onclick="document.execCommand('undo')">Undo</button>
+            <button onclick="document.execCommand('redo')">Redo</button>
+            <button onclick="document.execCommand('cut')">Cut</button>
+            <button onclick="document.execCommand('copy')">Copy</button>
+            <button onclick="document.execCommand('paste')">Paste</button>
+          </div>
+
+          <textarea id="writing-area" placeholder="Start writing here..."></textarea>
+          <div id="word-count">Words: 0</div>
+          <button id="finish-writing-btn" type="button">Finish</button>
+        </div>
+      </div>
+
+      <!-- Right: Drag–drop (reorder) task -->
+      <div id="reorder" class="hidden" style="display:none;">
+        <div class="reorder-wrap">
+        <div id="firsResp"></div>
+          <div id="reorder-sentence" class="reorder-sentence"></div>
+          <div class="reorder-bank-wrap">
+            <h4>Word Bank</h4>
+            <div id="reorder-bank" class="reorder-bank"></div>
+          </div>
+        </div>
+        <div class="reorder-actions">
+          <button id="reorder-reset-btn" type="button">Reset</button>
+          <button id="reorder-clear-btn" type="button">Clear Slots</button>
+          <button id="finish-writing-btn-reorder" type="button">Finish</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio + progress for integrated -->
+    <audio id="writing-audio" class="hidden"></audio>
+    <div id="writing-progress-container" class="hidden">
+      <div id="writing-progress-bar"></div>
+    </div>
+  </div>
+
+  <!-- Results + download -->
+  <div id="final-results" class="hidden"></div>
+  <button id="download-btn" class="hidden">Download All Responses</button>
+
+  <!-- JS deps -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- Main script -->
+  <script src="../scripts/writing2026.js"></script>
+
+  <!-- Data loader -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const testId = sessionStorage.getItem("TEST_ID");
+      if (!testId) {
+        document.body.innerHTML = "<h2 style='color:red;'>TEST_ID is missing. Please return to the section selection page.</h2>";
+        return;
+      }
+      sessionStorage.setItem("TEST_ID", testId);
+
+      const script = document.createElement("script");
+      script.src = `../data2026/${testId}/writingData2026_Test${testId}.js?_=${Date.now()}`;
+      script.onload = () => {
+        if (!Array.isArray(window.writing2026Tasks)) {
+          alert("Writing 2026 data failed to load (window.writing2026Tasks is not an array).");
+        }
+      };
+      script.onerror = () => {
+        alert("Error loading writing2026_Test" + testId + ".js");
+      };
+      document.body.appendChild(script);
+    });
+  </script>
+</body>
+</html>

@@ -341,6 +341,7 @@
         <select id="typeFilter" class="filter" title="Test type">
           <option value="toefl">TPO</option>
           <option value="sh">SH</option>
+          <option value="toefl2026">TOEFL 2026</option>
         </select>
 
         <div class="search">
@@ -369,7 +370,8 @@
   <script>
     const TEST_TYPES = {
       toefl: { label: 'TPO', total: 65 },
-      sh: { label: 'SH', total: 20 }
+      sh: { label: 'SH', total: 20 },
+      toefl2026: { label: 'TOEFL 2026', total: 10 } // Added TOEFL 2026 with 10 tests
     };
 
     const SECTION_PAGE = 'section-selection.html';
@@ -401,6 +403,21 @@
     }
 
     function getStatusForTest(type, id) {
+      // For TOEFL 2026, we'll use the new key format only
+      if (type === 'toefl2026') {
+        const r = localStorage.getItem(getKey(type, id, 'reading'));
+        const l = localStorage.getItem(getKey(type, id, 'listening'));
+        const s = localStorage.getItem(getKey(type, id, 'speaking'));
+        const w = localStorage.getItem(getKey(type, id, 'writing'));
+
+        const hasAny = r || l || s || w;
+        const hasAll = r && l && w;
+        if (hasAll) return 'completed';
+        if (hasAny) return 'partial';
+        return 'not-started';
+      }
+      
+      // For TPO and SH, keep the existing logic with legacy support
       const r = localStorage.getItem(getKey(type, id, 'reading')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'reading')) : null);
       const l = localStorage.getItem(getKey(type, id, 'listening')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'listening')) : null);
       const s = localStorage.getItem(getKey(type, id, 'speaking')) || (type === 'toefl' ? localStorage.getItem(getLegacyKey(id, 'speaking')) : null);
@@ -518,7 +535,7 @@
       const sp = new URLSearchParams(location.search);
       if (!sp.has('type') && location.search.startsWith('?=')) {
         const val = location.search.slice(2); // after '?='
-        if (val === 'toefl' || val === 'sh') {
+        if (val === 'toefl' || val === 'sh' || val === 'toefl2026') {
           const url = new URL(location.href);
           url.search = `?type=${val}`;
           history.replaceState(null, '', url);

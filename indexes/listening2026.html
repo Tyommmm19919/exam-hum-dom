@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listening Section</title>
+  <link rel="stylesheet" href="../styles/listening.css" />
+  <meta name="color-scheme" content="dark">
+</head>
+
+<body>
+
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <div id="listening-directions">
+    <audio id="listeningDirectionsAudio" src="../commonAudios/ListeningDirectionsAudio.mp3"></audio>
+    <div class="topBreak">
+      <button id="startListeningBtn">Continue</button>
+    </div>
+    <div class="directionsTextBreak">
+      <h1>Listening Section Directions</h1>
+      <h2>
+        This test measures your ability to understand conversations and lectures in English.<br>
+        The Listening section is divided into timed parts. You will hear each conversation or lecture only one
+        time.<br>
+        After each conversation or lecture, you will answer some questions about it. The questions typically ask about
+        the main idea and supporting details. Some questions ask about a speaker’s purpose or attitude. Answer the
+        questions based on what is stated or implied by the speakers.<br>
+        You may take notes while you listen. You may use your notes to help you answer the questions. Your notes will
+        not be scored.<br>
+        Some questions have special directions. These directions appear in a gray box on the screen.<br>
+        Most questions are worth 1 point. If a question is worth more than 1 point, it will have special directions that
+        indicate how many points you can receive.<br>
+        You must answer each question. After you answer, click on Next. Then click on OK to confirm your answer and go
+        on
+        to the next question. After you click on OK, you cannot return to previous questions.<br>
+        The clock counts down only while you are answering questions.<br><br>
+        (Click on Continue at any time to dismiss these directions.)
+      </h2>
+    </div>
+  </div>
+
+  <div id="listening-section" style="display: none;">
+    <div class="listeningTop">
+      <div class="bb">
+        <p class="mention-section" id="mention-section">Listening</p>
+        <div id="timerListening">00:00</div>
+      </div>
+      <button id="nextBtn" disabled style="display: none;">Next</button>
+      <button id="confirmBtn" style="display:none">OK</button>
+    </div>
+
+    <div id="audio-player">
+      <audio id="mainAudio" hidden></audio>
+      <div class="audio-progress">
+        <div id="progressBar" class="audio-progress-filled"></div>
+      </div>
+    </div>
+
+    <audio id="introAudio" hidden></audio>
+
+    <div class="question-container">
+      <div class="numbtext">
+        <div id="question-text"></div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <div id="result" style="display:none">
+    <h2>Result: <span id="score"></span>%</h2>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Your Answer</th>
+          <th>Correct Answer</th>
+        </tr>
+      </thead>
+      <tbody id="resultTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // ========= Single-type Listening Test =========
+
+    // --- Elements
+    const audioEl = document.getElementById("mainAudio");
+    const introEl = document.getElementById("introAudio");
+    const progressBar = document.getElementById("progressBar");
+    const questionText = document.getElementById("question-text");
+    const optionsDiv = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const questionContainer = document.querySelector(".question-container");
+    const progressWrapper = document.querySelector(".audio-progress");
+    const timerListening = document.getElementById("timerListening");
+    const audioPlayer = document.getElementById("audio-player");
+    const mentionSection = document.getElementById("mention-section");
+
+    // --- Test ID (required)
+    window.TEST_ID = sessionStorage.getItem("TEST_ID") || new URLSearchParams(location.search).get("test");
+    if (!window.TEST_ID) {
+      document.body.innerHTML = "<h2 style='color:red;'>TEST_ID not found. Please return to the selection page.</h2>";
+      throw new Error("TEST_ID is missing.");
+    }
+    const testId = String(window.TEST_ID);
+    sessionStorage.setItem("TEST_ID", testId);
+
+    // Header label
+    mentionSection.textContent = `Test ${testId} — Listening`;
+    // Make sure this page runs as TOEFL 2026
+    sessionStorage.setItem('TEST_TYPE', 'toefl2026');
+
+    // ---- 2026-only router (same as reading2026) ----
+    (function () {
+      const qs = new URLSearchParams(location.search);
+      const type = (sessionStorage.getItem('TEST_TYPE') || qs.get('type') || 'toefl2026').toLowerCase();
+      const testId = sessionStorage.getItem('TEST_ID') || qs.get('test') || '';
+
+      // if someone landed directly here, ensure index exists
+      if (!sessionStorage.getItem('CURRENT_SECTION_INDEX')) {
+        sessionStorage.setItem('CURRENT_SECTION_INDEX', '0');
+      }
+
+      // define navigation for chaining sections
+      window.goToNextSection = function () {
+        const selected = JSON.parse(sessionStorage.getItem('SELECTED_SECTIONS') || '[]');
+        let idx = parseInt(sessionStorage.getItem('CURRENT_SECTION_INDEX') || '0', 10);
+        idx++;
+
+        if (idx < selected.length) {
+          sessionStorage.setItem('CURRENT_SECTION_INDEX', String(idx));
+          const next = String(selected[idx] || '').toLowerCase();
+
+          const map = {
+            reading: `reading2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+            listening: `listening2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+            speaking: `speaking2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+            writing: `writing2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`
+          };
+
+          location.href = map[next] ||
+            `results.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`;
+        } else {
+          location.href = `results.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`;
+        }
+      };
+    })();
+
+    // --- Directions flow
+    const audio = document.getElementById("listeningDirectionsAudio");
+    const btn = document.getElementById("startListeningBtn");
+    const directions = document.getElementById("listening-directions");
+    const testSection = document.getElementById("listening-section");
+
+    const start = () => {
+      directions.style.display = "none";
+      testSection.style.display = "block";
+      if (typeof startAllAll === "function") startAllAll();
+    };
+    btn.onclick = () => { audio.pause(); start(); };
+    audio.onended = start;
+    audio.play().catch(() => { /* autoplay can be blocked; user will click Continue */ });
+
+    // --- Anti-tab-switch (same behavior as before)
+    let visibilityTimeout = null;
+    function visibilityHandler() {
+      if (document.visibilityState === "hidden") {
+        visibilityTimeout = setTimeout(() => {
+          alert("You left the test window. The test will now reset.");
+          location.reload();
+        }, 1000);
+      } else {
+        clearTimeout(visibilityTimeout);
+        visibilityTimeout = null;
+      }
+    }
+    document.addEventListener("visibilitychange", visibilityHandler);
+
+    // --- Timing (single configuration)
+    const TIME_SECONDS = 20 * 60; // change if you want a different per-question block time
+    let timeFull = TIME_SECONDS;
+    let interval = null;
+
+    function setUpTime() {
+      const min = Math.floor(timeFull / 60);
+      const sec = timeFull % 60;
+      timerListening.innerHTML = `${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}`;
+    }
+    function valuedTime() {
+      timeFull--;
+      if (timeFull <= 0) {
+        sendToFinalResults();
+        if (typeof window.goToNextSection === "function") {
+          window.goToNextSection();
+        } else {
+          // fallback: go to generic results page without type
+          window.location.href = `results.html?test=${encodeURIComponent(testId)}`;
+        }
+        return;
+      }
+      setUpTime();
+    }
+    function goTime() {
+      clearInterval(interval);
+      interval = setInterval(valuedTime, 1000);
+      timerListening.style.display = "block";
+    }
+
+    // --- Data loading (ALWAYS from ../data2026/${testId}/listeningData2026_Test${testId}.js)
+    function getListeningDataPath(tnum) {
+      return `../data2026/${tnum}/listeningData2026_Test${tnum}.js`;
+    }
+
+    function loadListeningData(tnum) {
+      return new Promise((resolve, reject) => {
+        const path = getListeningDataPath(tnum);
+        const src = `${path}?_=${Date.now()}`;
+        try { delete window.listeningData; } catch { }
+        const s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.onload = () => {
+          if (typeof window.listeningData !== "undefined") resolve(window.listeningData);
+          else reject(new Error(`"${path}" loaded but window.listeningData is undefined. Make sure the file sets: window.listeningData = [...]`));
+        };
+        s.onerror = () => reject(new Error(`Failed to load ${path}`));
+        document.body.appendChild(s);
+      });
+    }
+
+    // --- Test state
+    let passageIndex = 0, questionIndex = 0, userAnswers = [], currentQuestion;
+    let questionV = 0; // visual numbering 1..n
+
+    // Play intro → then render options & start timer
+    function playIntroSequence(introList, callback) {
+      const list = Array.isArray(introList) ? introList : (introList ? [introList] : []);
+      let idx = 0;
+
+      function playNext() {
+        if (idx >= list.length) return; // nothing else to do
+        introEl.src = list[idx];
+        introEl.play().catch(() => { /* autoplay might be blocked */ });
+        introEl.onended = () => { idx++; playNext(); };
+      }
+
+      // kick off, but don't block UI
+      if (list.length > 0) playNext();
+      if (typeof callback === "function") callback(); // call immediately
+    }
+
+// Plays one or many audio sources sequentially.
+// `sources` can be a string or an array of strings.
+// Calls `onDone()` after the last clip finishes.
+function playPassageAudio(sources, onDone) {
+  const list = Array.isArray(sources) ? sources.slice() : [sources];
+  let idx = 0;
+  let progressInterval = null;
+
+  function clearProgress() {
+    clearInterval(progressInterval);
+    progressInterval = null;
+    progressBar.style.width = "0%";
+  }
+
+  function startProgress() {
+    clearProgress();
+    progressInterval = setInterval(() => {
+      // update per-clip progress
+      if (audioEl.duration && !isNaN(audioEl.duration) && audioEl.duration > 0) {
+        const percent = (audioEl.currentTime / audioEl.duration) * 100;
+        progressBar.style.width = percent + "%";
+      }
+    }, 200);
+  }
+
+  function playNext() {
+    if (idx >= list.length) {
+      clearProgress();
+      if (typeof onDone === "function") onDone();
+      return;
+    }
+
+    const src = list[idx++];
+    audioEl.src = src;
+    audioEl.currentTime = 0;
+
+    // show progress UI per clip
+    progressWrapper.style.display = "block";
+    audioPlayer.style.display = "block";
+
+    // when metadata is loaded, start progress ticking
+    audioEl.onloadedmetadata = () => { startProgress(); };
+
+    // if autoplay is blocked, show a small manual play button
+    audioEl.play().catch(() => {
+      // create one-time "Play" button if not present
+      let manual = document.getElementById("manualPlayPassageBtn");
+      if (!manual) {
+        manual = document.createElement("button");
+        manual.id = "manualPlayPassageBtn";
+        manual.textContent = "Play audio";
+        manual.style.marginTop = "12px";
+        audioPlayer.appendChild(manual);
+        manual.addEventListener("click", () => {
+          audioEl.play().catch(()=>{}); // try again
+          manual.remove();
+        }, { once: true });
+      }
+    });
+
+    audioEl.onended = () => {
+      clearProgress();
+      progressBar.style.width = "0%";
+      // go to next clip
+      playNext();
+    };
+  }
+
+  playNext();
+}
+function loadPassage() {
+  nextBtn.style.display = "none";
+  timerListening.style.display = "none";
+  clearInterval(interval);           // stop question timer during passage
+  questionContainer.style.display = "none";
+
+  const passage = window.listeningData[passageIndex];
+
+  playPassageAudio(passage.audio, () => {
+    // Passage fully finished → go straight to the question screen
+    progressWrapper.style.display = "none";
+    progressBar.style.width = "0%";
+    audioPlayer.style.display = "none";
+
+    // ✅ show the first question right away
+    loadQuestion();
+  });
+}
+
+
+
+    function updateProgress() {
+      const progressInterval = setInterval(() => {
+        if (audioEl.duration) {
+          const percent = (audioEl.currentTime / audioEl.duration) * 100;
+          progressBar.style.width = percent + "%";
+        }
+        if (audioEl.ended) {
+          clearInterval(progressInterval);
+          progressWrapper.style.display = "none";
+          progressBar.style.width = "0%";
+          nextBtn.style.display = "block";
+        }
+      }, 200);
+    }
+
+
+function loadQuestion() {
+  audioPlayer.style.display = "none";
+
+  const p = window.listeningData[passageIndex];
+  currentQuestion = p.questions[questionIndex];
+
+  questionText.innerHTML = `${questionV + 1}. &nbsp;${currentQuestion.question}`;
+  if (currentQuestion.type === "multiple") {
+    questionText.innerHTML += "<h3>Select 2 answers</h3>";
+  } else if (currentQuestion.type === "triple") {
+    questionText.innerHTML += "<h3>Select 3 answers</h3>";
+  } else if (currentQuestion.type === "matrix") {
+    questionText.innerHTML += "<h3>Click in the correct box for each phrase</h3>";
+  }
+
+  // Show UI immediately
+  questionContainer.style.display = "block";
+  renderOptions();
+
+  // ✅ make sure Next is visible during the question
+  nextBtn.style.display = "inline-block";
+  // renderOptions() already sets nextBtn.disabled = false
+
+  goTime();  // start timer for this question
+
+  // Play intro clips in parallel
+  const intros = currentQuestion.intro || [];
+  playIntroSequence(intros, () => {
+    // no-op; UI is already visible
+  });
+}
+
+
+
+    function renderOptions() {
+      optionsDiv.innerHTML = "";
+      nextBtn.disabled = false;
+
+      if (currentQuestion.type === "matrix") {
+        const table = document.createElement("table");
+        table.classList.add("yesno-table");
+
+        const headerRow = document.createElement("tr");
+        headerRow.appendChild(document.createElement("th"));
+        (currentQuestion.columns || []).forEach(col => {
+          const th = document.createElement("th");
+          th.textContent = col;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        (currentQuestion.rows || []).forEach((row, rowIndex) => {
+          const tr = document.createElement("tr");
+          const tdLabel = document.createElement("td");
+          tdLabel.textContent = row.text;
+          tr.appendChild(tdLabel);
+
+          (currentQuestion.columns || []).forEach((col, colIndex) => {
+            const td = document.createElement("td");
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = `row${rowIndex}`;
+            input.value = col;
+            input.id = `r${rowIndex}_c${colIndex}`;
+            const label = document.createElement("label");
+            label.setAttribute("for", input.id);
+            label.classList.add("matrix-radio-label");
+            td.appendChild(input);
+            td.appendChild(label);
+            tr.appendChild(td);
+          });
+
+          table.appendChild(tr);
+        });
+
+        optionsDiv.appendChild(table);
+      } else {
+        (currentQuestion.options || []).forEach((opt, i) => {
+          const input = document.createElement("input");
+          input.type = (currentQuestion.type === "multiple" || currentQuestion.type === "triple") ? "checkbox" : "radio";
+          input.name = "option";
+          input.value = opt.value;
+          input.id = `opt${i}`;
+
+          const label = document.createElement("label");
+          label.htmlFor = `opt${i}`;
+          label.textContent = opt.text;
+
+          const wrapper = document.createElement("div");
+          wrapper.appendChild(input);
+          wrapper.appendChild(label);
+          optionsDiv.appendChild(wrapper);
+
+          if (input.type === "checkbox") {
+            input.addEventListener("change", () => {
+              const checked = optionsDiv.querySelectorAll("input:checked");
+              const max = (currentQuestion.type === "multiple") ? 2 : 3;
+              if (checked.length > max) input.checked = false;
+            });
+          }
+        });
+      }
+
+      optionsDiv.style.display = "block";
+    }
+
+    nextBtn.onclick = () => {
+      nextBtn.style.display = "none";
+      confirmBtn.style.display = "inline-block";
+    };
+
+    confirmBtn.onclick = () => {
+      questionV++;
+
+      let selected = [];
+      if (currentQuestion.type === "matrix") {
+        selected = (currentQuestion.rows || []).map((_, i) => {
+          const chosen = optionsDiv.querySelector(`input[name="row${i}"]:checked`);
+          return chosen ? chosen.value : "";
+        });
+      } else {
+        selected = [...optionsDiv.querySelectorAll("input:checked")].map(i => i.value);
+      }
+
+      const correct = currentQuestion.type === "matrix"
+        ? (currentQuestion.rows || []).map(r => r.correct)
+        : currentQuestion.correct;
+
+      userAnswers.push({ qNum: questionV, selected, correct });
+
+      questionIndex++;
+      confirmBtn.style.display = "none";
+      nextBtn.style.display = "inline-block";
+      optionsDiv.innerHTML = "";
+      questionText.textContent = "";
+      nextBtn.disabled = true;
+      optionsDiv.style.display = "none";
+      questionContainer.style.display = "none";
+
+      const p = window.listeningData[passageIndex];
+      if (questionIndex >= p.questions.length) {
+        passageIndex++;
+        questionIndex = 0;
+        if (passageIndex >= window.listeningData.length) {
+          sendToFinalResults();
+          if (typeof window.goToNextSection === "function") {
+            window.goToNextSection();
+          } else {
+            window.location.href = `results.html?test=${encodeURIComponent(testId)}`;
+          }
+        } else {
+          loadPassage();
+        }
+      } else {
+        loadQuestion();
+      }
+    };
+
+    function setsEqual(a, b) {
+      if (a.length !== b.length) return false;
+      const A = new Set(a), B = new Set(b);
+      for (const v of A) if (!B.has(v)) return false;
+      return true;
+    }
+
+    function sendToFinalResults() {
+      const allQuestions = window.listeningData.flatMap(p => p.questions);
+      const totalPoints = userAnswers.reduce((sum, ans) => {
+        const q = allQuestions[ans.qNum - 1];
+        if (!q) return sum;
+
+        if (q.type === "single") {
+          return sum + (ans.selected[0] === ans.correct[0] ? 1 : 0);
+        }
+        if (q.type === "multiple" || q.type === "triple") {
+          return sum + (setsEqual(ans.selected, ans.correct) ? 1 : 0);
+        }
+        if (q.type === "matrix") {
+          const allCorrect = ans.selected.every((val, i) => val === q.rows[i].correct);
+          return sum + (allCorrect ? 1 : 0);
+        }
+        return sum;
+      }, 0);
+
+      const maxPoints = allQuestions.length;
+
+      const result = {
+        section: "listening",
+        score: totalPoints,
+        total: maxPoints,
+        answers: userAnswers,
+        finishedAt: new Date().toISOString()
+      };
+
+      // Single-type storage key (plus an optional compat write to the old generic key)
+      try {
+        localStorage.setItem(`result_toefl2026_${testId}_listening`, JSON.stringify(result));
+        // optional compatibility: keep if you previously read this somewhere
+        localStorage.setItem(`result_toefl2026_listening`, JSON.stringify(result));
+      } catch { }
+
+      // Also update the simple result UI if you ever show it on this page
+      const pct = maxPoints ? Math.round((totalPoints / maxPoints) * 100) : 0;
+      const scoreSpan = document.getElementById("score");
+      if (scoreSpan) scoreSpan.textContent = pct;
+    }
+
+    // Entry point called after directions
+    window.startAllAll = function () {
+      loadListeningData(testId)
+        .then((data) => {
+          // Expect window.listeningData to be set by the data file
+          if (!Array.isArray(window.listeningData)) {
+            throw new Error("Invalid listening data format. Expected an array of passages.");
+          }
+          // Start with the first passage
+          setTimeout(loadPassage, 300);
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Could not load listening test data. Check file path and that it sets window.listeningData.");
+        });
+    };
+
+    // Disable context menu (kept from original)
+    // document.addEventListener("contextmenu", (e) => e.preventDefault());
+  </script>
+</body>
+
+</html>

@@ -239,7 +239,7 @@
     const params = new URLSearchParams(window.location.search);
     const testId = params.get('test');
     let type = (params.get('type') || sessionStorage.getItem('TEST_TYPE') || 'toefl').toLowerCase();
-    if (!['toefl','sh'].includes(type)) type = 'toefl';
+    if (!['toefl','sh','toefl2026'].includes(type)) type = 'toefl';
 
     if (!testId) {
       document.body.innerHTML = "<h2 style='color:red;'>Test ID is missing. Please return to the test selection page.</h2>";
@@ -250,14 +250,33 @@
     sessionStorage.setItem('TEST_TYPE', type);
 
     // Heading
-    const TYPE_LABELS = { toefl: 'TOEFL', sh: 'SH' };
+    const TYPE_LABELS = { 
+      toefl: 'TOEFL', 
+      sh: 'SH',
+      toefl2026: 'TOEFL 2026'
+    };
     document.getElementById('heading').textContent = `Choose sections for ${TYPE_LABELS[type]} Test ${testId}`;
 
+    // Section mapping - TOEFL 2026 uses different pages
     const sectionMap = {
-      reading: `reading.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
-      listening: `listening.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
-      speaking: `speaking.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
-      writing: `writing.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+      toefl: {
+        reading: `reading.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        listening: `listening.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        speaking: `speaking.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        writing: `writing.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+      },
+      sh: {
+        reading: `reading.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        listening: `listening.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        speaking: `speaking.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        writing: `writing.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+      },
+      toefl2026: {
+        reading: `reading2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        listening: `listening2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        speaking: `speaking2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+        writing: `writing2026.html?type=${encodeURIComponent(type)}&test=${encodeURIComponent(testId)}`,
+      }
     };
 
     const allSections = ['reading','listening','speaking','writing'];
@@ -271,9 +290,16 @@
     }
 
     allSections.forEach(section => {
-      const namespaced = localStorage.getItem(getKey(type, testId, section));
-      const legacy = (type === 'toefl') ? localStorage.getItem(getLegacyKey(testId, section)) : null;
-      const isCompleted = !!(namespaced || legacy);
+      // For TOEFL 2026, only use the new key format
+      let isCompleted;
+      if (type === 'toefl2026') {
+        isCompleted = !!localStorage.getItem(getKey(type, testId, section));
+      } else {
+        // For TPO and SH, check both new and legacy keys
+        const namespaced = localStorage.getItem(getKey(type, testId, section));
+        const legacy = (type === 'toefl') ? localStorage.getItem(getLegacyKey(testId, section)) : null;
+        isCompleted = !!(namespaced || legacy);
+      }
 
       const label = document.getElementById(`label-${section}`);
       const statusPill = label.querySelector('.status');
@@ -299,7 +325,9 @@
       sessionStorage.setItem('SELECTED_SECTIONS', JSON.stringify(selected));
       sessionStorage.setItem('CURRENT_SECTION_INDEX', '0');
       const firstSection = selected[0];
-      window.location.href = sectionMap[firstSection];
+      // Use the appropriate section map based on test type
+      const targetUrl = sectionMap[type][firstSection];
+      window.location.href = targetUrl;
     });
 
     window.goToNextSection = function () {
@@ -309,7 +337,9 @@
       if (currentIndex < selected.length) {
         sessionStorage.setItem('CURRENT_SECTION_INDEX', String(currentIndex));
         const nextSection = selected[currentIndex];
-        window.location.href = sectionMap[nextSection];
+        // Use the appropriate section map based on test type
+        const targetUrl = sectionMap[type][nextSection];
+        window.location.href = targetUrl;
       } else {
         const testId = sessionStorage.getItem('TEST_ID');
         const type = sessionStorage.getItem('TEST_TYPE') || 'toefl';

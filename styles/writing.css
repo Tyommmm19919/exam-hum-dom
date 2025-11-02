@@ -365,6 +365,80 @@ h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
   background: var(--surface) !important;
   border-color: var(--border) !important;
 }
+/* === Drag–Drop 2026 (non-intrusive add-on) =============================== */
+.reorder-wrap{ display:grid; gap:12px; }
+.reorder-sentence{
+  display:flex; flex-wrap:wrap; gap:8px 6px;
+  padding:14px 16px; border:1px solid var(--border);
+  border-radius:12px; background: var(--surface-strong);
+  line-height: 1.6; /* matches your paragraphs */
+}
+.reorder-bank-wrap{ display:grid; gap:6px; }
+.reorder-bank{
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:10px; border:1px dashed var(--border);
+  border-radius:12px; background: rgba(255,255,255,.04);
+  min-height: 52px;
+}
+
+/* pill look only in the bank */
+.word{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:6px 10px; border:1px solid rgba(255,255,255,.25);
+  border-radius:999px; background: rgba(255,255,255,.06);
+  font-weight:700; cursor:grab; user-select:none;
+}
+
+/* when a word sits inside a sentence slot, make it look like normal text */
+.word.in-slot{
+  padding:0; border:none; border-radius:0; background: transparent;
+  display:inline; font-weight: inherit; line-height: inherit; font-size: inherit; color: inherit;
+}
+
+/* blank slots */
+.slot{
+  min-width: 3.5ch; /* width similar to a short word */
+  min-height: 1em;
+  padding: 0 2px;
+  border-bottom: 2px dashed rgba(255,255,255,.35);
+  border-radius: 0;
+  display:inline-flex; align-items:flex-end; justify-content:center;
+  user-select:none;
+}
+.slot.filled{
+  border-bottom-color: transparent; /* hide underline when filled */
+}
+.reorder-actions{ display:flex; gap:8px; margin-top:8px; }
+.reorder-actions button{
+  padding:8px 12px; font-weight:700;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:10px; cursor:pointer;
+  background: rgba(255,255,255,.06); color: var(--text);
+  transition: transform var(--speed-fast), box-shadow var(--speed), background var(--speed);
+  box-shadow: 0 1px 0 rgba(255,255,255,.06);
+}
+.reorder-actions button:hover{
+  background: rgba(116,163,255,.14);
+  box-shadow: 0 8px 18px rgba(116,163,255,.14);
+  transform: translateY(-1px);
+}
+/* Lead-in block above the drag–drop sentence */
+.reorder-context{
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-1);
+}
+/* Reorder layout: 90% width, centered */
+#reorder,
+#reorder .reorder-wrap,
+#reorder .reorder-actions,
+#reorder-context{
+  width: 90%;
+  margin: 0 auto; /* center horizontally */
+}
 
 @media (max-width: 1024px){
   #writing-layout{ grid-template-columns: 1fr; }

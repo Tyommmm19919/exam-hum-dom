@@ -355,6 +355,7 @@ h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
   margin: 14px auto 0 auto;
   min-height: 120px;
   font-size: 18px;
+  text-align: center;
   line-height: 1.65;
   color: var(--text);
 }
@@ -407,7 +408,11 @@ h2{ font-size: 16px; font-weight: 400; color: var(--muted); }
   width: 100%;
   margin: 8px 0;
 }
-
+#question-text img{
+  width: 55%;
+  /* margin-left: 35%; */
+  text-align: center;
+}
 #download-btn{
   display: block;
   width: min(240px, 90%);

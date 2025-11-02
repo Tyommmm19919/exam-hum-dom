@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,9 +53,12 @@
       }
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       font-family: var(--font);
@@ -105,9 +109,15 @@
       cursor: pointer;
       transition: transform var(--speed-fast), box-shadow var(--speed)
     }
-    .topp button:hover { transform: translateY(-1px) }
 
-    .page { width: min(1200px, 94%); margin: 10px auto 50px; }
+    .topp button:hover {
+      transform: translateY(-1px)
+    }
+
+    .page {
+      width: min(1200px, 94%);
+      margin: 10px auto 50px;
+    }
 
     .selector {
       background: var(--surface);
@@ -117,97 +127,200 @@
       backdrop-filter: blur(var(--blur));
       padding: 18px;
     }
-    .selector h2 { margin: 0 0 12px 0; font-size: 22px; letter-spacing: .2px; }
-    .selector .row {
-      display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center;
-    }
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: "▾"; position: absolute; right: 12px; top: 50%;
-      transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 16px;
+
+    .selector h2 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      letter-spacing: .2px;
     }
 
-    #typeSelect, #testSelect {
-      appearance: none; -webkit-appearance: none; -moz-appearance: none;
-      width: 100%; height: 44px; font-size: 16px; color: var(--text);
-      background: rgba(255, 255, 255, .08); border: 1px solid var(--border);
-      border-radius: 12px; padding: 0 36px 0 12px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    .selector .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    #typeSelect,
+    #testSelect {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      height: 44px;
+      font-size: 16px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 36px 0 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
       transition: box-shadow var(--speed), border-color var(--speed);
     }
-    #typeSelect:focus, #testSelect:focus {
-      outline: none; border-color: rgba(116, 163, 255, .6);
+
+    #typeSelect:focus,
+    #testSelect:focus {
+      outline: none;
+      border-color: rgba(116, 163, 255, .6);
       box-shadow: 0 0 0 3px rgba(116, 163, 255, .18);
     }
-    option { color: #0f1428; background: #fff; }
+
+    option {
+      color: #0f1428;
+      background: #fff;
+    }
 
     .btn-primary {
-      height: 44px; min-width: 140px;
+      height: 44px;
+      min-width: 140px;
       background: linear-gradient(180deg, #6ea3ff 0%, var(--blue) 100%);
-      color: #fff; border: 1px solid rgba(255, 255, 255, .25);
-      border-radius: 12px; font-weight: 900; letter-spacing: .2px; cursor: pointer;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 12px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      cursor: pointer;
       box-shadow: 0 10px 20px rgba(76, 130, 255, .20), inset 0 1px 0 rgba(255, 255, 255, .5);
       transition: transform var(--speed-fast), box-shadow var(--speed);
     }
-    .btn-primary:hover { transform: translateY(-1px); }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
 
     #results {
-      display: none; margin-top: 18px; background: var(--surface);
+      display: none;
+      margin-top: 18px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg); box-shadow: var(--shadow-2);
-      backdrop-filter: blur(var(--blur)); padding: 18px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(var(--blur));
+      padding: 18px;
     }
-    #results.show { display: block; }
 
-    #finalResultsText { margin: 0 0 6px 0; font-size: 24px; font-weight: 900; letter-spacing: .2px; }
+    #results.show {
+      display: block;
+    }
+
+    #finalResultsText {
+      margin: 0 0 6px 0;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
 
     .section-block {
-      margin-top: 18px; background: var(--surface-strong); border: 1px solid var(--border);
-      border-radius: var(--radius-md); box-shadow: var(--shadow-1); padding: 14px;
+      margin-top: 18px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-1);
+      padding: 14px;
     }
-    .section-block h2 { margin: 0 0 8px 0; font-size: 18px; }
+
+    .section-block h2 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
     .section-block p strong {
-      display: inline-block; padding: 6px 10px; border-radius: 10px;
-      background: rgba(255, 255, 255, .06); border: 1px solid var(--border);
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--border);
     }
 
     table {
-      width: 100%; border-collapse: collapse; margin-top: 12px; overflow: hidden;
-      border-radius: var(--radius-md); box-shadow: var(--shadow-1);
-      table-layout: fixed; word-break: break-word;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-1);
+      table-layout: fixed;
+      word-break: break-word;
     }
-    th, td {
-      padding: 12px 10px; border: 1px solid rgba(255,255,255,.10);
-      text-align: center; background: rgba(255,255,255,.03); color: var(--text); font-size: 14px;
+
+    th,
+    td {
+      padding: 12px 10px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      text-align: center;
+      background: rgba(255, 255, 255, .03);
+      color: var(--text);
+      font-size: 14px;
     }
+
     thead th {
       background: linear-gradient(180deg, rgba(116, 163, 255, .18), rgba(116, 163, 255, .10));
-      font-weight: 900; letter-spacing: .2px;
+      font-weight: 900;
+      letter-spacing: .2px;
     }
-    tbody tr { transition: transform var(--speed-fast), box-shadow var(--speed); }
-    tbody tr:hover { transform: translateY(-1px); box-shadow: inset 0 0 0 9999px rgba(255,255,255,.02); }
-    .correct td { background: linear-gradient(180deg, rgba(53,212,159,.18), rgba(53,212,159,.10)); }
-    .incorrect td { background: linear-gradient(180deg, rgba(255,107,124,.18), rgba(255,107,124,.10)); }
+
+    tbody tr {
+      transition: transform var(--speed-fast), box-shadow var(--speed);
+    }
+
+    tbody tr:hover {
+      transform: translateY(-1px);
+      box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, .02);
+    }
+
+    .correct td {
+      background: linear-gradient(180deg, rgba(53, 212, 159, .18), rgba(53, 212, 159, .10));
+    }
+
+    .incorrect td {
+      background: linear-gradient(180deg, rgba(255, 107, 124, .18), rgba(255, 107, 124, .10));
+    }
 
     #speaking-results audio {
-      width: 100%; margin-bottom: 8px; background: rgba(255, 255, 255, .04);
-      border-radius: 10px; outline: none;
+      width: 100%;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, .04);
+      border-radius: 10px;
+      outline: none;
     }
-    .muted { color: var(--muted); }
-    strong { text-align: center; }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    strong {
+      text-align: center;
+    }
 
     @media (max-width: 720px) {
-      .selector .row { grid-template-columns: 1fr; }
+      .selector .row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 
   <script src="../scripts/recStore.js"></script>
 </head>
+
 <body>
 
   <div class="topp">
-    <button onclick="window.location.href = '../index.html'"
-            style="position: fixed; left: 0; z-index: 0;">Home</button>
+    <button onclick="window.location.href = '../index.html'" style="position: fixed; left: 0; z-index: 0;">Home</button>
     <button onclick="window.location.href = 'test-selection.html'" style="position: fixed; right: 0;">Test
       Selection</button>
   </div>
@@ -310,23 +423,57 @@
     }
 
     function getSpeakingCompleted(type, testId) {
+      // preferred: type-namespaced
       const namespaced = localStorage.getItem(`result_${type}_${testId}_speaking`);
       if (namespaced !== null) return namespaced;
-      if (type === 'toefl') return localStorage.getItem(`result_${testId}_speaking`);
+
+      // accept your 2026 key
+      const k2026 = localStorage.getItem(`result_2026_${testId}_speaking`);
+      if (k2026 !== null) return k2026;
+
+      // legacy fallback (already used by old TOEFL)
+      if (type === 'toefl' || type === 'toefl2026') {
+        const legacy = localStorage.getItem(`result_${testId}_speaking`);
+        if (legacy !== null) return legacy;
+      }
       return null;
     }
 
     function getWritingCompleted(type, testId) {
       const namespaced = localStorage.getItem(`result_${type}_${testId}_writing`);
       if (namespaced !== null) return namespaced;
-      if (type === 'toefl') return localStorage.getItem(`result_${testId}_writing`);
+      // fallback for non-namespaced storage (used by older TOEFL and 2026 page)
+      if (type === 'toefl' || type === 'toefl2026') {
+        return localStorage.getItem(`result_${testId}_writing`);
+      }
       return null;
     }
 
     function getWrittenEssays(type, testId) {
       const namespaced = localStorage.getItem(`writtenEssays_${type}_${testId}`);
       if (namespaced !== null) return namespaced;
-      if (type === 'toefl') return localStorage.getItem(`writtenEssays_${testId}`);
+      // fallback for non-namespaced storage (used by older TOEFL and 2026 page)
+      if (type === 'toefl' || type === 'toefl2026') {
+        return localStorage.getItem(`writtenEssays_${testId}`);
+      }
+      return null;
+    }
+
+    // === Writing 2026 detail is now TYPE-NAMESPACED (prevents leaking into SH/TPO) ===
+    function getWriting2026Detail(type, testId) {
+      // preferred: namespaced
+      const keyNamespaced = `writing2026_detail_${type}_${testId}`;
+      const rawN = localStorage.getItem(keyNamespaced);
+      if (rawN) {
+        try { return JSON.parse(rawN); } catch { return null; }
+      }
+      // backward-compat ONLY for real 2026 tests: accept old non-namespaced key
+      if (type === 'toefl2026') {
+        const rawOld = localStorage.getItem(`writing2026_detail_${testId}`);
+        if (rawOld) {
+          try { return JSON.parse(rawOld); } catch { return null; }
+        }
+      }
       return null;
     }
 
@@ -352,23 +499,23 @@
 
       const rows = (answers || []).map((a, i) => {
         const selectedDisplay = formatAnswer(a.selected);
-        const correctDisplay  = formatAnswer(a.correct);
+        const correctDisplay = formatAnswer(a.correct);
         const isCorrect = compareAnswers(a.selected, a.correct);
         return `
-          <tr class="${isCorrect ? "correct" : "incorrect"}">
-            <td>${i + 1}</td>
-            <td>${selectedDisplay}</td>
-            <td>${correctDisplay}</td>
-          </tr>`;
+        <tr class="${isCorrect ? "correct" : "incorrect"}">
+          <td>${i + 1}</td>
+          <td>${selectedDisplay}</td>
+          <td>${correctDisplay}</td>
+        </tr>`;
       }).join("");
 
       container.innerHTML = `
-        <h2>${title}</h2>
-        <p><strong>Score: ${30 - total + score}/30<br> ${score}/${total} points<br>(${percent}%) correct answers</strong></p>
-        <table>
-          <thead><tr><th>#</th><th>Your Answer</th><th>Correct Answer</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>`;
+      <h2>${title}</h2>
+      <p><strong>Score: ${30 - total + score}/30<br> ${score}/${total} points<br>(${percent}%) correct answers</strong></p>
+      <table>
+        <thead><tr><th>#</th><th>Your Answer</th><th>Correct Answer</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
     }
 
     async function renderSpeakingSection(type, testId) {
@@ -390,23 +537,26 @@
         return;
       }
 
-      // Show only the 4 audios from the LAST attempt
+      // Show ALL audios from the LAST attempt
       const hasAttempt = all.some(r => typeof r.attemptId === "number" && r.attemptId > 0);
       let latest = [];
       if (hasAttempt) {
         const latestAttempt = Math.max(...all.map(r => r.attemptId || 0));
-        latest = all.filter(r => (r.attemptId || 0) === latestAttempt)
+        latest = all
+          .filter(r => (r.attemptId || 0) === latestAttempt)
           .sort((a, b) => a.index - b.index);
       } else {
-        latest = [...all].sort((a, b) => b.createdAt - a.createdAt).slice(0, 4)
+        // No attemptId present (old data) — show everything from the most recent session heuristically
+        // Group by createdAt ~ session window (fallback: just sort by index after createdAt desc)
+        latest = [...all]
           .sort((a, b) => a.index - b.index);
       }
-      latest = latest.slice(0, 4);
+
 
       container.innerHTML = "<h2>Speaking</h2>";
-      latest.forEach((r, i) => {
+      latest.forEach((r) => {
         const label = document.createElement("p");
-        label.textContent = `Recording ${i + 1}`;
+        label.textContent = `Recording ${(r.index ?? 0) + 1}`;
         const audio = document.createElement("audio");
         audio.controls = true;
         const url = URL.createObjectURL(r.blob);
@@ -414,6 +564,7 @@
         container.appendChild(label);
         container.appendChild(audio);
       });
+
     }
 
     async function renderWritingSection(type, testId) {
@@ -424,20 +575,123 @@
 
       const isCompleted = getWritingCompleted(type, testId);
       const essaysRaw = getWrittenEssays(type, testId);
-      const essays = JSON.parse(essaysRaw || "[]");
+      const essays = JSON.parse(essaysRaw || "[]"); // for 2026 these are strings
 
-      if (!isCompleted || essays.length === 0) {
+      // 🔒 fetch detail strictly by type (no leaking)
+      const detail = getWriting2026Detail(type, testId);  // { items:[...]} or null
+
+      if (!isCompleted && (!essays.length && !detail)) {
         container.innerHTML = `<h2>Writing</h2><p class="muted">You haven't written this test.</p>`;
         return;
       }
 
-      container.innerHTML = "<h2>Writing</h2>";
-      essays.forEach((essay, i) => {
-        const div = document.createElement("div");
-        div.style.cssText = "background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:10px;";
-        div.innerHTML = `<h4 style="margin:0 0 6px 0;font-size:16px;font-weight:900;color:var(--muted);">${essay.label || "Essay " + (i + 1)}</h4><p style="margin:0;line-height:1.6;">${(essay.content || "").replace(/\n/g, "<br>")}</p>`;
-        container.appendChild(div);
-      });
+      // Title
+      container.innerHTML = `<h2>Writing</h2>`;
+
+      // --- ⬆️ FIRST: Reorder detail (new type) ---
+      if (detail && Array.isArray(detail.items) && detail.items.length) {
+        // Mode switcher
+        const switcher = document.createElement("div");
+        switcher.style.cssText = "display:flex;gap:8px;margin-top:14px;align-items:center;";
+        switcher.innerHTML = `
+        <span class="muted">Reorder view:</span>
+        <button id="w2026-mode-words" class="btn-primary" style="height:34px;min-width:120px;">By words</button>
+        <button id="w2026-mode-sent"  class="btn-primary" style="height:34px;min-width:120px;">By sentence</button>
+      `;
+        container.appendChild(switcher);
+
+        const block = document.createElement("div");
+        container.appendChild(block);
+
+        function renderWordsMode() {
+          // Table with rows: 1.1 expected – actual right/wrong
+          const rows = [];
+          detail.items.forEach((it, idx) => {
+            const sn = idx + 1;
+            if (!Array.isArray(it.perSlot) || !it.perSlot.length) return;
+            it.perSlot.forEach((slot, j) => {
+              const num = `${sn}.${j + 1}`;
+              const expected = (slot?.expected ?? "").toString();
+              const actual = (slot?.actual ?? "").toString();
+              const ok = !!slot?.correct;
+              rows.push(`
+              <tr class="${ok ? "correct" : "incorrect"}">
+                <td style="width:80px;">${num}</td>
+                <td>${expected}</td>
+                <td>${actual || "—"}</td>
+                <td style="width:90px;font-weight:900;">${ok ? "right" : "wrong"}</td>
+              </tr>
+            `);
+            });
+          });
+          if (!rows.length) {
+            block.innerHTML = `<p class="muted" style="margin-top:10px;">No slot-level details available.</p>`;
+            return;
+          }
+          block.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>#</th><th>Correct word</th><th>Your word</th><th>Result</th></tr>
+            </thead>
+            <tbody>${rows.join("")}</tbody>
+          </table>
+        `;
+        }
+
+        function renderSentenceMode() {
+          // One panel per sentence: shows Correct and Your sentences + badge with right/wrong + score
+          const parts = detail.items.map((it, idx) => {
+            const ok = it.score && /^(\d+)\/(\d+)$/.test(it.score)
+              ? (RegExp.$1 === RegExp.$2)  // perfect score -> "right"
+              : (Array.isArray(it.perSlot) && it.perSlot.length && it.perSlot.every(s => !!s.correct));
+            const badge = `<span style="
+              display:inline-block;padding:4px 8px;border-radius:10px;
+              border:1px solid var(--border);
+              background:${ok ? 'rgba(53,212,159,.18)' : 'rgba(255,107,124,.18)'};">
+              ${ok ? 'right' : 'wrong'}${it.score ? ` – ${it.score}` : ''}
+            </span>`;
+
+            return `
+            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:10px;">
+              <h4 style="margin:0 0 6px 0;font-size:16px;font-weight:900;color:var(--muted);">Sentence ${idx + 1} ${badge}</h4>
+              <p style="margin:6px 0 4px 0;"><strong>Correct:</strong> ${(it.correctSentence || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+              <p style="margin:4px 0 0 0;"><strong>Your:</strong> ${(it.finalText || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+            </div>
+          `;
+          }).join("");
+          block.innerHTML = parts || `<p class="muted" style="margin-top:10px;">No sentence-level details available.</p>`;
+        }
+
+        // default: words mode
+        renderWordsMode();
+        container.querySelector("#w2026-mode-words").onclick = renderWordsMode;
+        container.querySelector("#w2026-mode-sent").onclick = renderSentenceMode;
+      }
+
+      // --- ⬇️ THEN: Essays (integrated / independent) ---
+      const essayBlock = document.createElement("div");
+      if (essays.length) {
+        essays.forEach((entry, i) => {
+          // Normalize: allow object {label,content} or plain string
+          let label = `Essay ${i + 1}`;
+          let text = "";
+          if (entry && typeof entry === "object") {
+            label = entry.label || label;
+            text = (entry.content || "");
+          } else {
+            text = String(entry || "");
+          }
+          // Skip "Sentence: ..." summaries here; reorder correctness is shown above
+          if (text.startsWith("Sentence:")) return;
+
+          const div = document.createElement("div");
+          div.style.cssText = "background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:10px;";
+          div.innerHTML = `<h4 style="margin:0 0 6px 0;font-size:16px;font-weight:900;color:var(--muted);">${label}</h4>
+                         <p style="margin:0;line-height:1.6;">${text.replace(/\n/g, "<br>")}</p>`;
+          essayBlock.appendChild(div);
+        });
+      }
+      if (essayBlock.childElementCount) container.appendChild(essayBlock);
     }
 
     function updateHeader(type, testId) {
@@ -500,7 +754,9 @@
       }
     });
 
-    document.addEventListener("contextmenu", (e)=> e.preventDefault());
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
   </script>
+
 </body>
+
 </html>

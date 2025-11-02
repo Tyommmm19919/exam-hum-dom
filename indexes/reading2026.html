@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOEFL Reading 2026</title>
+  <!-- Reuse your shared stylesheet if you have it -->
+  <link rel="stylesheet" href="../styles/reading.css"/>
+  <meta name="color-scheme" content="dark"/>
+
+  <style>
+    /* Minimal touches only — your main look comes from reading.css you shared */
+    :root {
+      --accent:#74a3ff; --muted:#b8c2e6; --text:#eef3ff; --border:rgba(255,255,255,.18);
+    }
+    .gap-input {
+      display:inline-block; min-width: 2ch; padding: 6px 8px;
+      border-radius: 8px; border:1px solid var(--border);
+      background: rgba(255,255,255,.06); color: var(--text);
+      outline:none; text-align:left; font-weight:700;
+      margin: 0 2px; caret-color: var(--accent);
+    }
+    /* .gap-input.correct   { box-shadow: inset 0 0 0 2px rgba(53,212,159,.5); }
+    .gap-input.incorrect { box-shadow: inset 0 0 0 2px rgba(255,107,124,.45); } */
+    .stimulus-meta { color: var(--muted); font-size: 14px; margin: 0 0 8px 0; }
+    /* highlight the word being asked about */
+.vocab-highlight {
+  background: rgba(116,163,255,.22);
+  box-shadow: 0 0 0 3px rgba(116,163,255,.18) inset;
+  border-radius: 6px;
+  padding: 0 2px;
+  font-weight: 700;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <div id="app" style="display:none;">
+    <!-- Directions -->
+    <div id="directionsR">
+      <div class="topDirect">
+        <div class="title">Reading — Directions</div>
+        <button id="endDirect">Start</button>
+      </div>
+      <div class="textDirect">
+        <h1>Reading section directions</h1>
+        <h2>
+          You will see four parts:
+          <br>1) A short text where some <em>letters are missing</em>. Type the missing letters in each gap.
+          <br>2) An <em>email</em> and questions with 4 answer choices.
+          <br>3) Another short <em>everyday text</em> and questions with 4 answer choices.
+          <br>4) A regular <em>reading passage</em> and questions with 4 answer choices.
+          <br><br>Use <strong>Next</strong> and <strong>Back</strong> to navigate. A timer shows the remaining time.
+        </h2>
+      </div>
+    </div>
+
+    <!-- Main container -->
+    <div id="reading-container">
+      <div class="topLay">
+        <p class="mention-section" id="mention-section">Reading (2026)</p>
+
+        <div class="viewClose">
+          <button id="viewText" style="display:none;">View text</button>
+          <button id="closeText" style="display:none;">Close text</button>
+        </div>
+
+        <div id="navigation">
+          <button id="prev-btn">Back</button>
+          <div id="timer">Time Left: 00:00</div>
+          <button id="next-btn">Next</button>
+        </div>
+      </div>
+
+      <div id="layout">
+        <div id="passage-section">
+          <h2 id="passage-title">Title</h2>
+          <div id="scrollable-passage">
+            <div id="passage-text"></div>
+          </div>
+        </div>
+
+        <div id="question-section">
+          <div id="question-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="final-score" style="display:none;"></div>
+  </div>
+
+  <script>
+    // show app immediately; logic loads below
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('app').style.display = 'block';
+    });
+  </script>
+
+  <!-- Core logic -->
+  <script src="../scripts/reading2026.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Speaking 2026</title>
+  <link rel="stylesheet" href="../styles/speaking.css"/>
+  <meta name="color-scheme" content="dark">
+</head>
+<body>
+
+  <p class="warning">If you leave the test, switch tabs, or close the tab, the test will automatically reset!</p>
+
+  <!-- Directions (one click here unlocks all autoplay) -->
+  <div id="speakingDirections" style="display:none;">
+    <audio src="../commonAudios/SpeakingDirectionsAudio.mp3" id="spDirectionAu"></audio>
+    <div class="topSpDir">
+      <button id="continueDirec">Continue</button>
+    </div>
+    <div class="spDirecText">
+      <h1>Speaking 2026 — Directions</h1>
+      <h2>
+        In this 2026 update, each task is independent. After the brief intro audio,
+        you will immediately hear the “begin speaking” tone and recording will start at once.
+        There is no preparation time.
+        <br><br>Click Continue to begin.
+      </h2>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" style="display:none;">
+    <div class="topSpWr">
+      <p id="sectionName"></p>
+      <div style="position: fixed; right: 5px;">
+      </div>
+    </div>
+
+    <div id="media-wrap">
+      <audio id="audio-player" class="hidden"></audio>
+      <div id="progress-container" class="hidden">
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div id="question-wrap">
+      <div id="question-text"></div>
+      <div id="quesT"></div>
+      <div id="timer"></div>
+    </div>
+
+    <!-- Interstitial between tasks -->
+    <div id="interstitial" style="display:none;">
+      <audio id="interstitialAudio"></audio>
+      <div class="interstitialText" id="interstitialText"></div>
+    </div>
+
+    <div id="recordings" class="hidden"></div>
+    <button id="download-btn" class="hidden">Download All Responses</button>
+  </div>
+
+  <!-- Tones -->
+  <audio src="../commonAudios/bib-speak.mp3" id="bibSpeak"></audio>
+
+  <!-- Libs / scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../scripts/recStore.js"></script>
+  <script src="../scripts/speaking2026.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const testId = sessionStorage.getItem("TEST_ID");
+    if (!testId) {
+      document.body.innerHTML = "<h2 style='color:red;'>TEST_ID is missing. Please return to the section selection page.</h2>";
+      return;
+    }
+    sessionStorage.setItem("TEST_ID", testId);
+
+    // load the data file (use your existing loader or simple script tag)
+    const s = document.createElement('script');
+    s.src = `../data2026/${testId}/speakingData2026_Test${testId}.js?_=${Date.now()}`;
+    s.onload = () => {
+      const data = window.speakingData2026 || window.questions2026;
+      if (!Array.isArray(data) || !data.length) {
+        alert("Speaking 2026 data file loaded but no tasks were found.");
+        return;
+      }
+      // ✅ Only now we initialize the page with the actual data
+      window.initSpeaking2026(data);
+    };
+    s.onerror = () => alert("Error loading Speaking 2026 data file.");
+    document.head.appendChild(s);
+  });
+</script>
+
+</body>
+</html>

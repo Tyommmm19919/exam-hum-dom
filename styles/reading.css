@@ -629,6 +629,12 @@ button{ font-family: inherit; }
   background-color: rgb(144,144,144);
   font-weight: 600;
 }
+#passage-text img{
+  /* border: 10px black solid; */
+  /* display: none; */
+  width: 70%;
+  height: fit-content;
+}
 button[onclick*="test-selection.html"]{
   position: absolute;
   left: 20px; top: 16px;
