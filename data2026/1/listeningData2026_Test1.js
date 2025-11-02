@@ -1,6 +1,6 @@
 window.listeningData = [
     {
-        audio: `/commonAudios/choose_the_best_response.mp3`,
+        audio: `../commonAudios/choose_the_best_response.mp3`,
         questions: [
             {
                 intro: `/data2026/1/audio/1.1.mp3`,
