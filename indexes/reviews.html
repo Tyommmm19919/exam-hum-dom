@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Vrshikyans — Reviews</title>
+  <meta name="description" content="Real student reviews for TOEFL, SAT, IELTS, ACT. Scores, photos, and honest feedback."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="students/supermanLogoIco.ico" />
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg:#0e1220; --bg-2:#0c152b; --surface:rgba(255,255,255,.07);
+      --surface-strong:rgba(12,18,40,.72); --card:rgba(20,26,52,.85); --border:rgba(140,170,255,.18);
+      --text:#f5f8ff; --muted:#c7d1f2; --accent:#78a6ff; --accent-2:#66e6d2; --green:#35d49f; --violet:#a06bff;
+      --shadow-1:0 10px 24px rgba(0,0,0,.28); --shadow-2:0 22px 60px rgba(0,0,0,.40);
+      --radius:18px; --blur:14px; --speed:.25s; --fast:.15s; --g1:#1c2550; --g2:#142762; --nav-h:64px;
+    }
+    html[data-theme="light"]{
+      --bg:#f7f8fd; --bg-2:#eef2ff; --surface:rgba(255,255,255,.65); --surface-strong:rgba(255,255,255,.92);
+      --card:rgba(255,255,255,.95); --border:rgba(23,32,58,.12); --text:#0f1428; --muted:#3e4a74;
+      --shadow-1:0 8px 20px rgba(23,32,58,.10); --shadow-2:0 24px 60px rgba(23,32,58,.16);
+      --g1:#dfe7ff; --g2:#cfe0ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans";
+      color:var(--text); line-height:1.65; overflow-x:hidden;
+      background:
+        radial-gradient(160vw 120vh at -20vw -20vh, var(--g1) 0%, rgba(0,0,0,0) 60%),
+        radial-gradient(160vw 120vh at 120vw -10vh, var(--g2) 0%, rgba(0,0,0,0) 55%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      background-attachment:fixed,fixed,fixed;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    /* Film grain */
+    body::before{
+      content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.05;
+      background-image:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjQnIGhlaWdodD0nNjQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PGZpbHRlciBpZD0nbi1uJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44JyBudW1PY3RhdmVzPScyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nd2hpdGUnIGZpbHRlcj0ndXJsKCMnKyc+PC9yZWN0Pjwvc3ZnPg==");
+      background-size:240px 240px;
+    }
+
+    /* Nav */
+    .nav{ position:sticky; top:0; z-index:10; height:var(--nav-h); background:var(--surface-strong);
+      border-bottom:1px solid var(--border); backdrop-filter:blur(var(--blur)) saturate(140%) }
+    .nav-inner{ width:min(1120px,92%); margin:0 auto; height:100%; display:flex; align-items:center; gap:14px }
+    .brand{ display:flex; gap:12px; align-items:center; text-decoration:none; color:var(--text); font-weight:900; letter-spacing:.2px }
+    .logo{ width:38px; height:38px; border-radius:12px; background:linear-gradient(180deg,#6ea3ff,#4b82ff); box-shadow:0 10px 22px rgba(76,130,255,.22) }
+    .spacer{flex:1}
+    .theme-btn,.cta{ display:inline-flex; align-items:center; justify-content:center; height:40px; border-radius:12px }
+    .theme-btn{ width:40px; border:1px solid var(--border); background:rgba(255,255,255,.08); color:var(--text); cursor:pointer }
+    .cta{ padding:0 22px; background:linear-gradient(180deg,#35d49f,#18b98a); color:#061a11; font-weight:900; text-decoration:none; border:0; box-shadow:0 10px 24px rgba(24,185,138,.22) }
+
+    .inner{ width:min(1120px,92%); margin:28px auto }
+    .h1{ margin:10px 0 4px; font-size:clamp(34px,4.8vw,58px); font-weight:900; text-shadow:0 2px 16px rgba(0,0,0,.28) }
+    .lead{ margin:0; color:var(--muted) }
+
+    .band{ margin-top:16px; border:1px solid var(--border); border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));
+      padding:16px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap }
+
+    /* CARD / FORM */
+    .card{ padding:16px; border-radius:var(--radius); border:1px solid var(--border);
+      background:var(--card); box-shadow:var(--shadow-1) }
+    .card h3{ margin:0 0 8px }
+    label{ font-weight:800; display:block; margin:10px 0 6px }
+    input[type="text"], input[type="number"], select, textarea{
+      width:100%; border:1px solid var(--border); background:rgba(255,255,255,.06);
+      padding:10px 12px; color:var(--text); border-radius:12px; outline:none;
+    }
+    textarea{ min-height:120px; resize:vertical }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+    @media (max-width:640px){ .row{ grid-template-columns:1fr } }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px }
+    .chip{ padding:6px 10px; border-radius:999px; border:1px solid var(--border);
+      background:rgba(255,255,255,.08); font-weight:800; font-size:13px }
+    .help{ color:var(--muted); font-size:14px; margin-top:6px }
+    .btn{ height:44px; padding:0 16px; border-radius:12px; border:0; font-weight:900; cursor:pointer }
+    .btn.primary{ background:linear-gradient(180deg,#78a6ff,#4b82ff); color:#08152c; box-shadow:0 10px 26px rgba(120,166,255,.26) }
+    .btn.ghost{ background:rgba(255,255,255,.06); border:1px solid var(--border); color:var(--text) }
+
+    /* Uploader */
+    .uploader{ border:1px dashed var(--border); border-radius:14px; padding:12px; text-align:center; background:rgba(255,255,255,.04) }
+    .uploader input{ display:none }
+    .uploader .hint{ color:var(--muted); font-size:14px }
+    .thumbs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px }
+    .thumb{
+      position:relative; width:100px; height:100px; border-radius:10px; overflow:hidden; border:1px solid var(--border);
+      background:rgba(255,255,255,.06); display:grid; place-items:center;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover }
+    .thumb .pin{
+      position:absolute; top:6px; right:6px; background:rgba(0,0,0,.45); border:1px solid var(--border);
+      color:#fff; font-size:12px; border-radius:999px; padding:2px 6px; cursor:pointer;
+    }
+    option{
+        color: navy;
+    }
+    /* Phone-like single column stack */
+    #mainStack { display:block; }
+
+    /* Pinned gallery */
+    .pinned{ display:grid; grid-template-columns: repeat(6,1fr); gap:8px }
+    @media (max-width:900px){ .pinned{ grid-template-columns: repeat(3,1fr) } }
+    .pinned figure{ margin:0; border-radius:14px; overflow:hidden; border:1px solid var(--border); background:rgba(255,255,255,.06); height:140px }
+    .pinned img{ width:100%; height:100%; object-fit:cover; display:block }
+
+    /* Feed one column */
+    .feed.onecol { display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px }
+    .review{ position:relative; padding:18px; border-radius:var(--radius); border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05)); box-shadow:var(--shadow-1) }
+    .review .head{ display:flex; align-items:center; gap:12px }
+    .avatar{ width:44px; height:44px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:rgba(255,255,255,.06); display:grid; place-items:center; font-weight:900; color:var(--muted) }
+    .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,.1); font-weight:900; color:var(--muted) }
+    .rating{ font-weight:900 }
+    .score{ font-weight:900; color:var(--green) }
+    .review .photos{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap }
+    .review .photos img{ width:120px; height:120px; border-radius:12px; border:1px solid var(--border); object-fit:cover }
+    .meta-line{ color:var(--muted); font-size:14px }
+
+    /* Footer */
+    footer{ margin:34px 0 18px }
+    .foot{ width:min(1120px,92%); margin:0 auto; border:1px solid var(--border); border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); padding:16px;
+      display:grid; grid-template-columns:1fr 1fr; gap:14px }
+  </style>
+
+  <script>
+    /* Theme boot */
+    (() => {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+      else document.documentElement.setAttribute('data-theme',
+        matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      );
+    })();
+  </script>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Primary">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Home">
+        <span class="logo" aria-hidden="true" style="overflow:hidden">
+          <img src="../students/logo-fin.png" width="39" alt="" />
+        </span>
+        <span>Vrshikyans</span>
+      </a>
+      <div class="spacer"></div>
+      <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌑</button>
+      <a class="cta" href="../indexes/account.html" aria-label="Account" style="width: 40px; height: 40px; margin-left:8px; background:whitesmoke">👤</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="inner">
+    <h1 class="h1">Student Reviews</h1>
+    <p class="lead">Real scores. Real experiences. Add yours — photos welcome.</p>
+    <div class="band">
+      <div class="toolbar" role="group" aria-label="Filters" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+        <select id="filterExam" aria-label="Filter by exam">
+          <option value="">All exams</option>
+          <option>TOEFL</option>
+          <option>IELTS</option>
+          <option>SAT</option>
+          <option>ACT</option>
+        </select>
+        <select id="sortBy" aria-label="Sort reviews">
+          <option value="new">Newest</option>
+          <option value="top">Highest rating</option>
+          <option value="score">Highest score</option>
+        </select>
+        <button class="btn ghost" id="clearAll">Clear filters</button>
+      </div>
+      <a class="cta" href="#write">Write a review</a>
+    </div>
+  </header>
+
+  <!-- MAIN STACK -->
+  <main class="inner" id="mainStack">
+    <!-- FORM FIRST -->
+    <section class="card" id="write" aria-label="Write a review">
+      <h3>Share your experience</h3>
+      <p class="lead" style="margin:.2rem 0 10px 0">Scores, tips, and a photo from test day or your notes help others.</p>
+
+      <form id="reviewForm" autocomplete="on">
+        <div class="row">
+          <div>
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" placeholder="e.g., Ani G." required/>
+          </div>
+          <div>
+            <label for="exam">Exam</label>
+            <select id="exam" name="exam" required>
+              <option value="">Select exam</option>
+              <option>TOEFL</option>
+              <option>IELTS</option>
+              <option>SAT</option>
+              <option>ACT</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="score">Score</label>
+            <input id="score" name="score" type="text" placeholder="e.g., 115 / 8.5 / 1540 / 34"/>
+            <div class="help">Write it in your exam’s format (optional).</div>
+          </div>
+          <div>
+            <label>Rating</label>
+            <div class="chips" role="radiogroup" aria-label="Rating out of 5">
+              <label class="chip"><input type="radio" name="rating" value="5" required/> ⭐⭐⭐⭐⭐</label>
+              <label class="chip"><input type="radio" name="rating" value="4"/> ⭐⭐⭐⭐</label>
+              <label class="chip"><input type="radio" name="rating" value="3"/> ⭐⭐⭐</label>
+              <label class="chip"><input type="radio" name="rating" value="2"/> ⭐⭐</label>
+              <label class="chip"><input type="radio" name="rating" value="1"/> ⭐</label>
+            </div>
+          </div>
+        </div>
+
+        <label for="message">Your message</label>
+        <textarea id="message" name="message" placeholder="What helped you? Which tasks felt hardest? Would you recommend Vrshikyans? (min 10 chars)" minlength="10" required></textarea>
+
+        <label>Photos</label>
+        <div class="uploader" id="uploader">
+          <p><strong>Drop images here</strong> or <label style="text-decoration:underline; cursor:pointer;"><input type="file" id="photos" accept="image/*" multiple>browse</label></p>
+          <div class="hint">PNG/JPG up to ~1MB each recommended for now.</div>
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:12px">
+          <button type="submit" class="btn primary">Post review</button>
+          <button type="button" id="resetForm" class="btn ghost">Reset</button>
+        </div>
+      </form>
+
+      <p class="help" style="margin-top:10px">
+        No account yet — this writes to your device only. When we add accounts, your reviews will sync.
+      </p>
+    </section>
+
+    <!-- PINNED PHOTOS (optional highlight band) -->
+    <section class="inner" id="pinnedSection" style="display:none; padding:0; margin-top:18px">
+      <h2 style="margin:0 0 8px">Pinned photos</h2>
+      <p class="lead" style="margin:0 0 8px">Photos you pin will appear here for everyone.</p>
+      <div class="pinned" id="pinnedGrid" aria-live="polite"></div>
+    </section>
+
+    <!-- FEED BELOW -->
+    <section aria-label="Reviews feed" style="margin-top:18px">
+      <div id="feed" class="feed onecol" aria-live="polite"></div>
+      <div style="display:flex; justify-content:center; margin-top:12px; gap:8px">
+        <button class="btn ghost" id="loadMore">Load more</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot">
+      <div>
+        <b>Contact</b>
+        <p class="lead" style="margin:.4rem 0 0 0">examHubYerevan@gmail.com</p>
+        <p class="lead" style="margin:.2rem 0 0 0">+374 96 361 236</p>
+      </div>
+      <div>
+        <b>Vrshikyans</b>
+        <p class="lead" style="margin:.4rem 0 0 0">Yerevan • Since 2025</p>
+        <small>© <span id="year"></span> Vrshikyans — All rights reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+    function setTheme(next){
+      htmlEl.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themeBtn.textContent = next === 'light' ? '🌕' : '🌑';
+      themeBtn.setAttribute('aria-label', next === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+    }
+    themeBtn.addEventListener('click', () => setTheme(htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
+    setTheme(htmlEl.getAttribute('data-theme') || 'dark');
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---------- Minimal “Backend Adapter” (swap later) ----------
+    // Replace these with real fetch() calls when your API is ready.
+    const api = {
+      KEY: 'vrshikyans_reviews_v1',
+      async list({offset=0, limit=10, exam='', sort='new'}={}){
+        const all = JSON.parse(localStorage.getItem(this.KEY) || '[]');
+        let data = [...all];
+        if (exam) data = data.filter(r => r.exam === exam);
+        if (sort === 'new') data.sort((a,b)=> b.createdAt - a.createdAt);
+        if (sort === 'top') data.sort((a,b)=> b.rating - a.rating || b.createdAt - a.createdAt);
+        if (sort === 'score'){
+          const num = x => parseInt(String(x.score||'').match(/\d+/)?.[0]||'0',10);
+          data.sort((a,b)=> num(b)-num(a));
+        }
+        return { items: data.slice(offset, offset+limit), total: data.length };
+      },
+      async create(review){
+        const all = JSON.parse(localStorage.getItem(this.KEY) || '[]');
+        all.push(review);
+        localStorage.setItem(this.KEY, JSON.stringify(all));
+        return { ok:true, id: review.id };
+      },
+      async pinPhoto(reviewId, photoIdx, pin=true){
+        const all = JSON.parse(localStorage.getItem(this.KEY) || '[]');
+        const r = all.find(x=>x.id===reviewId);
+        if(!r) return { ok:false };
+        r.photos[photoIdx].pinned = !!pin;
+        localStorage.setItem(this.KEY, JSON.stringify(all));
+        return { ok:true };
+      }
+      // Later:
+      // list()  -> fetch('/api/reviews?...').then(r=>r.json())
+      // create() -> fetch('/api/reviews',{method:'POST', body:FormData|JSON })
+      // pinPhoto() -> fetch(`/api/reviews/${id}/photos/${idx}/pin`,{method:'POST',body:{pin}})
+    };
+
+    // ---------- State ----------
+    const state = {
+      files: [],          // {file, dataUrl, pinAfter?:bool}
+      page: 0,
+      pageSize: 6,
+      currentExam: '',
+      sortBy: 'new',
+      loading: false
+    };
+
+    // ---------- Uploader ----------
+    const photosInput = document.getElementById('photos');
+    const thumbs = document.getElementById('thumbs');
+    const uploader = document.getElementById('uploader');
+
+    function addFiles(list){
+      const toArray = [...list];
+      toArray.forEach(file=>{
+        if(!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          state.files.push({ file, dataUrl: reader.result, pinAfter:false });
+          renderThumbs();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    photosInput.addEventListener('change', e=> addFiles(e.target.files));
+
+    uploader.addEventListener('dragover', e=>{ e.preventDefault(); uploader.style.borderColor = 'var(--accent)'; });
+    uploader.addEventListener('dragleave', ()=> uploader.style.borderColor = 'var(--border)');
+    uploader.addEventListener('drop', e=>{
+      e.preventDefault(); uploader.style.borderColor = 'var(--border)';
+      addFiles(e.dataTransfer.files);
+    });
+
+    function renderThumbs(){
+      thumbs.innerHTML = '';
+      state.files.forEach((f, idx)=>{
+        const el = document.createElement('div');
+        el.className = 'thumb';
+        el.innerHTML = `
+          <img alt="preview ${idx+1}"/>
+          <button class="pin" type="button" title="Remove this photo">✕</button>
+          <label style="
+            position:absolute; left:6px; bottom:6px; display:flex; gap:6px; align-items:center;
+            background:rgba(0,0,0,.45); padding:2px 6px; border-radius:999px; border:1px solid var(--border); color:#fff; font-size:12px;">
+            <input type="checkbox" ${f.pinAfter ? 'checked' : ''} style="margin:0"/>
+            Pin after posting
+          </label>
+        `;
+        el.querySelector('img').src = f.dataUrl;
+        el.querySelector('.pin').addEventListener('click', ()=>{
+          state.files.splice(idx,1);
+          renderThumbs();
+        });
+        el.querySelector('input[type="checkbox"]').addEventListener('change', (e)=>{
+          state.files[idx].pinAfter = e.target.checked;
+        });
+        thumbs.appendChild(el);
+      });
+    }
+
+    // ---------- Form submit ----------
+    const form = document.getElementById('reviewForm');
+    const resetBtn = document.getElementById('resetForm');
+
+    function initials(name){
+      const parts = String(name||'').trim().split(/\s+/);
+      return (parts[0]?.[0]||'V').toUpperCase() + (parts[1]?.[0]||'R').toUpperCase();
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(state.loading) return;
+      const name = form.name.value.trim();
+      const exam = form.exam.value.trim();
+      const score = form.score.value.trim();
+      const rating = Number(new FormData(form).get('rating'));
+      const message = form.message.value.trim();
+
+      if(!name || !exam || !message || !rating) return;
+
+      state.loading = true;
+      try{
+        const id = 'r_' + Math.random().toString(36).slice(2);
+        const photos = state.files.map(f => ({ url: f.dataUrl, pinned: !!f.pinAfter }));
+        const review = { id, name, exam, score, rating, message, photos, createdAt: Date.now() };
+        await api.create(review);
+
+        state.files = []; renderThumbs();
+        form.reset();
+        state.page = 0;
+        document.getElementById('feed').innerHTML = '';
+        await loadNextPage(true);
+        location.hash = '#feed';
+      } finally {
+        state.loading = false;
+      }
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      form.reset();
+      state.files = [];
+      renderThumbs();
+    });
+
+    // ---------- Feed + Pinned ----------
+    const feed = document.getElementById('feed');
+    const pinnedGrid = document.getElementById('pinnedGrid');
+    const pinnedSection = document.getElementById('pinnedSection');
+
+    function starIcons(n){ return '⭐'.repeat(n); }
+
+    function reviewCard(r){
+      const el = document.createElement('article');
+      el.className = 'review';
+      el.innerHTML = `
+        <div class="head">
+          <div class="avatar">${initials(r.name)}</div>
+          <div>
+            <div style="font-weight:900">${escapeHtml(r.name)}</div>
+            <div class="meta-line">${new Date(r.createdAt).toLocaleString()}</div>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+            <span class="badge">${escapeHtml(r.exam)}</span>
+            ${r.score ? `<span class="badge score">${escapeHtml(r.score)}</span>`:''}
+            <span class="badge rating">${starIcons(r.rating)}</span>
+          </div>
+        </div>
+        <p style="margin:10px 0 10px 0">${escapeHtml(r.message)}</p>
+        ${r.photos?.length ? `<div class="photos">${r.photos.map((p,idx)=>`
+            <figure style="margin:0; position:relative">
+              <img src="${p.url}" alt="review photo ${idx+1}">
+              <button class="pinBtn" data-idx="${idx}" data-pinned="${p.pinned ? '1':'0'}" title="${p.pinned?'Unpin from top':'Pin to top'}" style="
+                position:absolute; right:6px; top:6px; border:1px solid var(--border); border-radius:999px;
+                background:rgba(0,0,0,.55); color:#fff; font-weight:900; font-size:12px; padding:3px 8px; cursor:pointer">
+                ${p.pinned ? '📌 Unpin' : '📍 Pin'}
+              </button>
+            </figure>
+        `).join('')}</div>` : ``}
+      `;
+      // wire pin buttons
+      el.querySelectorAll('.pinBtn').forEach(btn=>{
+        btn.addEventListener('click', async ()=>{
+          const idx = Number(btn.dataset.idx);
+          const currentlyPinned = btn.dataset.pinned === '1';
+          await api.pinPhoto(r.id, idx, !currentlyPinned);
+          await refreshPinned();
+          await refreshSingleCard(el, r.id);
+        });
+      });
+      return el;
+    }
+
+    async function refreshSingleCard(container, id){
+      const all = JSON.parse(localStorage.getItem(api.KEY) || '[]');
+      const r = all.find(x=>x.id===id);
+      if(!r) return;
+      const fresh = reviewCard(r);
+      container.replaceWith(fresh);
+    }
+
+    async function refreshPinned(){
+      const all = JSON.parse(localStorage.getItem(api.KEY) || '[]');
+      const pinned = all.flatMap(r => r.photos?.filter(p=>p.pinned) || []);
+      pinnedGrid.innerHTML = '';
+      if(pinned.length){
+        pinnedSection.style.display = '';
+        pinned.forEach(p=>{
+          const fig = document.createElement('figure');
+          fig.innerHTML = `<img src="${p.url}" alt="Pinned review photo">`;
+          pinnedGrid.appendChild(fig);
+        });
+      }else{
+        pinnedSection.style.display = 'none';
+      }
+    }
+
+    async function loadNextPage(reset=false){
+      const offset = state.page * state.pageSize;
+      const { items, total } = await api.list({
+        offset,
+        limit: state.pageSize,
+        exam: state.currentExam,
+        sort: state.sortBy
+      });
+      if(reset) feed.innerHTML = '';
+      items.forEach(r => feed.appendChild(reviewCard(r)));
+      const more = (offset + items.length) < total;
+      document.getElementById('loadMore').style.display = more ? '' : 'none';
+      if(items.length) state.page += 1;
+      await refreshPinned();
+    }
+
+    // ---------- Filters & Sorting ----------
+    const filterExam = document.getElementById('filterExam');
+    const sortBy = document.getElementById('sortBy');
+    const clearAll = document.getElementById('clearAll');
+    const loadMore = document.getElementById('loadMore');
+
+    filterExam.addEventListener('change', async ()=>{
+      state.currentExam = filterExam.value;
+      state.page = 0;
+      await loadNextPage(true);
+    });
+    sortBy.addEventListener('change', async ()=>{
+      state.sortBy = sortBy.value;
+      state.page = 0;
+      await loadNextPage(true);
+    });
+    clearAll.addEventListener('click', async ()=>{
+      filterExam.value = '';
+      sortBy.value = 'new';
+      state.currentExam = '';
+      state.sortBy = 'new';
+      state.page = 0;
+      await loadNextPage(true);
+    });
+    loadMore.addEventListener('click', ()=> loadNextPage(false));
+
+    // ---------- Utils ----------
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#39;");
+    }
+
+    // ---------- Init ----------
+    (async ()=>{
+      if(!localStorage.getItem(api.KEY)){
+        const seed = [
+          { id:'r_seed1', name:'Arman K.', exam:'TOEFL', score:'113', rating:5, message:'Clean UI and very close to the real thing. Listening sets felt realistic.', photos:[], createdAt: Date.now()-1000*60*60*24*2 },
+          { id:'r_seed2', name:'Mariam S.', exam:'SAT', score:'1540', rating:5, message:'Loved the math layout. Short sessions daily worked for me.', photos:[], createdAt: Date.now()-1000*60*60*6 }
+        ];
+        localStorage.setItem(api.KEY, JSON.stringify(seed));
+      }
+      await loadNextPage(true);
+    })();
+  </script>
+</body>
+</html>
