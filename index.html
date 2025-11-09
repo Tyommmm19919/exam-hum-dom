@@ -683,9 +683,20 @@
 
     <!-- HERO -->
     <header class="hero" id="home" aria-label="Hero">
-        <video autoplay muted loop playsinline poster="media/hero-poster.jpg">
-            <source src="students/man-billbord.mp4" type="video/mp4" />
-        </video>
+<video
+  class="hero-video"
+  autoplay
+  muted
+  playsinline
+  webkit-playsinline
+  loop
+  preload="metadata"
+  poster="media/hero-poster.jpg"
+>
+  <source src="students/man-billbord-720p.mp4" type="video/mp4">
+  <source src="students/man-billbord-720p.webm" type="video/webm">
+</video>
+
         <img class="poster" src="media/hero-fallback.jpg" alt="" aria-hidden="true" />
         <div class="hero-inner">
             <div>
@@ -982,6 +993,58 @@
         // Year
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
+    <script>
+(function(){
+  const vids = document.querySelectorAll('video[autoplay]');
+  vids.forEach(v => {
+    // Ensure mobile-safe attributes at runtime too
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute('muted','');
+    v.setAttribute('playsinline','');
+    v.setAttribute('webkit-playsinline','');
+
+    const tryPlay = v.play();
+    if (tryPlay && typeof tryPlay.then === 'function') {
+      tryPlay.catch(() => addTapToPlay(v));
+    } else {
+      // Older browsers: add fallback anyway
+      addTapToPlay(v);
+    }
+  });
+
+  function addTapToPlay(v){
+    // Create a subtle, accessible tap-to-play button
+    if (v.dataset.tapReady) return;
+    v.dataset.tapReady = '1';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'Play';
+    Object.assign(btn.style, {
+      position:'absolute', inset:'0', margin:'auto',
+      width:'96px', height:'44px', borderRadius:'12px',
+      border:'1px solid rgba(140,170,255,.3)',
+      background:'rgba(255,255,255,.12)', color:'#fff',
+      backdropFilter:'blur(8px)', fontWeight:'900', cursor:'pointer'
+    });
+
+    // Wrap video for positioning
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.style.display = 'inline-block';
+    v.parentNode.insertBefore(wrap, v);
+    wrap.appendChild(v);
+    wrap.appendChild(btn);
+
+    btn.addEventListener('click', () => {
+      v.muted = false; // if you want sound after user gesture; keep true if you want silent loop
+      v.play().then(() => btn.remove()).catch(()=>{ /* keep button if still blocked */ });
+    });
+  }
+})();
+</script>
+
 </body>
 
 </html>
