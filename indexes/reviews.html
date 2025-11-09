@@ -96,59 +96,42 @@
       position:absolute; top:6px; right:6px; background:rgba(0,0,0,.45); border:1px solid var(--border);
       color:#fff; font-size:12px; border-radius:999px; padding:2px 6px; cursor:pointer;
     }
-    option{
-        color: navy;
-    }
+    option{ color: navy; }
+
     /* Phone-like single column stack */
     #mainStack { display:block; }
-/* --- Mobile overflow fixes for reviews page --- */
 
-/* Let the header row wrap on small screens */
-.review .head { flex-wrap: wrap; }
-
-/* Allow children to actually shrink instead of pushing the card wider */
-.review .head > div { min-width: 0; }
-
-/* The right-hand badges container: allow wrapping and prevent overflow */
-.review .head > div:last-child{
-  display: flex;           /* it already is, but ensure here */
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-left: 0;          /* stop forcing it off-screen on tiny widths */
-  max-width: 100%;
-}
-@media (min-width: 600px){
-  .review .head > div:last-child{ margin-left: auto; } /* restore on wider */
-}
-
-/* Long text can break lines instead of widening the layout */
-.review p,
-.meta-line { overflow-wrap: anywhere; word-break: break-word; }
-
-/* Global safety: no media should exceed its container */
-img, video { max-width: 100%; height: auto; }
-
-/* Review photos: wrap nicely and never overflow */
-.review .photos{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-width: 100%;
-}
-.review .photos img{
-  width: 120px;            /* keep your aesthetic */
-  height: 120px;
-  object-fit: cover;
-}
-
-/* Pinned grid: make it denser on small phones to avoid horizontal push */
-@media (max-width: 480px){
-  .pinned { grid-template-columns: repeat(2, 1fr); }
-  .pinned figure{ height: 120px; }
-}
-
-/* Absolute safety net: if anything still overflows, clip it */
-.feed, .review, .pinned { overflow: hidden; max-width: 100%; }
+    /* --- Mobile overflow fixes for reviews page --- */
+    .review .head { flex-wrap: wrap; }
+    .review .head > div { min-width: 0; }
+    .review .head > div:last-child{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-left: 0;
+      max-width: 100%;
+    }
+    @media (min-width: 600px){
+      .review .head > div:last-child{ margin-left: auto; }
+    }
+    .review p, .meta-line { overflow-wrap: anywhere; word-break: break-word; }
+    img, video { max-width: 100%; height: auto; }
+    .review .photos{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 100%;
+    }
+    .review .photos img{
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+    }
+    @media (max-width: 480px){
+      .pinned { grid-template-columns: repeat(2, 1fr); }
+      .pinned figure{ height: 120px; }
+    }
+    .feed, .review, .pinned { overflow: hidden; max-width: 100%; }
 
     /* Pinned gallery */
     .pinned{ display:grid; grid-template-columns: repeat(6,1fr); gap:8px }
@@ -167,6 +150,14 @@ img, video { max-width: 100%; height: auto; }
     .review .photos{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap }
     .review .photos img{ width:120px; height:120px; border-radius:12px; border:1px solid var(--border); object-fit:cover }
     .meta-line{ color:var(--muted); font-size:14px }
+
+    /* Stats band styling */
+    .stats-line{ display:flex; flex-wrap:wrap; gap:10px; align-items:center }
+    .stat-chip{
+      display:inline-flex; gap:6px; align-items:center; padding:6px 10px;
+      border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,.08);
+      font-weight:900; font-size:13px;
+    }
 
     /* Footer */
     footer{ margin:34px 0 18px }
@@ -224,6 +215,9 @@ img, video { max-width: 100%; height: auto; }
       </div>
       <a class="cta" href="#write">Write a review</a>
     </div>
+
+    <!-- Stats band -->
+    <div id="statsBand" class="band card" aria-live="polite" style="margin-top:12px"></div>
   </header>
 
   <!-- MAIN STACK -->
@@ -291,7 +285,7 @@ img, video { max-width: 100%; height: auto; }
     </section>
 
     <!-- PINNED PHOTOS (optional highlight band) -->
-<section id="pinnedSection" style="display:none; padding:0; margin-top:18px">
+    <section id="pinnedSection" style="display:none; padding:0; margin-top:18px">
       <h2 style="margin:0 0 8px">Pinned photos</h2>
       <p class="lead" style="margin:0 0 8px">Photos you pin will appear here for everyone.</p>
       <div class="pinned" id="pinnedGrid" aria-live="polite"></div>
@@ -337,7 +331,6 @@ img, video { max-width: 100%; height: auto; }
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // ---------- Minimal “Backend Adapter” (swap later) ----------
-    // Replace these with real fetch() calls when your API is ready.
     const api = {
       KEY: 'vrshikyans_reviews_v1',
       async list({offset=0, limit=10, exam='', sort='new'}={}){
@@ -366,10 +359,6 @@ img, video { max-width: 100%; height: auto; }
         localStorage.setItem(this.KEY, JSON.stringify(all));
         return { ok:true };
       }
-      // Later:
-      // list()  -> fetch('/api/reviews?...').then(r=>r.json())
-      // create() -> fetch('/api/reviews',{method:'POST', body:FormData|JSON })
-      // pinPhoto() -> fetch(`/api/reviews/${id}/photos/${idx}/pin`,{method:'POST',body:{pin}})
     };
 
     // ---------- State ----------
@@ -467,6 +456,7 @@ img, video { max-width: 100%; height: auto; }
         state.page = 0;
         document.getElementById('feed').innerHTML = '';
         await loadNextPage(true);
+        renderStats(computeStats());   // <— update stats after posting
         location.hash = '#feed';
       } finally {
         state.loading = false;
@@ -577,11 +567,13 @@ img, video { max-width: 100%; height: auto; }
       state.currentExam = filterExam.value;
       state.page = 0;
       await loadNextPage(true);
+      renderStats(computeStats());
     });
     sortBy.addEventListener('change', async ()=>{
       state.sortBy = sortBy.value;
       state.page = 0;
       await loadNextPage(true);
+      renderStats(computeStats());
     });
     clearAll.addEventListener('click', async ()=>{
       filterExam.value = '';
@@ -590,6 +582,7 @@ img, video { max-width: 100%; height: auto; }
       state.sortBy = 'new';
       state.page = 0;
       await loadNextPage(true);
+      renderStats(computeStats());
     });
     loadMore.addEventListener('click', ()=> loadNextPage(false));
 
@@ -603,6 +596,85 @@ img, video { max-width: 100%; height: auto; }
         .replaceAll("'","&#39;");
     }
 
+    // ---------- Stats (averages) ----------
+    const statsBand = document.getElementById('statsBand');
+
+    function numFromScore(str){
+      if (!str) return null;
+      const m = String(str).match(/[\d]+(\.\d+)?/);
+      return m ? parseFloat(m[0]) : null;
+    }
+    function normalizeScore(exam, n){
+      if (n == null) return null;
+      switch(exam){
+        case 'TOEFL': return { val:n, max:120 };
+        case 'IELTS': return { val:n, max:9 };
+        case 'SAT':   return { val:n, max:1600 };
+        case 'ACT':   return { val:n, max:36 };
+        default: return null;
+      }
+    }
+    function starText(avg){ return `⭐${avg.toFixed(1)}/5`; }
+
+    function computeStats(){
+      const all = JSON.parse(localStorage.getItem(api.KEY) || '[]');
+      const byExam = { TOEFL:base(), IELTS:base(), SAT:base(), ACT:base() };
+      const overall = base();
+      function base(){ return { count:0, sumRating:0, avgRating:0, sumScore:0, scoreCount:0, avgScore:null, max:null }; }
+
+      all.forEach(r=>{
+        const rating = Number(r.rating)||0;
+        overall.count++; overall.sumRating += rating;
+
+        const ex = r.exam;
+        if (byExam[ex]){
+          const b = byExam[ex];
+          b.count++; b.sumRating += rating;
+          const raw = numFromScore(r.score);
+          const norm = normalizeScore(ex, raw);
+          if (norm){
+            b.sumScore += norm.val;
+            b.scoreCount++;
+            b.max = norm.max;
+          }
+        }
+      });
+
+      overall.avgRating = overall.count ? overall.sumRating/overall.count : 0;
+      Object.keys(byExam).forEach(ex=>{
+        const b = byExam[ex];
+        b.avgRating = b.count ? b.sumRating/b.count : 0;
+        b.avgScore  = b.scoreCount ? (b.sumScore/b.scoreCount) : null;
+      });
+      return { overall, byExam };
+    }
+
+    function renderStats(stats){
+      const exams = ['TOEFL','IELTS','SAT','ACT'];
+      const parts = [];
+
+      if (stats.overall.count){
+        parts.push(`<span class="stat-chip">Overall: ${starText(stats.overall.avgRating)} (${stats.overall.count})</span>`);
+      } else {
+        parts.push(`<span class="stat-chip">Overall: no reviews yet</span>`);
+      }
+
+      exams.forEach(ex=>{
+        const s = stats.byExam[ex];
+        if (!s || s.count===0){
+          parts.push(`<span class="stat-chip">${ex}: no reviews</span>`);
+          return;
+        }
+        const rating = `${starText(s.avgRating)} (${s.count})`;
+        const scoreTxt = s.avgScore != null && s.max
+          ? ` • avg score ${s.avgScore.toFixed(ex==='IELTS'?1:0)}/${s.max}`
+          : '';
+        parts.push(`<span class="stat-chip">${ex}: ${rating}${scoreTxt}</span>`);
+      });
+
+      statsBand.innerHTML = `<div class="stats-line">${parts.join('')}</div>`;
+    }
+
     // ---------- Init ----------
     (async ()=>{
       if(!localStorage.getItem(api.KEY)){
@@ -613,6 +685,7 @@ img, video { max-width: 100%; height: auto; }
         localStorage.setItem(api.KEY, JSON.stringify(seed));
       }
       await loadNextPage(true);
+      renderStats(computeStats());   // <— render stats on load
     })();
   </script>
 </body>
