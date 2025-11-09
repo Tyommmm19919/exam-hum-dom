@@ -101,6 +101,54 @@
     }
     /* Phone-like single column stack */
     #mainStack { display:block; }
+/* --- Mobile overflow fixes for reviews page --- */
+
+/* Let the header row wrap on small screens */
+.review .head { flex-wrap: wrap; }
+
+/* Allow children to actually shrink instead of pushing the card wider */
+.review .head > div { min-width: 0; }
+
+/* The right-hand badges container: allow wrapping and prevent overflow */
+.review .head > div:last-child{
+  display: flex;           /* it already is, but ensure here */
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: 0;          /* stop forcing it off-screen on tiny widths */
+  max-width: 100%;
+}
+@media (min-width: 600px){
+  .review .head > div:last-child{ margin-left: auto; } /* restore on wider */
+}
+
+/* Long text can break lines instead of widening the layout */
+.review p,
+.meta-line { overflow-wrap: anywhere; word-break: break-word; }
+
+/* Global safety: no media should exceed its container */
+img, video { max-width: 100%; height: auto; }
+
+/* Review photos: wrap nicely and never overflow */
+.review .photos{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+}
+.review .photos img{
+  width: 120px;            /* keep your aesthetic */
+  height: 120px;
+  object-fit: cover;
+}
+
+/* Pinned grid: make it denser on small phones to avoid horizontal push */
+@media (max-width: 480px){
+  .pinned { grid-template-columns: repeat(2, 1fr); }
+  .pinned figure{ height: 120px; }
+}
+
+/* Absolute safety net: if anything still overflows, clip it */
+.feed, .review, .pinned { overflow: hidden; max-width: 100%; }
 
     /* Pinned gallery */
     .pinned{ display:grid; grid-template-columns: repeat(6,1fr); gap:8px }
@@ -110,7 +158,7 @@
 
     /* Feed one column */
     .feed.onecol { display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px }
-    .review{ position:relative; padding:18px; border-radius:var(--radius); border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05)); box-shadow:var(--shadow-1) }
+    .review{max-width: 100% ;position:relative; padding:18px; border-radius:var(--radius); border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05)); box-shadow:var(--shadow-1) }
     .review .head{ display:flex; align-items:center; gap:12px }
     .avatar{ width:44px; height:44px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:rgba(255,255,255,.06); display:grid; place-items:center; font-weight:900; color:var(--muted) }
     .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,.1); font-weight:900; color:var(--muted) }
@@ -243,7 +291,7 @@
     </section>
 
     <!-- PINNED PHOTOS (optional highlight band) -->
-    <section class="inner" id="pinnedSection" style="display:none; padding:0; margin-top:18px">
+<section id="pinnedSection" style="display:none; padding:0; margin-top:18px">
       <h2 style="margin:0 0 8px">Pinned photos</h2>
       <p class="lead" style="margin:0 0 8px">Photos you pin will appear here for everyone.</p>
       <div class="pinned" id="pinnedGrid" aria-live="polite"></div>
