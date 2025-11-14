@@ -230,44 +230,44 @@
             transition: .08s linear;
         }
 
-/* Section container: follows height of current section, scroll allowed */
-.section-container {
-    position: relative;
-    width: 100%;
-    min-height: calc(100vh - var(--nav-h));
-    overflow: visible;
-}
+        /* Section container: follows height of current section, scroll allowed */
+        .section-container {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - var(--nav-h));
+            overflow: visible;
+        }
 
-/* Base state: hidden */
-.page-section {
-    position: relative;
-    display: none;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(16px) scale(0.98);
-}
+        /* Base state: hidden */
+        .page-section {
+            position: relative;
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(16px) scale(0.98);
+        }
 
-/* Active: visible + enter animation */
-.page-section.active {
-    display: block;
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 1;
-    animation: sectionIn 0.45s cubic-bezier(.22, .61, .36, 1) forwards;
-}
+        /* Active: visible + enter animation */
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1;
+            animation: sectionIn 0.45s cubic-bezier(.22, .61, .36, 1) forwards;
+        }
 
-/* Leaving: float above layout so it doesn’t push things and can fade out smoothly */
-.page-section.leaving {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: block;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 2;
-    animation: sectionOut 0.35s cubic-bezier(.55, .06, .68, .19) forwards;
-}
+        /* Leaving: float above layout so it doesn’t push things and can fade out smoothly */
+        .page-section.leaving {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: block;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2;
+            animation: sectionOut 0.35s cubic-bezier(.55, .06, .68, .19) forwards;
+        }
 
 
 
@@ -987,6 +987,7 @@
             transform: translateY(10px);
             opacity: 0
         }
+
         .reveal.in {
             transform: translateY(0);
             opacity: 1;
@@ -1139,7 +1140,7 @@
         <div class="nav-inner">
             <a class="brand" href="#home" aria-label="Exam-hub">
                 <span class="logo" aria-hidden="true" style="overflow: hidden;">
-                    <img src="../students/logo-fin.png" width="39px">
+                    <img src="students/logo-fin.png" width="39px">
                 </span>
                 <span>Vrshikyans</span>&nbsp;&nbsp;
             </a>
@@ -1328,7 +1329,9 @@
                             </figure>
 
                             <figure class="reveal">
-                                <img src="students/ani.jpg" alt="IELTS speaking workshop">
+                                <video autoplay muted loop playsinline poster="media/hero-poster.jpg">
+                                    <source src="../students/sat_small_room_video.mp4" type="video/mp4" />
+                                </video>
                                 <figcaption>
                                     <span>IELTS speaking workshop</span>
                                 </figcaption>
