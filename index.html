@@ -34,7 +34,7 @@
             --fast: .15s;
             --g1: #1c2550;
             --g2: #142762;
-            --nav-h: 64px;
+            --nav-h: 72px;
         }
 
         html[data-theme="light"] {
@@ -78,7 +78,10 @@
             background-attachment: fixed, fixed, fixed;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            /* keep page at least full height */
         }
+
 
         /* Film grain */
         body::before {
@@ -90,6 +93,22 @@
             opacity: .05;
             background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjQnIGhlaWdodD0nNjQnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PGZpbHRlciBpZD0nbi1uJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44JyBudW1PY3RhdmVzPScyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsbD0nd2hpdGUnIGZpbHRlcj0ndXJsKCMnKyc+PC9yZWN0Pjwvc3ZnPg==");
             background-size: 240px 240px;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center,
+                    rgba(120, 166, 255, 0.15),
+                    rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.switching::after {
+            opacity: 1;
         }
 
         /* Cursor spotlight */
@@ -141,6 +160,32 @@
             box-shadow: 0 10px 22px rgba(76, 130, 255, .22)
         }
 
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-left: 24px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            color: var(--text);
+            font-weight: 600;
+            transition: background-color var(--fast), color var(--fast);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(120, 166, 255, 0.2);
+            color: var(--accent);
+        }
+
         .spacer {
             flex: 1
         }
@@ -176,7 +221,6 @@
         }
 
         .cta::after {
-            /* magnetic glow */
             content: "";
             position: absolute;
             inset: -2px;
@@ -186,15 +230,107 @@
             transition: .08s linear;
         }
 
+/* Section container: follows height of current section, scroll allowed */
+.section-container {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - var(--nav-h));
+    overflow: visible;
+}
+
+/* Base state: hidden */
+.page-section {
+    position: relative;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.98);
+}
+
+/* Active: visible + enter animation */
+.page-section.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+    animation: sectionIn 0.45s cubic-bezier(.22, .61, .36, 1) forwards;
+}
+
+/* Leaving: float above layout so it doesn’t push things and can fade out smoothly */
+.page-section.leaving {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    animation: sectionOut 0.35s cubic-bezier(.55, .06, .68, .19) forwards;
+}
+
+
+
+        /* ENTER: soft rise + slight zoom */
+        @keyframes sectionIn {
+            0% {
+                opacity: 0;
+                transform: translateY(24px) scale(0.97);
+                filter: blur(6px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(0) scale(1.01);
+                filter: blur(0px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
+
+        /* EXIT: fade + move up a bit */
+        @keyframes sectionOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.985);
+                filter: blur(6px);
+            }
+        }
+
+        /* Hero section specific */
+        #home-section.active .hero {
+            min-height: calc(100vh - var(--nav-h));
+        }
+
+
+
+
+
+        /* Hero section specific */
+        #home-section.active {
+            min-height: 100vh;
+        }
+
         /* Hero */
         .hero {
             position: relative;
             z-index: 1;
-            min-height: 74vh;
+            min-height: calc(100vh - var(--nav-h));
             display: grid;
             place-items: center;
-            overflow: hidden
+            overflow: hidden;
         }
+
 
         .hero video,
         .hero .poster {
@@ -203,7 +339,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: .26;
+            opacity: .46;
             filter: saturate(115%) contrast(105%);
         }
 
@@ -227,7 +363,7 @@
 
         /* Rotating tests word */
         .title {
-            font-size: clamp(40px, 5.2vw, 68px);
+            font-size: clamp(42px, 5.6vw, 76px);
             line-height: 1.03;
             margin: 10px 0 8px;
             font-weight: 900;
@@ -382,8 +518,38 @@
         .hero-card .chips {
             display: flex;
             gap: 8px;
+            margin-left: 8.6%;
             flex-wrap: wrap;
             margin-top: 10px
+        }
+
+        .hero-card-photo {
+            position: relative;
+            overflow: hidden;
+            background: none;
+            /* override old gradient */
+            background-image: url("students/sat_group_small_room_photo.jpg");
+            opacity: .9;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Dark overlay so text is readable */
+        .hero-card-photo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg,
+                    rgba(6, 10, 24, 0.85),
+                    rgba(10, 20, 40, 0.5),
+                    rgba(18, 40, 80, 0.3));
+            pointer-events: none;
+        }
+
+        /* Keep inner content above the overlay */
+        .hero-card-photo>* {
+            position: relative;
+            z-index: 1;
         }
 
         .chip {
@@ -398,12 +564,13 @@
         /* Slim sections */
         .section {
             position: relative;
-            z-index: 2
+            z-index: 2;
+            padding: 60px 0;
         }
 
         .inner {
             width: min(1120px, 92%);
-            margin: 32px auto
+            margin: 0 auto;
         }
 
         .h2 {
@@ -513,115 +680,373 @@
         .band p {
             margin: 0
         }
-/* Pricing */
-.pricing { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px }
-.plan{
-  position:relative; padding:18px; border-radius:var(--radius);
-  border:1px solid var(--border);
-  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-  box-shadow:var(--shadow-1); transition: transform var(--fast), box-shadow var(--fast);
-}
-.plan:hover{ transform: translateY(-3px); box-shadow: var(--shadow-2); }
-.plan h3{ margin:0 0 4px 0; }
-.plan .tagline{ margin:0; color:var(--muted); }
-.plan .price{
-  margin:10px 0 8px 0; display:flex; align-items:baseline; gap:8px;
-  font-weight:900; letter-spacing:.2px;
-}
-.plan .price .big{ font-size:28px; }
-.plan .features{ margin:10px 0 12px 0; display:grid; gap:8px; }
-.plan .features li{
-  list-style: none; display:flex; align-items:center; gap:8px;
-  padding:10px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.06);
-}
-.plan .features li::before{ content:"✓"; font-weight:900; color:var(--accent-2); }
-.plan .cta{ display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 16px;
-  border-radius:12px; text-decoration:none; font-weight:900; border:0; cursor:pointer;
-  background:linear-gradient(180deg,#78a6ff,#4b82ff); color:#08152c; box-shadow:0 10px 26px rgba(120,166,255,.26);
-}
-.plan.premium .cta{ background:linear-gradient(180deg,#35d49f,#18b98a); color:#061a11; box-shadow:0 10px 24px rgba(24,185,138,.22); }
-.ribbon{
-  position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:999px;
-  border:1px solid var(--border); background:rgba(255,255,255,.12); font-size:12px; font-weight:900;
-}
-.disclaimer{ margin-top:10px; color:var(--muted); font-size:14px; text-align:center; }
-/* Mentors / Teachers */
-.mentors { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px }
-.mentor{
-  position:relative; display:grid; grid-template-columns:120px 1fr; gap:16px;
-  padding:16px; border-radius:var(--radius); border:1px solid var(--border);
-  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-  box-shadow:var(--shadow-1);
-}
-.mentor .avatar{
-  width:120px; height:120px; border-radius:16px; overflow:hidden; border:1px solid var(--border);
-  background:rgba(255,255,255,.06); display:grid; place-items:center; font-weight:900; color:var(--muted)
-}
-.mentor .avatar img{width:100%; height:100%; object-fit:cover; display:block}
-.mentor h3{margin:0 0 4px 0}
-.mentor .role{margin:0; color:var(--muted); font-weight:800}
-.mentor .bio{margin:8px 0 10px 0; color:var(--muted)}
-.stats{display:flex; flex-wrap:wrap; gap:8px}
-.stat{
-  padding:8px 10px; border-radius:999px; border:1px solid var(--border);
-  background:rgba(255,255,255,.08); font-weight:900; font-size:13px
-}
-.ribbon-top{
-  position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:999px;
-  border:1px solid var(--border); background:rgba(255,255,255,.12); font-size:12px; font-weight:900;
-}
-.reviews-cta{
-  margin-top:16px; display:flex; justify-content:center;
-}
-.reviews-cta .cta{
-  background:linear-gradient(180deg,#78a6ff,#4b82ff); color:#08152c; box-shadow:0 10px 26px rgba(120,166,255,.26);
-}
 
-/* Mobile */
-@media (max-width:900px){
-  .mentors{ grid-template-columns:1fr }
-  .mentor{ grid-template-columns:84px 1fr }
-  .mentor .avatar{ width:84px; height:84px; border-radius:12px }
-}
+        /* Pricing */
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 14px
+        }
 
-/* Mobile layout */
-@media (max-width:900px){ .pricing{ grid-template-columns:1fr } }
+        .plan {
+            position: relative;
+            padding: 18px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .05));
+            box-shadow: var(--shadow-1);
+            transition: transform var(--fast), box-shadow var(--fast);
+        }
 
-        /* Footer */
+        .plan:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .plan h3 {
+            margin: 0 0 4px 0;
+        }
+
+        .plan .tagline {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .plan .price {
+            margin: 10px 0 8px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-weight: 900;
+            letter-spacing: .2px;
+        }
+
+        .plan .price .big {
+            font-size: 28px;
+        }
+
+        .plan .features {
+            margin: 10px 0 12px 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .plan .features li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .plan .features li::before {
+            content: "✓";
+            font-weight: 900;
+            color: var(--accent-2);
+        }
+
+        .plan .cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            padding: 0 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 900;
+            border: 0;
+            cursor: pointer;
+            background: linear-gradient(180deg, #78a6ff, #4b82ff);
+            color: #08152c;
+            box-shadow: 0 10px 26px rgba(120, 166, 255, .26);
+        }
+
+        .plan.premium .cta {
+            background: linear-gradient(180deg, #35d49f, #18b98a);
+            color: #061a11;
+            box-shadow: 0 10px 24px rgba(24, 185, 138, .22);
+        }
+
+        .ribbon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .12);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .disclaimer {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Mentors / Teachers */
+        .mentors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px
+        }
+
+        .mentor {
+            position: relative;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .05));
+            box-shadow: var(--shadow-1);
+        }
+
+        .mentor .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06);
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            color: var(--muted)
+        }
+
+        .mentor .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .mentor h3 {
+            margin: 0 0 4px 0
+        }
+
+        .mentor .role {
+            margin: 0;
+            color: var(--muted);
+            font-weight: 800
+        }
+
+        .mentor .bio {
+            margin: 8px 0 10px 0;
+            color: var(--muted)
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px
+        }
+
+        .stat {
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .08);
+            font-weight: 900;
+            font-size: 13px
+        }
+
+        .ribbon-top {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .12);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        /* STUDENT GROUPS UNDER MENTORS */
+        .students-block {
+            margin-top: 32px;
+        }
+
+        .students-block .h2 {
+            margin-bottom: 8px;
+        }
+
+        .students-block .lead {
+            margin-bottom: 10px;
+        }
+
+        .students-gallery {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .students-gallery figure {
+            position: relative;
+            margin: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06);
+            box-shadow: var(--shadow-1);
+        }
+
+        .students-gallery img {
+            display: block;
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+        }
+
+        .students-gallery figcaption {
+            position: absolute;
+            inset: auto 10px 10px 10px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(4, 10, 26, 0.82);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .students-gallery figcaption span {
+            opacity: 0.85;
+        }
+
+        /* responsive */
+        @media (max-width: 900px) {
+            .students-gallery {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .students-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .reviews-cta {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .reviews-cta .cta {
+            background: linear-gradient(180deg, #78a6ff, #4b82ff);
+            color: #08152c;
+            box-shadow: 0 10px 26px rgba(120, 166, 255, .26);
+        }
+
+        /* Footer - FIXED */
         footer {
-            margin: 34px 0 18px
+            position: relative;
+            z-index: 4;
+            margin-top: auto;
+            width: 100%;
         }
 
         .foot {
             width: min(1120px, 92%);
-            margin: 0 auto;
+            margin: 34px auto 18px;
             border: 1px solid var(--border);
             border-radius: var(--radius);
             background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
             padding: 16px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px
+            gap: 14px;
         }
 
         .foot small {
             color: var(--muted)
         }
-        .box{
+
+        .box {
             width: 20%;
             background: var(--blur);
             border-radius: 5px;
         }
+
         /* Reveal */
         .reveal {
             transform: translateY(10px);
             opacity: 0
         }
-
         .reveal.in {
             transform: translateY(0);
             opacity: 1;
             transition: transform .45s ease, opacity .45s ease
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            position: fixed;
+            top: var(--nav-h);
+            left: 0;
+            width: 100%;
+            background: var(--surface-strong);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(var(--blur)) saturate(140%);
+            padding: 20px;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+            z-index: 9;
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mobile-nav-link {
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: background-color var(--fast), color var(--fast);
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+            background-color: rgba(120, 166, 255, 0.2);
+            color: var(--accent);
         }
 
         /* Mobile */
@@ -641,11 +1066,56 @@
             .gallery {
                 grid-template-columns: 1fr 1fr
             }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .mentors {
+                grid-template-columns: 1fr
+            }
+
+            .mentor {
+                grid-template-columns: 84px 1fr
+            }
+
+            .mentor .avatar {
+                width: 84px;
+                height: 84px;
+                border-radius: 12px
+            }
+
+            .pricing {
+                grid-template-columns: 1fr
+            }
+
+            .foot {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
 
         @media (max-width: 640px) {
             .gallery {
                 grid-template-columns: 1fr
+            }
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 900px) {
+
+            html,
+            body {
+                height: auto;
+            }
+
+            .hero {
+                min-height: auto;
+                /* let hero shrink naturally on small screens */
             }
         }
     </style>
@@ -664,269 +1134,404 @@
 </head>
 
 <body>
-    <!-- <div id="spotlight" aria-hidden="true"></div> -->
 
-    <!-- NAV (logo + theme + single CTA) -->
     <nav class="nav" role="navigation" aria-label="Primary">
         <div class="nav-inner">
             <a class="brand" href="#home" aria-label="Exam-hub">
                 <span class="logo" aria-hidden="true" style="overflow: hidden;">
-                    <img src="students/logo-fin.png" width="39px">
+                    <img src="../students/logo-fin.png" width="39px">
                 </span>
                 <span>Vrshikyans</span>&nbsp;&nbsp;
-            <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌑</button>
             </a>
+
+            <div class="nav-links">
+                <a class="nav-link active" data-section="home" href="#home">Home</a>
+                <a class="nav-link" data-section="mentors" href="#mentors">Mentors</a>
+                <a class="nav-link" data-section="value" href="#value">Features</a>
+                <a class="nav-link" data-section="exams" href="#exams">Exams</a>
+                <a class="nav-link" data-section="pricing" href="#pricing">Pricing</a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
             <div class="spacer"></div>
-            <a class="cta" id="startTop" href="../indexes/account.html" aria-label="Start practicing" style="width: 40px; height: 40px; background: whitesmoke;">👤</a>
+            <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">🌑</button>
+            <a class="cta" id="startTop" href="../indexes/account.html" aria-label="Start practicing"
+                style="width: 40px; height: 40px; background: whitesmoke;">👤</a>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <header class="hero" id="home" aria-label="Hero">
-<video
-  class="hero-video"
-  autoplay
-  muted
-  playsinline
-  webkit-playsinline
-  loop
-  preload="metadata"
-  poster="students/gor.jpg"
->
-  <source src="students/man-billbord.mp4" type="video/mp4">
-  <source src="students/man-billbord.webm" type="video/webm">
-</video>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-nav-links">
+            <a class="mobile-nav-link active" data-section="home" href="#home">Home</a>
+            <a class="mobile-nav-link" data-section="mentors" href="#mentors">Mentors</a>
+            <a class="mobile-nav-link" data-section="value" href="#value">Features</a>
+            <a class="mobile-nav-link" data-section="exams" href="#exams">Exams</a>
+            <a class="mobile-nav-link" data-section="pricing" href="#pricing">Pricing</a>
+        </div>
+    </div>
 
-        <img class="poster" src="media/hero-fallback.jpg" alt="" aria-hidden="true" />
-        <div class="hero-inner">
-            <div>
-                <span class="badge">Calm • Clear • Exam-style</span>
-                <h1 class="title">
-                    Prepare for <span class="rotator" aria-live="polite"><br>
-                        <span>TOEFL</span>
-                        <span>SAT</span>
-                        <span>IELTS</span>
-                        <span>ACT</span>
-                    </span> with total focus
-                </h1>
-                <p class="subtitle">Minimal clicks. Real formats. A beautiful flow that makes studying feel natural.</p>
-                <div class="motivation">
-                    <span class="mdot"></span> Small sessions. Daily rhythm. Big results.
-                </div>
-                <div class="hero-cta">
-                    <a class="cta" id="startHero" href="indexes/test-selection.html">Free TOEFL test</a>&nbsp;&nbsp;
-                    <a class="cta" id="startHero" href="indexes/test-sat-selection.html">Free SAT test</a>
-                </div>
-            </div>
 
-            <!-- Animated right card -->
-            <div class="reveal">
-                <div class="hero-card" id="heroCard">
-                    <div style="max-width:42ch; text-align:center">
-                        <h3>“Understand first. Speed follows.”</h3>
-                        <p>Short focused blocks, clean UI, smart review. Come back tomorrow — consistency compounds.</p>
-                        <div class="chips" aria-hidden="true">
-                            <span class="chip">Focus timer</span>
-                            <span class="chip">Clean math UI</span>
-                            <span class="chip">Real passages</span>
+
+    <div class="section-container">
+        <!-- HOME SECTION -->
+        <section class="page-section active" id="home-section">
+            <header class="hero" id="home" aria-label="Hero">
+                <video autoplay muted loop playsinline poster="media/hero-poster.jpg">
+                    <source src="../students/big_room_video1.mp4" type="video/mp4" />
+                </video>
+                <img class="poster" src="media/hero-fallback.jpg" alt="" aria-hidden="true" />
+                <div class="hero-inner">
+                    <div>
+                        <span class="badge">Calm • Clear • Exam-style</span>
+                        <h1 class="title">
+                            Prepare for <span class="rotator" aria-live="polite"><br>
+                                <span>TOEFL</span>
+                                <span>SAT</span>
+                                <span>IELTS</span>
+                                <span>ACT</span>
+                            </span> with total focus
+                        </h1>
+                        <p class="subtitle">Minimal clicks. Real formats. A beautiful flow that makes studying feel
+                            natural.</p>
+                        <div class="motivation">
+                            <span class="mdot"></span> Small sessions. Daily rhythm. Big results.
+                        </div>
+                        <div class="hero-cta">
+                            <a class="cta" id="startHero" href="indexes/test-selection.html">Free TOEFL
+                                test</a>&nbsp;&nbsp;
+                            <a class="cta" id="startHero" href="indexes/test-sat-selection.html">Free SAT test</a>
+                        </div>
+                    </div>
+
+                    <div class="reveal">
+                        <div class="hero-card hero-card-photo" id="heroCard">
+                            <div style="max-width:42ch; text-align:center">
+                                <h3>"Understand first. Speed follows."</h3>
+                                <p>Short focused blocks, clean UI, smart review. Come back tomorrow — consistency
+                                    compounds.</p>
+                                <div class="chips" aria-hidden="true">
+                                    <span class="chip">Focus timer</span>
+                                    <span class="chip">Clean math UI</span>
+                                    <span class="chip">Real passages</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+        </section>
+        <section class="page-section" id="mentors-section">
+            <div class="section" id="mentors" aria-label="Meet the mentors">
+                <div class="inner">
+                    <h2 class="h2">Meet your mentors</h2>
+                    <p class="lead">
+                        Vrshikyans is led by experienced teachers who've guided thousands of learners to top
+                        scores. Beautiful design meets serious results.
+                    </p>
+
+                    <div class="mentors">
+                        <!-- Ms Heghine -->
+                        <article class="mentor reveal">
+                            <span class="ribbon-top" aria-hidden="true">SAT • ACT</span>
+                            <div class="avatar">
+                                <img src="students/heghine.jpg" alt="Ms Heghine portrait"
+                                    onerror="this.remove();this.parentElement.textContent='H';">
+                            </div>
+                            <div class="meta">
+                                <h3>Ms Heghine</h3>
+                                <p class="role">SAT & ACT Teacher • Owner</p>
+                                <p class="bio">
+                                    Over <b>2,000</b> students taught. Many hit a perfect <b>1600 SAT</b>, and the
+                                    majority score <b>790+ in Math</b>.
+                                    Master's degree, studied abroad. Calm, clear methods that build speed through
+                                    understanding.
+                                </p>
+                                <div class="stats" aria-label="Key highlights">
+                                    <span class="stat">1600 SAT achievers</span>
+                                    <span class="stat">790+ Math majority</span>
+                                    <span class="stat">2,000+ students</span>
+                                    <span class="stat">Master's • Abroad</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Ms Hasmik -->
+                        <article class="mentor reveal">
+                            <span class="ribbon-top" aria-hidden="true">TOEFL • IELTS</span>
+                            <div class="avatar">
+                                <img src="students/hasmik.jpg" alt="Ms Hasmik portrait"
+                                    onerror="this.remove();this.parentElement.textContent='H';">
+                            </div>
+                            <div class="meta">
+                                <h3>Ms Hasmik</h3>
+                                <p class="role">TOEFL & IELTS Teacher</p>
+                                <p class="bio">
+                                    Taught <b>2,000+</b> students. Most achieve outstanding results like <b>115+
+                                        TOEFL</b>
+                                    or <b>8.5+ IELTS</b>.
+                                    Master's degree, studied abroad. Strategy-first lessons that make hard tasks feel
+                                    simple.
+                                </p>
+                                <div class="stats" aria-label="Key highlights">
+                                    <span class="stat">115+ TOEFL</span>
+                                    <span class="stat">8.5+ IELTS</span>
+                                    <span class="stat">2,000+ students</span>
+                                    <span class="stat">Master's • Abroad</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="reviews-cta">
+                        <a class="cta" href="/indexes/reviews.html"
+                            aria-label="Read student reviews about Ms Heghine and Ms Hasmik">
+                            Read Reviews (scores & opinions)
+                        </a>
+                    </div>
+                    <p class="lead" style="text-align:center; margin-top:10px">
+                        Students share verified scores and write honest opinions about Ms Heghine &amp; Ms Hasmik on our
+                        reviews page.
+                    </p>
+
+                    <!-- OVERALL STUDENT VIBE + GROUP PHOTOS -->
+                    <div class="students-block">
+                        <h2 class="h2">Our students</h2>
+                        <p class="lead">
+                            Vrshikyans students are serious about their future — but the atmosphere stays calm and
+                            friendly.
+                            Many juggle school, olympiads, music, sports and university applications, and still come
+                            back
+                            here week after week to quietly push their scores higher.
+                        </p>
+                        <p class="lead" style="margin-top:6px;">
+                            These are real prep groups: mixed levels, shared goals. They learn to stay focused under
+                            time
+                            pressure, support each other, and treat every practice test like a small rehearsal for the
+                            real exam.
+                        </p>
+
+                        <div class="students-gallery">
+                            <figure class="reveal">
+                                <img src="students/big_room_whole_photo.jpg" alt="TOEFL and SAT group photo">
+                                <figcaption>
+                                    <span>Evening TOEFL & SAT group</span>
+                                </figcaption>
+                            </figure>
+
+                            <figure class="reveal">
+                                <img src="students/sat_group_big_table_photo.jpg" alt="SAT math practice group">
+                                <figcaption>
+                                    <span>Focused SAT math practice</span>
+                                </figcaption>
+                            </figure>
+
+                            <figure class="reveal">
+                                <img src="students/ani.jpg" alt="IELTS speaking workshop">
+                                <figcaption>
+                                    <span>IELTS speaking workshop</span>
+                                </figcaption>
+                            </figure>
+
+                            <figure class="reveal">
+                                <img src="students/ms_hasmik_teach_photo.jpg" alt="Weekend intensive session">
+                                <figcaption>
+                                    <span>Weekend intensive session</span>
+                                </figcaption>
+                            </figure>
+
+                            <figure class="reveal">
+                                <img src="students/logo-fin.png" alt="Exam-style classroom setup">
+                                <figcaption>
+                                    <span>Joing Vrshikyans to succeed</span>
+                                </figcaption>
+                            </figure>
+
+                            <figure class="reveal">
+                                <img src="students/sat_group_small_room_photo.jpg" alt="Calm late-night prep group">
+                                <figcaption>
+                                    <span>Calm late-night prep</span>
+                                </figcaption>
+                            </figure>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
-<!-- MENTORS -->
-<section class="section" id="mentors" aria-label="Meet the mentors">
-  <div class="inner">
-    <h2 class="h2">Meet your mentors</h2>
-    <p class="lead">Vrshikyans is led by experienced teachers who’ve guided thousands of learners to top scores. Beautiful design meets serious results.</p>
+        </section>
 
-    <div class="mentors">
-      <!-- Ms Heghine -->
-      <article class="mentor reveal">
-        <!-- <span class="ribbon-top" aria-hidden="true">SAT math • ACT math</span> -->
-        <div class="avatar">
-          <!-- Optional photo -->
-          <img src="students/heghine.jpg" alt="Ms Heghine portrait" onerror="this.remove();this.parentElement.textContent='H';">
-        </div>
-        <div class="meta">
-          <h3>Heghine Vrshikyan</h3>
-          <p class="role">SAT math & ACT math Teacher • Owner</p>
-          <p class="bio">
-            Over <b>4,000+</b> students taught. Many hit a perfect <b>800 SAT math</b> and <b>36 ACT math</b>, and the majority score <b>790+ in Math</b>.
-            Over 15 years of teaching experience
-          </p>
-          <div class="stats" aria-label="Key highlights">
-            <span class="stat">800 SAT achievers</span>
-            <span class="stat">790+ Math majority</span>
-            <span class="stat">36 ACT Math majority</span>
-            <span class="stat">4,000+ students</span>
-          </div>
-        </div>
-      </article>
 
-      <!-- Ms Hasmik -->
-      <article class="mentor reveal">
-        <!-- <span class="ribbon-top" aria-hidden="true">TOEFL iBT® • IELTS • SAT Verbal • ACT Verbal</span> -->
-        <div class="avatar">
-          <!-- Optional photo -->
-          <img src="students/hasmik.jpg" alt="Ms Hasmik portrait" onerror="this.remove();this.parentElement.textContent='H';">
-        </div>
-        <div class="meta">
-          <h3>Hasmik Vrshikyan</h3>
-          <p class="role">TOEFL iBT® & IELTS & SAT Verbal & ACT Verbal Teacher • Owner</p>
-          <p class="bio">
-            Taught <b>4,000+</b> students. Most achieve outstanding results like <b>115+ TOEFL iBT®</b>,&nbsp;<b>8.5+ IELTS</b>,&nbsp;<b>780+ SAT Verbal</b>,&nbsp;or&nbsp;<b>ACT Verbal 35+</b>.
-            Over 20 years of teaching experience
-          </p>
-          <div class="stats" aria-label="Key highlights">
-            <span class="stat">115+ TOEFL</span>
-            <span class="stat">8.5+ IELTS</span>
-            <span class="stat">780+ SAT Verbal</span>
-            <span class="stat">35+ ACT Verbal</span>
-            <span class="stat">4,000+ students</span>
-          </div>
-        </div>
-      </article>
-    </div>
+        <section class="page-section" id="value-section">
+            <div class="section">
+                <div class="inner">
+                    <h2 class="h2">Designed for attention</h2>
+                    <p class="lead">
+                        Everything supports thinking — layout, color, timing. You practice the format and
+                        the skill together.
+                    </p>
+                    <p class="lead" style="margin-top:8px">
+                        Inside the platform you’ll find over <b>100+</b> real-style <b>TOEFL</b> tests,
+                        <b>70+</b> <b>SAT</b> sets, <b>20+</b> <b>IELTS</b> exams and <b>40+</b> <b>ACT</b> simulations.
+                        Each one is designed to feel extremely close to the real exam — same rhythm, same
+                        pressure, same style of questions.
+                    </p>
+                    <p class="lead" style="margin-top:8px">
+                        Your results are saved in your account after every attempt. You can track your
+                        progress test by test, see how your scores change over time, and get realistic
+                        grades. For TOEFL, the system calculates scores using TOEFL-style scaling, so your
+                        practice results feel like real exam scores, not random percentages.
+                    </p>
 
-    <div class="reviews-cta">
-      <a class="cta" href="indexes/reviews.html" aria-label="Read student reviews about Ms Heghine and Ms Hasmik">
-        Read Reviews (scores & opinions)
-      </a>
-    </div>
-    <p class="lead" style="text-align:center; margin-top:10px">
-      Students share verified scores and write honest opinions about Heghine Vrshikyan &amp; Hasmik Vrshikyan on our reviews page.
-    </p>
-  </div>
-</section>
-
-    <!-- VALUE -->
-    <section class="section">
-        <div class="inner">
-            <h2 class="h2">Designed for attention</h2>
-            <p class="lead">Everything supports thinking — layout, color, timing. You practice the format and the skill
-                together.</p>
-            <div class="grid-3">
-                <article class="tile reveal">
-                    <h3>Real test flow</h3>
-                    <p>Layouts & timing mirror the real exams, so the interface feels familiar on test day.</p>
-                </article>
-                <article class="tile reveal">
-                    <h3>Beautifully minimal</h3>
-                    <p>No distractions. Just you and the next question — on any device.</p>
-                </article>
-                <article class="tile reveal">
-                    <h3>Momentum first</h3>
-                    <p>Short sessions and light review build confidence faster than cramming.</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- EXAMS AT A GLANCE -->
-    <section class="section" aria-label="Exam info">
-        <div class="inner">
-            <h2 class="h2">At a glance</h2>
-            <div class="grid-2">
-                <div class="tile reveal">
-                    <h3>TOEFL iBT®</h3>
-                    <div class="kv">
-                        <div><b>Reading</b><span>2 passages • 35 min</span></div>
-                        <div><b>Listening</b><span>5 sets • 41–57 min</span></div>
-                        <div><b>Speaking</b><span>4 tasks • 16 min</span></div>
-                        <div><b>Writing</b><span>2 tasks • 29 min</span></div>
-                    </div>
-                </div>
-                <div class="tile reveal">
-                    <h3>SAT®</h3>
-                    <div class="kv">
-                        <div><b>R&W</b><span>Short passages • Skills</span></div>
-                        <div><b>Math</b><span>Calculator throughout</span></div>
-                        <div><b>Timing</b><span>~2h 14m</span></div>
-                        <div><b>Scale</b><span>1600</span></div>
+                    <div class="grid-3">
+                        <article class="tile reveal">
+                            <h3>Real test flow</h3>
+                            <p>Layouts &amp; timing mirror the real exams, so the interface feels familiar on test day.
+                            </p>
+                        </article>
+                        <article class="tile reveal">
+                            <h3>Beautifully minimal</h3>
+                            <p>No distractions. Just you and the next question — on any device.</p>
+                        </article>
+                        <article class="tile reveal">
+                            <h3>Momentum first</h3>
+                            <p>Short sessions and light review build confidence faster than cramming.</p>
+                        </article>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- mini gallery: swap with your clips/gifs -->
-            <div class="gallery" style="margin-top:16px">
-                <figure class="reveal">
-                    <video autoplay muted loop playsinline>
-                        <source src="students/home-hero.mp4" type="video/mp4" />
-                    </video>
-                </figure>
-                <figure class="reveal">
-                    <video autoplay muted loop playsinline>
-                        <source src="students/girl-study.mp4" type="video/mp4" />
-                    </video>
-                </figure>
-                <figure class="reveal">
-                    <video autoplay muted loop playsinline>
-                        <source src="students/board-man.mp4" type="video/mp4" />
-                    </video>
-                </figure>
+
+        <section class="page-section" id="exams-section">
+            <div class="section" aria-label="Exam info">
+                <div class="inner">
+                    <h2 class="h2">At a glance</h2>
+                    <div class="grid-2">
+                        <div class="tile reveal">
+                            <h3>TOEFL iBT®</h3>
+                            <div class="kv">
+                                <div><b>Reading</b><span>2 passages • 35 min</span></div>
+                                <div><b>Listening</b><span>5 sets • 41–57 min</span></div>
+                                <div><b>Speaking</b><span>4 tasks • 16 min</span></div>
+                                <div><b>Writing</b><span>2 tasks • 29 min</span></div>
+                            </div>
+                        </div>
+
+                        <div class="tile reveal">
+                            <h3>SAT®</h3>
+                            <div class="kv">
+                                <div><b>R&amp;W</b><span>Short passages • Skills</span></div>
+                                <div><b>Math</b><span>Calculator throughout</span></div>
+                                <div><b>Timing</b><span>~2h 14m</span></div>
+                                <div><b>Scale</b><span>1600</span></div>
+                            </div>
+                        </div>
+
+                        <div class="tile reveal">
+                            <h3>IELTS® Academic</h3>
+                            <div class="kv">
+                                <div><b>Listening</b><span>4 sections • ~30 min</span></div>
+                                <div><b>Reading</b><span>3 passages • 60 min</span></div>
+                                <div><b>Writing</b><span>2 tasks • 60 min</span></div>
+                                <div><b>Speaking</b><span>3 parts • 11–14 min</span></div>
+                            </div>
+                        </div>
+
+                        <div class="tile reveal">
+                            <h3>ACT®</h3>
+                            <div class="kv">
+                                <div><b>English</b><span>75 questions • 45 min</span></div>
+                                <div><b>Math</b><span>60 questions • 60 min</span></div>
+                                <div><b>Reading</b><span>40 questions • 35 min</span></div>
+                                <div><b>Science</b><span>40 questions • 35 min</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- mini gallery: swap with your clips/gifs -->
+                    <div class="gallery" style="margin-top:16px">
+                        <figure class="reveal">
+                            <video autoplay muted loop playsinline>
+                                <source src="../students/home-hero.mp4" type="video/mp4" />
+                            </video>
+                        </figure>
+                        <figure class="reveal">
+                            <video autoplay muted loop playsinline>
+                                <source src="../students/girl-study.mp4" type="video/mp4" />
+                            </video>
+                        </figure>
+                        <figure class="reveal">
+                            <video autoplay muted loop playsinline>
+                                <source src="../students/board-man.mp4" type="video/mp4" />
+                            </video>
+                        </figure>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-<!-- SUBSCRIPTION / PLANS -->
-<section class="section" aria-label="Subscription plans">
-  <div class="inner">
-    <h2 class="h2">Plans that match your pace</h2>
-    <p class="lead">Start simple or go all-in. Real exam layout, focus tools, and a calm UI in every plan.</p>
+        <section class="page-section" id="pricing-section">
+            <div class="section" aria-label="Subscription plans">
+                <div class="inner">
+                    <h2 class="h2">Plans that match your pace</h2>
+                    <p class="lead">Start simple or go all-in. Real exam layout, focus tools, and a calm UI in every
+                        plan.</p>
 
-    <div class="pricing">
-      <!-- CHEAP -->
-      <article class="plan" aria-labelledby="plan-cheap">
-        <h3 id="plan-cheap">Cheap</h3>
-        <p class="tagline">Quick start</p>
-        <div class="price"><span class="big">5</span><span>tests included</span></div>
-        <ul class="features">
-          <li>TOEFL & SAT sections</li>
-          <li>Exam-style timing bars</li>
-          <li>Clean, distraction-free UI</li>
-          <li>Mobile friendly</li>
-        </ul>
-        <a class="cta" href="/indexes/subscribe.html?plan=cheap" aria-label="Choose Cheap plan">Choose Cheap</a>
-      </article>
+                    <div class="pricing">
+                        <!-- CHEAP -->
+                        <article class="plan" aria-labelledby="plan-cheap">
+                            <h3 id="plan-cheap">Cheap</h3>
+                            <p class="tagline">Quick start</p>
+                            <div class="price"><span class="big">5</span><span>tests included</span></div>
+                            <ul class="features">
+                                <li>TOEFL & SAT sections</li>
+                                <li>Exam-style timing bars</li>
+                                <li>Clean, distraction-free UI</li>
+                                <li>Mobile friendly</li>
+                            </ul>
+                            <a class="cta" href="/indexes/subscribe.html?plan=cheap"
+                                aria-label="Choose Cheap plan">Choose Cheap</a>
+                        </article>
 
-      <!-- AVERAGE (MOST POPULAR) -->
-      <article class="plan" aria-labelledby="plan-average">
-        <span class="ribbon" aria-hidden="true">Most popular</span>
-        <h3 id="plan-average">Average</h3>
-        <p class="tagline">Balanced practice</p>
-        <div class="price"><span class="big">10</span><span>tests included</span></div>
-        <ul class="features">
-          <li>All Cheap features</li>
-          <li>Smart session rhythm</li>
-          <li>Lightweight review flow</li>
-          <li>Email support</li>
-        </ul>
-        <a class="cta" href="/indexes/subscribe.html?plan=average" aria-label="Choose Average plan">Choose Average</a>
-      </article>
+                        <!-- AVERAGE (MOST POPULAR) -->
+                        <article class="plan" aria-labelledby="plan-average">
+                            <span class="ribbon" aria-hidden="true">Most popular</span>
+                            <h3 id="plan-average">Average</h3>
+                            <p class="tagline">Balanced practice</p>
+                            <div class="price"><span class="big">10</span><span>tests included</span></div>
+                            <ul class="features">
+                                <li>All Cheap features</li>
+                                <li>Smart session rhythm</li>
+                                <li>Lightweight review flow</li>
+                                <li>Email support</li>
+                            </ul>
+                            <a class="cta" href="/indexes/subscribe.html?plan=average"
+                                aria-label="Choose Average plan">Choose Average</a>
+                        </article>
 
-      <!-- PREMIUM -->
-      <article class="plan premium" aria-labelledby="plan-premium">
-        <h3 id="plan-premium">Premium</h3>
-        <p class="tagline">Serious prep</p>
-        <div class="price"><span class="big">20</span><span>tests included</span></div>
-        <ul class="features">
-          <li>All Average features</li>
-          <li>Full test library access</li>
-          <li>Priority support</li>
-          <li>Future test types (IELTS/DET)</li>
-        </ul>
-        <a class="cta" href="/indexes/subscribe.html?plan=premium" aria-label="Choose Premium plan">Choose Premium</a>
-      </article>
+                        <!-- PREMIUM -->
+                        <article class="plan premium" aria-labelledby="plan-premium">
+                            <h3 id="plan-premium">Premium</h3>
+                            <p class="tagline">Serious prep</p>
+                            <div class="price"><span class="big">20</span><span>tests included</span></div>
+                            <ul class="features">
+                                <li>All Average features</li>
+                                <li>Full test library access</li>
+                                <li>Priority support</li>
+                                <li>Future test types (IELTS/DET)</li>
+                            </ul>
+                            <a class="cta" href="/indexes/subscribe.html?plan=premium"
+                                aria-label="Choose Premium plan">Choose Premium</a>
+                        </article>
+                    </div>
+
+                    <p class="disclaimer">Cancel anytime. Upgrade later — your progress stays with you.</p>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <p class="disclaimer">Cancel anytime. Upgrade later — your progress stays with you.</p>
-  </div>
-</section>
-
-
-    <!-- FOOTER -->
     <footer>
         <div class="foot">
             <div>
@@ -944,6 +1549,10 @@
 
     <script>
         // Theme toggle
+        let isSwitching = false;
+        const validSections = ['home', 'mentors', 'value', 'exams', 'pricing'];
+
+
         const themeBtn = document.getElementById('themeToggle');
         const htmlEl = document.documentElement;
         function setTheme(next) {
@@ -955,25 +1564,115 @@
         themeBtn.addEventListener('click', () => setTheme(htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
         setTheme(htmlEl.getAttribute('data-theme') || 'dark');
 
+        // Section navigation
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+        const sections = document.querySelectorAll('.page-section');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        function showSection(sectionId) {
+            if (!validSections.includes(sectionId) || isSwitching) return;
+
+            const newSection = document.getElementById(`${sectionId}-section`);
+            const oldSection = document.querySelector('.page-section.active');
+
+            if (!newSection || newSection === oldSection) return;
+
+            isSwitching = true;
+            document.body.classList.add('switching');
+
+            // Jump to top instantly so it feels like a full-screen switch
+            window.scrollTo({ top: 0, behavior: 'auto' });
+
+            // Animate old section out
+            if (oldSection) {
+                oldSection.classList.remove('active');
+                oldSection.classList.add('leaving');
+            }
+
+            // Animate new section in
+            newSection.classList.remove('leaving');
+            newSection.classList.add('active');
+
+            // Update nav active state
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.section === sectionId);
+            });
+
+            // Close mobile menu
+            // Close mobile menu (if it exists)
+            if (mobileMenu) {
+                mobileMenu.classList.remove('active');
+            }
+
+
+            // When animations are done, clean up
+            setTimeout(() => {
+                if (oldSection) {
+                    oldSection.classList.remove('leaving');
+                }
+                document.body.classList.remove('switching');
+                isSwitching = false;
+            }, 500); // slightly longer than CSS durations
+        }
+
+
+
+
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section');
+
+                // If hash is different, change it (this triggers the hashchange handler)
+                if (location.hash !== `#${sectionId}`) {
+                    location.hash = sectionId;
+                } else {
+                    // If already on the same hash, just force the animation
+                    showSection(sectionId);
+                }
+            });
+        });
+        function handleHashChange() {
+            const hash = (location.hash || '#home').replace('#', '');
+            const target = validSections.includes(hash) ? hash : 'home';
+            showSection(target);
+        }
+
+        // When the URL hash changes (back/forward, address bar, etc.)
+        window.addEventListener('hashchange', handleHashChange);
+
+        // On first load, open the right section based on hash
+        document.addEventListener('DOMContentLoaded', () => {
+            handleHashChange();
+        });
+
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('active');
+            }
+        });
+
+
+        document.addEventListener('click', (e) => {
+            if (
+                mobileMenu &&
+                !mobileMenu.contains(e.target) &&
+                !mobileMenuBtn.contains(e.target)
+            ) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+
         // Scroll reveal
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
         }, { threshold: .14 });
         document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-        // Magnetic CTA + spotlight
-        const ctas = [document.getElementById('startTop'), document.getElementById('startHero'), document.getElementById('startBottom')].filter(Boolean);
-        const spot = document.getElementById('spotlight');
-        // document.addEventListener('mousemove', (e)=>{
-        //   document.body.style.setProperty('--mx', e.clientX + 'px');
-        //   document.body.style.setProperty('--my', e.clientY + 'px');
-        //   // move button glow
-        //   ctas.forEach(btn=>{
-        //     const r = btn.getBoundingClientRect();
-        //     const bx = Math.max(0, Math.min(1, (e.clientX - r.left)/r.width));
-        //     btn.style.setProperty('--bx', (bx*100)+'%');
-        //   });
-        // });
 
         // Subtle 3D tilt on the hero card
         const heroCard = document.getElementById('heroCard');
@@ -990,61 +1689,12 @@
             heroCard.addEventListener('mouseleave', () => heroCard.style.transform = 'translateY(0) rotateX(0) rotateY(0)');
         }
 
-        // Year
-        document.getElementById('year').textContent = new Date().getFullYear();
+        const yearEl = document.getElementById('year');
+        if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+        }
+
     </script>
-    <script>
-(function(){
-  const vids = document.querySelectorAll('video[autoplay]');
-  vids.forEach(v => {
-    // Ensure mobile-safe attributes at runtime too
-    v.muted = true;
-    v.playsInline = true;
-    v.setAttribute('muted','');
-    v.setAttribute('playsinline','');
-    v.setAttribute('webkit-playsinline','');
-
-    const tryPlay = v.play();
-    if (tryPlay && typeof tryPlay.then === 'function') {
-      tryPlay.catch(() => addTapToPlay(v));
-    } else {
-      // Older browsers: add fallback anyway
-      addTapToPlay(v);
-    }
-  });
-
-  function addTapToPlay(v){
-    // Create a subtle, accessible tap-to-play button
-    if (v.dataset.tapReady) return;
-    v.dataset.tapReady = '1';
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = 'Play';
-    Object.assign(btn.style, {
-      position:'absolute', inset:'0', margin:'auto',
-      width:'96px', height:'44px', borderRadius:'12px',
-      border:'1px solid rgba(140,170,255,.3)',
-      background:'rgba(255,255,255,.12)', color:'#fff',
-      backdropFilter:'blur(8px)', fontWeight:'900', cursor:'pointer'
-    });
-
-    // Wrap video for positioning
-    const wrap = document.createElement('div');
-    wrap.style.position = 'relative';
-    wrap.style.display = 'inline-block';
-    v.parentNode.insertBefore(wrap, v);
-    wrap.appendChild(v);
-    wrap.appendChild(btn);
-
-    btn.addEventListener('click', () => {
-      v.muted = false; // if you want sound after user gesture; keep true if you want silent loop
-      v.play().then(() => btn.remove()).catch(()=>{ /* keep button if still blocked */ });
-    });
-  }
-})();
-</script>
-
 </body>
 
 </html>
