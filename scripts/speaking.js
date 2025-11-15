@@ -49,17 +49,12 @@ const interstitialContinue = document.getElementById('interstitialContinue');
 let __USER_INTERACTED__ = false;
 document.addEventListener("click", () => { __USER_INTERACTED__ = true; }, { once: true });
 
-// ---------------- GLOBAL BASE CONFIG ----------------
-// If your project is at https://mydomain.com/  -> leave BASE_PATH = ''.
-// If it's at https://mydomain.com/toefl2026/ -> set BASE_PATH = '/toefl2026/'.
-const BASE_PATH = ''; 
 
 function getRepoBasePath() {
-  // Always normalized with leading and trailing slash or just "/"
-  if (!BASE_PATH) return '/';
-  return BASE_PATH.endsWith('/') ? BASE_PATH : BASE_PATH + '/';
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const repo = parts.length > 0 ? parts[0] : '';
+  return repo ? `/${repo}/` : '/';
 }
-// ----------------------------------------------------
 
 
 
@@ -73,19 +68,14 @@ function fixLeadingSlashesInData(data) {
       for (const [k, v] of Object.entries(node)) out[k] = visit(v);
       return out;
     }
-
     if (typeof node === 'string' && node.startsWith('/')) {
-      // Convert "/something" -> "<BASE_PATH>something"
-      // Example: "/data/1/lec1" + BASE "/toefl/" = "/toefl/data/1/lec1"
       return base + node.slice(1);
     }
-
     return node;
   };
 
   return visit(data);
 }
-
 
 function addMp3IfMissing(path) {
   if (typeof path !== 'string' || !path) return path;
@@ -93,22 +83,19 @@ function addMp3IfMissing(path) {
   // Ensure .mp3 extension if it’s missing (and no query string)
   let p = (!path.includes('?') && !path.endsWith('.mp3')) ? `${path}.mp3` : path;
 
-  // Absolute URLs (https://...) -> leave them alone
+  // Absolute URLs are fine
   if (/^https?:\/\//i.test(p)) return p;
 
+  // If it already starts with the repo base, don't add it again
   const base = getRepoBasePath();
+  if (p.startsWith(base)) return p;
 
-  // If starts with "/", treat it as project-root-relative and prefix BASE_PATH
-  // "/data/..."   -> "/toefl/data/..."  (if BASE_PATH="/toefl/")
-  // "/commonAudios/..." -> "/toefl/commonAudios/..."
-  if (p.startsWith('/')) {
-    return base + p.slice(1);
-  }
+  // If it starts with a plain leading slash, prefix with repo base once
+  if (p.startsWith('/')) return base + p.slice(1);
 
-  // Relative paths ("../commonAudios/..."), keep as-is
+  // Relative paths are OK as-is
   return p;
 }
-
 
 
 
