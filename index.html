@@ -339,7 +339,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: .46;
+            opacity: .7;
             filter: saturate(115%) contrast(105%);
         }
 
@@ -584,6 +584,50 @@
             color: var(--muted)
         }
 
+        @media (max-width: 900px) {
+
+            /* Base hero card: no direct background, we’ll use pseudo-elements */
+            .hero-card-photo {
+                position: relative;
+                overflow: hidden;
+                background: transparent;
+            }
+
+            /* PHOTO layer with low opacity */
+            .hero-card-photo::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-image: url("students/sat_group_small_room_photo.jpg");
+                background-size: cover;
+                background-position: center;
+                opacity: 0.2;
+                /* 👈 tweak this: 0.2–0.4 usually looks nice */
+                z-index: 0;
+                /* behind everything */
+            }
+
+            /* DARK overlay to keep text readable */
+            .hero-card-photo::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.1;
+                background: linear-gradient(145deg,
+                        rgba(6, 10, 24, 0.75),
+                        rgba(10, 20, 40, 0.45),
+                        rgba(18, 40, 80, 0.25));
+                z-index: 1;
+                /* above photo, below text */
+            }
+
+            /* TEXT stays sharp on top */
+            .hero-card-photo>* {
+                position: relative;
+                z-index: 2;
+            }
+        }
+
         /* Value tiles */
         .grid-3 {
             display: grid;
@@ -823,7 +867,8 @@
             color: var(--muted)
         }
 
-        .mentor .avatar img, video {
+        .mentor .avatar img,
+        video {
             width: 100%;
             height: 100%;
             object-fit: cover;
